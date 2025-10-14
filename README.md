@@ -1,1 +1,1 @@
-# EventRift-server
+# EventRift-Client
