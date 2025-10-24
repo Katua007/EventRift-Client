@@ -1,34 +1,40 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react'; 
+import { LogOut, User, Menu, X, ShoppingCart, Home, Settings } from 'lucide-react'; // Added Settings for setup
+// --- IMPORT PAGES ---
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage';
 import VendorServiceSetup from './pages/VendorServiceSetup';
 import EventListPage from './pages/EventListPage';
 import StallBookingPage from './pages/StallBookingPage'; 
+import OrganizerDashboard from './pages/OrganizerDashboard'; // Imported Abu's component
+import GoerDashboard from './pages/GoerDashboard';       // Imported Abu's component
+// --- END IMPORT PAGES ---
 
 
-const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
-const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
-const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
-const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
+// --- PLACEHOLDER COMPONENTS (Replace with actual components as they are built) ---
+const HomePage = () => <div className="text-center pt-48 text-2xl text-er-light">Welcome to EventRift (Home Page)</div>;
+const EventDetailPage = () => <div className="text-center pt-48 text-2xl text-er-light">Event Detail Page</div>;
+// const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
+// const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
+// --- END PLACEHOLDER COMPONENTS ---
 
+
+// --- AUTH CONTEXT & PROVIDER ---
 const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-    // Structure of user: { id: 1, username: 'JohnDoe', role: 'Organizer', token: '...' }
+    // Structure of user: { id: 1, username: 'JohnDoe', role: 'Organizer'|'Goer'|'Vendor', token: '...' }
     const [user, setUser] = useState(null); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for token in localStorage on mount
         const token = localStorage.getItem('jwt_token');
         const userData = JSON.parse(localStorage.getItem('user_data'));
         
         if (token && userData) {
-            // Basic validation
             setUser(userData);
             setIsAuthenticated(true);
         }
@@ -49,7 +55,6 @@ const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    // Helper for Role-Based Access Control (RBAC)
     const hasRole = (role) => isAuthenticated && user?.role === role;
 
     return (
@@ -59,15 +64,15 @@ const AuthProvider = ({ children }) => {
     );
 };
 
-// Custom Hook to use the Auth Context
 export const useAuth = () => useContext(AuthContext);
+// --- END AUTH CONTEXT & PROVIDER ---
 
-// Component for Protected Routes (Client-Side RBAC)
+
+// --- PROTECTED ROUTE COMPONENT (Client-Side RBAC) ---
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
     const navigate = useNavigate();
     
-    // Show a minimal loading state while checking token
     if (loading) {
         return <div className="text-center pt-48 text-xl text-gray-400">Loading user session...</div>;
     }
@@ -79,29 +84,35 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     }
 
     if (requiredRole && !hasRole(requiredRole)) {
-        // Redirect unauthorized users
+        // Redirect unauthorized users to home or a specific denial page
         navigate('/'); 
         return <div className="text-center pt-48 text-xl text-red-500">Access Denied: Insufficient Permissions.</div>;
     }
 
+    // Render the element if authenticated and authorized
     return element;
 };
+// --- END PROTECTED ROUTE COMPONENT ---
 
 
+// --- HEADER & FOOTER COMPONENTS ---
 const Header = () => {
     const { isAuthenticated, user, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     
+    // Dynamic navigation items based on authentication status and role
     const navItems = [
         { name: 'Home', path: '/', icon: Home },
         { name: 'Events', path: '/events', icon: ShoppingCart },
         ...(isAuthenticated ? [] : [
             { name: 'Login', path: '/login', icon: User },
-            { name: 'Signup', path: '/signup', icon: LogOut }, // LogOut icon used metaphorically for starting new journey
+            { name: 'Signup', path: '/signup', icon: LogOut },
         ]),
-        ...(user?.role === 'Organizer' ? [{ name: 'Dashboard', path: '/organizer/dashboard', icon: User }] : []),
+        // Dashboard/Profile links
+        ...(user?.role === 'Organizer' ? [{ name: 'Organizer Dash', path: '/organizer/dashboard', icon: Settings }] : []),
         ...(user?.role === 'Goer' ? [{ name: 'My Profile', path: '/goer/profile', icon: User }] : []),
-        ...(user?.role === 'Vendor' ? [{ name: 'Vendor Setup', path: '/vendor/setup', icon: User }] : []),
+        // Vendor Setup link (since it's a one-time setup)
+        ...(user?.role === 'Vendor' ? [{ name: 'Vendor Setup', path: '/vendor/setup-service', icon: Settings }] : []),
     ];
 
     return (
@@ -158,50 +169,55 @@ const Footer = () => (
         </div>
     </footer>
 );
+// --- END HEADER & FOOTER COMPONENTS ---
 
 
-
+// --- MAIN APP COMPONENT ---
 const App = () => {
     return (
-        // BrowserRouter must wrap the whole application
         <BrowserRouter>
-            {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
+                {/* Apply global background and text color classes */}
                 <div className="min-h-screen bg-er-dark text-er-light flex flex-col">
                     <Header />
                     
                     <main className="flex-grow"> 
                         <Routes>
-                            {/* Public Routes */}
+                            {/* 1. Public Routes */}
                             <Route path="/" element={<HomePage />} />
                             <Route path="/events" element={<EventListPage />} />
                             <Route path="/events/:eventId" element={<EventDetailPage />} />
 
-                            {/* Auth Routes */}
+                            {/* 2. Auth Routes */}
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/signup" element={<SignupPage />} />
                             
-                            {/*Checkout Route*/}
+                            {/* 3. Transaction/Booking Routes (Public access, but usually requires auth check inside component) */}
                             <Route path="/events/:eventId/checkout" element={<CheckoutPage />} /> 
-                            
-                            {/* Vendor Stall Booking Route */}
                             <Route path="/events/:eventId/book-stall" element={<StallBookingPage />} /> 
 
-                            {/* Protected Routes (Require Authentication and Role) */}
+                            {/* 4. Protected Routes (RBAC enforcement via ProtectedRoute component) */}
+                            
+                            {/* Organizer (Phase 3/4) */}
                             <Route 
                                 path="/organizer/dashboard" 
                                 element={<ProtectedRoute element={<OrganizerDashboard />} requiredRole="Organizer" />} 
                             />
+                            
+                            {/* Goer (Phase 4) */}
                             <Route 
                                 path="/goer/profile" 
                                 element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
                             />
+                            
+                            {/* Vendor Setup (Phase 3/4) */}
                             <Route 
+                                // Changed path to match nav item name in Header
                                 path="/vendor/setup-service" 
                                 element={<ProtectedRoute element={<VendorServiceSetup />} requiredRole="Vendor" />} 
                             />
                             
-                            {/* Catch-all/404 Page */}
+                            {/* 5. Catch-all/404 Page */}
                             <Route path="*" element={<div className="text-center pt-48 text-xl text-red-500">404 - Page Not Found</div>} />
                         </Routes>
                     </main>
