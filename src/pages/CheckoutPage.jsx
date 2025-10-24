@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ const mockEventData = {
 };
 
 const CheckoutPage = () => {
-    const { eventId } = useParams();
+    const { eventId: _eventId } = useParams();
     const navigate = useNavigate();
     const { 
         register, 
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
             } else {
                 setApiError(result.message || 'Payment initiation failed. Please check your phone number.');
             }
-        } catch (error) {
+        } catch (_error) {
             setApiError('Network error. Could not connect to the payment server.');
         } finally {
             setLoading(false);
@@ -90,7 +90,7 @@ const CheckoutPage = () => {
             <div className="flex flex-col lg:flex-row gap-10">
                 
                 {/* 1. Order Summary (Left/Top) */}
-                <div className="lg:w-1/2 bg-black p-6 rounded-xl shadow-2xl">
+                <div className="lg:w-1/2 bg-er-gray p-6 rounded-xl shadow-2xl border border-gray-800">
                     <h2 className="text-2xl font-bold mb-4 border-b border-gray-800 pb-3">Order Summary</h2>
                     
                     {/* Item Row */}
@@ -136,7 +136,7 @@ const CheckoutPage = () => {
                 </div>
 
                 {/* 2. Payment Form (Right/Bottom) */}
-                <div className="lg:w-1/2 bg-black p-6 rounded-xl shadow-2xl">
+                <div className="lg:w-1/2 bg-er-gray p-6 rounded-xl shadow-2xl border border-gray-800">
                     <h2 className="text-2xl font-bold mb-4 border-b border-gray-800 pb-3">Payment Method (M-Pesa)</h2>
                     
                     {apiError && <p className="text-red-500 bg-red-900/30 p-3 rounded mb-4 text-center">{apiError}</p>}
@@ -173,7 +173,7 @@ const CheckoutPage = () => {
                         <button
                             type="submit"
                             disabled={loading || quantity < 1}
-                            className="w-full bg-er-primary text-white font-bold py-3 rounded-lg hover:bg-pink-700 transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                            className="btn-primary w-full"
                         >
                             {loading ? 'Processing Payment...' : `Pay KES ${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
                         </button>

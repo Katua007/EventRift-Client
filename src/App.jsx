@@ -6,7 +6,7 @@ import SignupPage from './pages/SignupPage';
 import CheckoutPage from './pages/CheckoutPage'; 
 
 
-const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
+import HomePage from './components/HomePage';
 const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
 const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
 const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
@@ -102,20 +102,20 @@ const Header = () => {
     ];
 
     return (
-        <header className="fixed w-full top-0 z-50 bg-black shadow-lg border-b border-gray-900">
+        <header className="fixed w-full top-0 z-50 bg-er-dark/95 backdrop-blur-sm shadow-lg border-b border-gray-800">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                <Link to="/" className="text-3xl font-bold text-er-primary hover:text-pink-400 transition">EventRift</Link>
+                <Link to="/" className="font-heading text-3xl font-bold text-er-primary hover:text-pink-400 transition">EventRift</Link>
                 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center space-x-6">
                     {navItems.map(item => (
-                        <Link key={item.name} to={item.path} className="text-er-light hover:text-er-primary transition font-medium flex items-center space-x-1">
+                        <Link key={item.name} to={item.path} className="text-er-text hover:text-er-primary transition font-medium flex items-center space-x-1">
                             <item.icon className="w-4 h-4"/>
                             <span>{item.name}</span>
                         </Link>
                     ))}
                     {isAuthenticated && (
-                        <button onClick={logout} className="bg-red-600 text-white px-4 py-1 rounded-full text-sm hover:bg-red-700 transition flex items-center space-x-1">
+                        <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition flex items-center space-x-1">
                             <LogOut className="w-4 h-4"/>
                             <span>Logout ({user.username})</span>
                         </button>
@@ -123,16 +123,16 @@ const Header = () => {
                 </nav>
 
                 {/* Mobile Menu Button */}
-                <button className="md:hidden text-er-light" onClick={() => setIsOpen(!isOpen)}>
+                <button className="md:hidden text-er-text" onClick={() => setIsOpen(!isOpen)}>
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </div>
 
             {/* Mobile Dropdown */}
             <div className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
-                <nav className="flex flex-col p-4 space-y-2 bg-gray-900">
+                <nav className="flex flex-col p-4 space-y-2 bg-er-gray">
                     {navItems.map(item => (
-                        <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className="text-er-light hover:text-er-primary transition font-medium py-2 border-b border-gray-800">
+                        <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className="text-er-text hover:text-er-primary transition font-medium py-2 border-b border-gray-800">
                             {item.name}
                         </Link>
                     ))}
@@ -148,8 +148,8 @@ const Header = () => {
 };
 
 const Footer = () => (
-    <footer className="bg-black border-t border-gray-900 mt-12 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
+    <footer className="bg-er-gray border-t border-gray-800 mt-12 py-6">
+        <div className="container mx-auto px-4 text-center text-er-text text-sm">
             <p>&copy; {new Date().getFullYear()} EventRift. All rights reserved.</p>
             <p className="mt-2">Made with ❤️ for the Kenyan event scene.</p>
         </div>
@@ -164,7 +164,7 @@ const App = () => {
         <BrowserRouter>
             {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
-                <div className="min-h-screen bg-er-dark text-er-light flex flex-col">
+                <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
                     <Header />
                     
                     <main className="flex-grow"> 

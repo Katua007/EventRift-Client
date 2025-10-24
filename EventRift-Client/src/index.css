@@ -1,8 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Global styles based on screenshots */
-body {
-  @apply bg-er-dark text-er-light;
-}

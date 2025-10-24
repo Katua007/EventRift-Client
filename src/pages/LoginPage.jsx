@@ -1,10 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../App';
 import { Link, useNavigate } from 'react-router-dom';
-// --- Import the Alert component created in Phase 5 ---
-import Alert from '../components/Alert'; 
-// --- Import the Link from react-router-dom to make the signup link work ---
 
 
 const LOGIN_API = '/login'; // Backend endpoint (BE-201)
@@ -48,18 +45,17 @@ const LoginPage = () => {
         const errorMessage = result.msg || result.message || 'Login failed. Please check your credentials.';
         setApiError(errorMessage);
       }
-    } catch (error) {
+    } catch (_error) {
       setApiError('Network error. Could not connect to the server.');
     }
   };
 
   return (
-    <div className="flex justify-center items-center p-8 pt-32 min-h-screen">
-      <div className="w-full max-w-md p-8 bg-black rounded-xl shadow-2xl">
-        <h2 className="text-3xl font-bold text-er-primary mb-6 text-center">Log In to EventRift</h2>
+    <div className="flex justify-center items-center p-8 pt-32 min-h-screen bg-er-dark">
+      <div className="w-full max-w-md p-8 bg-er-gray rounded-xl shadow-2xl border border-gray-800">
+        <h2 className="font-heading text-3xl font-bold text-er-light mb-6 text-center">Log In to EventRift</h2>
         
-        {/* PHASE 5: Use the Alert component for clean error display */}
-        <Alert message={apiError} type="error" /> 
+        {apiError && <p className="text-red-500 bg-red-900/30 p-3 rounded mb-4 text-center">{apiError}</p>} 
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           
@@ -87,7 +83,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isSubmitting} // Disable button during submission
-            className="w-full bg-er-primary text-white font-bold py-3 rounded hover:bg-pink-700 transition duration-300 disabled:bg-gray-600"
+            className="btn-primary w-full"
           >
             {isSubmitting ? 'Authenticating...' : 'Sign In'}
           </button>
