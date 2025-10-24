@@ -5,7 +5,8 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage';
 import VendorServiceSetup from './pages/VendorServiceSetup';
-import EventListPage from './pages/EventListPage'; 
+import EventListPage from './pages/EventListPage';
+import StallBookingPage from './pages/StallBookingPage'; 
 
 
 const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
@@ -182,6 +183,9 @@ const App = () => {
                             
                             {/*Checkout Route*/}
                             <Route path="/events/:eventId/checkout" element={<CheckoutPage />} /> 
+                            
+                            {/* Vendor Stall Booking Route */}
+                            <Route path="/events/:eventId/book-stall" element={<StallBookingPage />} /> 
 
                             {/* Protected Routes (Require Authentication and Role) */}
                             <Route 
