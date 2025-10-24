@@ -47,7 +47,7 @@ const SignupPage = () => {
         // Handle specific BE errors (e.g., email already exists)
         setApiError(result.message || 'Registration failed. Please try again.');
       }
-    } catch (_error) {
+    } catch {
       setApiError('Network error. Could not connect to the server.');
     } finally {
       setLoading(false);

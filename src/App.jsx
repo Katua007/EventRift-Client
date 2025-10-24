@@ -1,63 +1,16 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react'; 
+import { AuthProvider } from './contexts/AuthContext';
+import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage'; 
-
-
 import HomePage from './components/HomePage';
+
 const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
 const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
 const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
-
-const AuthContext = createContext(null);
-
-const AuthProvider = ({ children }) => {
-    // Structure of user: { id: 1, username: 'JohnDoe', role: 'Organizer', token: '...' }
-    const [user, setUser] = useState(null); 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Check for token in localStorage on mount
-        const token = localStorage.getItem('jwt_token');
-        const userData = JSON.parse(localStorage.getItem('user_data'));
-        
-        if (token && userData) {
-            // Basic validation
-            setUser(userData);
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-
-    const login = (token, userData) => {
-        localStorage.setItem('jwt_token', token);
-        localStorage.setItem('user_data', JSON.stringify(userData));
-        setUser(userData);
-        setIsAuthenticated(true);
-    };
-
-    const logout = () => {
-        localStorage.removeItem('jwt_token');
-        localStorage.removeItem('user_data');
-        setUser(null);
-        setIsAuthenticated(false);
-    };
-
-    // Helper for Role-Based Access Control (RBAC)
-    const hasRole = (role) => isAuthenticated && user?.role === role;
-
-    return (
-        <AuthContext.Provider value={{ user, isAuthenticated, hasRole, login, logout, loading }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
-
-// Custom Hook to use the Auth Context
-export const useAuth = () => useContext(AuthContext);
 
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {

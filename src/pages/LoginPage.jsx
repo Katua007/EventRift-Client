@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../App';
+import { useAuth } from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 
 
@@ -45,7 +45,7 @@ const LoginPage = () => {
         const errorMessage = result.msg || result.message || 'Login failed. Please check your credentials.';
         setApiError(errorMessage);
       }
-    } catch (_error) {
+    } catch {
       setApiError('Network error. Could not connect to the server.');
     }
   };

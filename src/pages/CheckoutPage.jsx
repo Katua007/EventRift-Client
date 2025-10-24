@@ -70,7 +70,7 @@ const CheckoutPage = () => {
             } else {
                 setApiError(result.message || 'Payment initiation failed. Please check your phone number.');
             }
-        } catch (_error) {
+        } catch {
             setApiError('Network error. Could not connect to the payment server.');
         } finally {
             setLoading(false);
