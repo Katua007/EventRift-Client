@@ -4,7 +4,8 @@ import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage';
-import VendorServiceSetup from './pages/VendorServiceSetup'; 
+import VendorServiceSetup from './pages/VendorServiceSetup';
+import EventListPage from './pages/EventListPage'; 
 
 
 const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
@@ -172,7 +173,7 @@ const App = () => {
                         <Routes>
                             {/* Public Routes */}
                             <Route path="/" element={<HomePage />} />
-                            <Route path="/events" element={<HomePage />} /> {/* Placeholder for Event Browsing */}
+                            <Route path="/events" element={<EventListPage />} />
                             <Route path="/events/:eventId" element={<EventDetailPage />} />
 
                             {/* Auth Routes */}
