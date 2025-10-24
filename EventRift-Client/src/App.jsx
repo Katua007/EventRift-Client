@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-do
 import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react'; 
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
-import CheckoutPage from './pages/CheckoutPage'; 
+import CheckoutPage from './pages/CheckoutPage';
+import VendorServiceSetup from './pages/VendorServiceSetup'; 
 
 
 const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
@@ -191,8 +192,8 @@ const App = () => {
                                 element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
                             />
                             <Route 
-                                path="/vendor/setup" 
-                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Vendor" />} 
+                                path="/vendor/setup-service" 
+                                element={<ProtectedRoute element={<VendorServiceSetup />} requiredRole="Vendor" />} 
                             />
                             
                             {/* Catch-all/404 Page */}
