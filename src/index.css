@@ -18,14 +18,59 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-er-primary hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+    @apply bg-er-primary hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-er-primary/25;
   }
   
   .btn-secondary {
-    @apply bg-transparent border-2 border-er-primary text-er-primary hover:bg-er-primary hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+    @apply bg-transparent border-2 border-er-primary text-er-primary hover:bg-er-primary hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-er-primary/25;
   }
   
   .card {
-    @apply bg-er-gray rounded-xl p-6 shadow-xl border border-gray-800;
+    @apply bg-er-gray rounded-xl p-6 shadow-xl border border-gray-800 hover:shadow-2xl hover:shadow-er-primary/10 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
