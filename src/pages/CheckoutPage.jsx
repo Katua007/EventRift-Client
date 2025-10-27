@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
+import { eventsService } from '../services/eventsService';
+import { paymentsService } from '../services/paymentsService';
+import { useAuth } from '../hooks/useAuth';
 
 // Placeholder Data (In a real app, this would be fetched from the BE /events/:id endpoint)
 const mockEventData = {
@@ -28,7 +31,30 @@ const CheckoutPage = () => {
 
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState('');
-    const event = mockEventData; // Using mock data for simplicity
+    const [event, setEvent] = useState(null);
+    const [eventLoading, setEventLoading] = useState(true);
+    const { user } = useAuth();
+
+    // Fetch event data
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                setEventLoading(true);
+                const eventData = await eventsService.getEvent(eventId);
+                setEvent(eventData.event || eventData);
+            } catch (error) {
+                console.error('Failed to fetch event:', error);
+                // Fallback to mock data
+                setEvent(mockEventData);
+            } finally {
+                setEventLoading(false);
+            }
+        };
+
+        if (eventId) {
+            fetchEvent();
+        }
+    }, [eventId]);
 
     // --- Core Calculation Logic (G-2) ---
     const quantity = watch('quantity');
@@ -42,43 +68,50 @@ const CheckoutPage = () => {
         setLoading(true);
         setApiError('');
         
+        if (!user) {
+            setApiError('Please log in to make a purchase.');
+            setLoading(false);
+            return;
+        }
+
         const paymentData = {
             event_id: event.id,
-            user_id: 1, // Placeholder: Replace with actual user ID from AuthContext
+            user_id: user.id,
             quantity: quantity,
-            mpesa_phone: data.mpesa_phone,
-            total_amount: totalAmount // Send calculated total to BE for verification
+            phone_number: data.mpesa_phone,
+            total_amount: totalAmount
         };
 
         try {
-            // NOTE: This route corresponds to BE-401 (Daraja Setup)
-            const response = await fetch('/api/payments/initiate', { 
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    // Authorization: `Bearer ${localStorage.getItem('token')}` // Include JWT
-                },
-                body: JSON.stringify(paymentData),
-            });
+            const result = await paymentsService.initiateMpesaPayment(paymentData);
             
-            const result = await response.json();
-
-            if (response.ok) {
-                // Payment initiated successfully, prompt user to check phone
+            if (result.success) {
                 alert('M-Pesa prompt sent! Check your phone to complete the payment.');
-                navigate(`/payment-status/${event.id}`); 
+                navigate(`/payment-status/${result.transaction_id}`);
             } else {
-                setApiError(result.message || 'Payment initiation failed. Please check your phone number.');
+                setApiError(result.message || 'Payment initiation failed.');
             }
-        } catch {
-            setApiError('Network error. Could not connect to the payment server.');
+        } catch (error) {
+            setApiError(error.message || 'Network error. Could not connect to the payment server.');
         } finally {
             setLoading(false);
         }
     };
     
     // Check if event data loaded
-    if (!event) return <div className="text-center pt-32">Loading Event Details...</div>;
+    if (eventLoading) return (
+        <div className="text-center pt-32">
+            <div className="animate-spin w-8 h-8 border-4 border-er-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="text-er-light">Loading Event Details...</div>
+        </div>
+    );
+    
+    if (!event) return (
+        <div className="text-center pt-32">
+            <div className="text-6xl mb-4">🙁</div>
+            <div className="text-er-light text-xl">Event not found</div>
+        </div>
+    );
 
     const inputStyle = "w-full p-3 bg-er-dark border border-gray-700 rounded focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light placeholder-gray-500";
     const errorStyle = "text-red-400 text-sm mt-1";

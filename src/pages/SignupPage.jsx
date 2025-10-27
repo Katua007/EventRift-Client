@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const SignupPage = () => {
   const { 
@@ -22,6 +23,8 @@ const SignupPage = () => {
   // Watch the password field for the confirmation validation
   const password = watch("password", "");
 
+  const { register: registerUser } = useAuth();
+
   const onSubmit = async (data) => {
     setLoading(true);
     setApiError('');
@@ -30,24 +33,15 @@ const SignupPage = () => {
     const { confirm_password: _confirm_password, ...userData } = data;
 
     try {
-      // NOTE: Update URL to your deployed backend API later
-      const response = await fetch('/api/users', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
+      const result = await registerUser(userData);
       
-      const result = await response.json();
-
-      if (response.ok) {
-        // Successful signup, redirect to login or verification page
-        alert('Signup successful! Please check your email for verification.');
+      if (result.success) {
+        alert('Registration successful! Please log in to continue.');
         navigate('/login'); 
       } else {
-        // Handle specific BE errors (e.g., email already exists)
-        setApiError(result.message || 'Registration failed. Please try again.');
+        setApiError(result.error);
       }
-    } catch {
+    } catch (error) {
       setApiError('Network error. Could not connect to the server.');
     } finally {
       setLoading(false);

@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-const LOGIN_API = '/login'; // Backend endpoint (BE-201)
+// Using AuthContext login method that calls the backend API
 
 const LoginPage = () => {
   // Destructure isSubmitting for the button state
@@ -14,38 +14,30 @@ const LoginPage = () => {
   const [apiError, setApiError] = React.useState(null); // Use null for clean state
 
   const onSubmit = async (data) => {
-    setApiError(null); // Clear previous errors
+    setApiError(null);
+    
     try {
-      // NOTE: Ensure the keys in `data` match the backend expectations (Phase 2 plan uses email_or_username)
-      const submissionData = {
-          email_or_username: data.email_or_username,
-          password: data.password
+      const credentials = {
+        email: data.email_or_username,
+        password: data.password
       };
       
-      const response = await fetch(LOGIN_API, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Assuming the BE returns { access_token, user: { id, username, role } }
-        const token = result.access_token;
-        const userData = result.user;
-
-        // Call context login function
-        login(token, userData); 
-        
+      const result = await login(credentials);
+      
+      if (result.success) {
         // Redirect based on role
-        navigate(`/${userData.role.toLowerCase()}/dashboard`);
+        const role = result.user.role.toLowerCase();
+        if (role === 'organizer') {
+          navigate('/organizer/dashboard');
+        } else if (role === 'goer') {
+          navigate('/goer/profile');
+        } else {
+          navigate('/');
+        }
       } else {
-        // Use result.msg from Flask-JWT-Extended or result.message from custom error
-        const errorMessage = result.msg || result.message || 'Login failed. Please check your credentials.';
-        setApiError(errorMessage);
+        setApiError(result.error);
       }
-    } catch {
+    } catch (error) {
       setApiError('Network error. Could not connect to the server.');
     }
   };
