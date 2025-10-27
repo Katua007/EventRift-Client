@@ -131,7 +131,7 @@ const EventsPage = () => {
     };
 
     fetchEvents();
-  }, []);
+  }, [fallbackEvents]);
 
   const filteredAndSortedEvents = events
     .filter(event => {
@@ -306,7 +306,7 @@ const EventsPage = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredAndSortedEvents.map((event, index) => (
+              {filteredAndSortedEvents.map((event) => (
                 <div 
                   key={event.id} 
                   className="card group hover:transform hover:scale-105 transition-all duration-300"

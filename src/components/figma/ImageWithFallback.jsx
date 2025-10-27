@@ -39,4 +39,3 @@ export function ImageWithFallback({ src, alt, className, fallback = '🎉' }) {
     </div>
   );
 }
-}

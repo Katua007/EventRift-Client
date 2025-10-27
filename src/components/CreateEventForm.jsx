@@ -6,12 +6,10 @@ import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
 
 const CreateEventForm = () => {
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const { user } = useAuth();
   const navigate = useNavigate();
   const mapRef = useRef(null);
-  const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -39,9 +37,6 @@ const CreateEventForm = () => {
           setValue('latitude', position.lat());
           setValue('longitude', position.lng());
         });
-
-        setMap(mapInstance);
-        setMarker(markerInstance);
       }
     };
 
