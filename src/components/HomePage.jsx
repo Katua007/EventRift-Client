@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowRight, Play, X } from 'lucide-react';
 import { AboutUs } from './AboutUs';
+import { PhotoGallery } from './PhotoGallery';
 import { Hero } from './Hero';
 
 const HomePage = () => {
@@ -176,6 +177,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Photo Gallery Section */}
+      <PhotoGallery />
 
       {/* About Section */}
       <AboutUs />

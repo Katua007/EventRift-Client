@@ -13,8 +13,6 @@ import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
-
-
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
