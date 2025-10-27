@@ -59,7 +59,11 @@ export function Header() {
             to="/"
             className="cursor-pointer"
           >
-            <span className="text-white tracking-wider font-bold text-xl">EVENTRIFT</span>
+            <img 
+              src="/src/assets/images/EventRift LOGO.png" 
+              alt="EventRift" 
+              className="h-16 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
