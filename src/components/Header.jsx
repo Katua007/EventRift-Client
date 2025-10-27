@@ -20,9 +20,21 @@ export function Header() {
     setMobileMenuOpen(false);
     if (path.startsWith('#')) {
       // Handle anchor links for sections on homepage
-      const element = document.querySelector(path);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      if (window.location.pathname !== '/') {
+        // Navigate to home first, then scroll
+        navigate('/');
+        setTimeout(() => {
+          const element = document.querySelector(path);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      } else {
+        // Already on homepage, just scroll
+        const element = document.querySelector(path);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     } else {
       navigate(path);
@@ -83,16 +95,22 @@ export function Header() {
             ) : (
               <>
                 <button 
+                  onClick={() => navigate('/login')}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  Login
+                </button>
+                <button 
+                  onClick={() => navigate('/signup')}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  Sign Up
+                </button>
+                <button 
                   onClick={() => navigate('/events')}
                   className="bg-white text-black px-4 py-2 rounded hover:bg-white/90 transition-colors"
                 >
                   Find Events
-                </button>
-                <button
-                  onClick={handleAuthAction}
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  Login
                 </button>
               </>
             )}
@@ -138,17 +156,23 @@ export function Header() {
                 </>
               ) : (
                 <>
+                  <button
+                    onClick={() => handleNavClick('/login')}
+                    className="text-white/80 hover:text-white transition-colors text-left"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/signup')}
+                    className="text-white/80 hover:text-white transition-colors text-left"
+                  >
+                    Sign Up
+                  </button>
                   <button 
                     onClick={() => handleNavClick('/events')}
                     className="bg-white text-black px-4 py-2 rounded hover:bg-white/90 transition-colors w-full"
                   >
                     Find Events
-                  </button>
-                  <button
-                    onClick={handleAuthAction}
-                    className="text-white/80 hover:text-white transition-colors text-left"
-                  >
-                    Login
                   </button>
                 </>
               )}

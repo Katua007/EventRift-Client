@@ -189,13 +189,19 @@ const HomePage = () => {
       </section>
 
       {/* Photo Gallery Section */}
-      <PhotoGallery />
+      <div id="gallery">
+        <PhotoGallery />
+      </div>
 
       {/* About Section */}
-      <AboutUs />
+      <div id="about">
+        <AboutUs />
+      </div>
 
       {/* Stay Connected Section */}
-      <StayConnected />
+      <div id="contact">
+        <StayConnected />
+      </div>
 
       {/* CTA Section */}
       <section className="py-20 px-6">
