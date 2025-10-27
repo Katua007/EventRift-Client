@@ -12,6 +12,7 @@ import EventDetailPage from './components/EventDetailPage';
 import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
+import { Footer } from './components/Footer';
 
 
 // Component for Protected Routes (Client-Side RBAC)
@@ -102,72 +103,7 @@ const Header = () => {
     );
 };
 
-const Footer = () => (
-    <footer className="bg-er-gray border-t border-gray-800 mt-12 py-12">
-        <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <Link to="/" className="font-heading text-2xl font-bold text-er-primary mb-4 block hover:text-pink-400 transition-colors">
-                        EventRift
-                    </Link>
-                    <p className="text-er-text text-sm mb-4">
-                        Connecting Kenya through unforgettable events and experiences.
-                    </p>
-                    <div className="flex space-x-4">
-                        <button className="w-8 h-8 bg-er-primary rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors transform hover:scale-110">
-                            <span className="text-white text-sm">f</span>
-                        </button>
-                        <button className="w-8 h-8 bg-er-secondary rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors transform hover:scale-110">
-                            <span className="text-white text-sm">t</span>
-                        </button>
-                        <button className="w-8 h-8 bg-er-accent rounded-full flex items-center justify-center hover:bg-yellow-600 transition-colors transform hover:scale-110">
-                            <span className="text-er-dark text-sm">i</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Quick Links</h3>
-                    <ul className="space-y-2">
-                        <li><Link to="/events" className="text-er-text hover:text-er-primary transition-colors text-sm">Browse Events</Link></li>
-                        <li><Link to="/signup" className="text-er-text hover:text-er-primary transition-colors text-sm">Create Account</Link></li>
-                        <li><Link to="/login" className="text-er-text hover:text-er-primary transition-colors text-sm">Sign In</Link></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Host Event</button></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Categories</h3>
-                    <ul className="space-y-2">
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Music & Concerts</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Technology</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Food & Drink</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Sports & Fitness</button></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Support</h3>
-                    <ul className="space-y-2">
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Help Center</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Contact Us</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Privacy Policy</button></li>
-                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Terms of Service</button></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div className="border-t border-gray-800 pt-8 text-center">
-                <p className="text-er-text text-sm mb-2">
-                    &copy; {new Date().getFullYear()} EventRift. All rights reserved.
-                </p>
-                <p className="text-er-text text-sm">
-                    Made with <span className="text-er-primary animate-pulse">❤️</span> for the Kenyan event scene.
-                </p>
-            </div>
-        </div>
-    </footer>
-);
+
 
 
 
