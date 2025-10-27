@@ -4,9 +4,15 @@ import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage'; 
+import { PhotoGallery } from './components/PhotoGallery';
 
 
-const HomePage = () => <div className="text-center pt-48 text-2xl">Welcome to EventRift (Home Page)</div>;
+const HomePage = () => (
+  <div>
+    <div className="text-center pt-48 pb-16 text-2xl">Welcome to EventRift</div>
+    <PhotoGallery />
+  </div>
+);
 const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
 const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
 const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
