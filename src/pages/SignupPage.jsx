@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const SignupPage = () => {
   const { 
@@ -22,30 +23,23 @@ const SignupPage = () => {
   // Watch the password field for the confirmation validation
   const password = watch("password", "");
 
+  const { register: registerUser } = useAuth();
+
   const onSubmit = async (data) => {
     setLoading(true);
     setApiError('');
     
     // Prepare data (remove confirm_password before sending)
-    const { confirm_password, ...userData } = data;
+    const { confirm_password: _confirm_password, ...userData } = data;
 
     try {
-      // NOTE: Update URL to your deployed backend API later
-      const response = await fetch('/api/users', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
+      const result = await registerUser(userData);
       
-      const result = await response.json();
-
-      if (response.ok) {
-        // Successful signup, redirect to login or verification page
-        alert('Signup successful! Please check your email for verification.');
+      if (result.success) {
+        alert('Registration successful! Please log in to continue.');
         navigate('/login'); 
       } else {
-        // Handle specific BE errors (e.g., email already exists)
-        setApiError(result.message || 'Registration failed. Please try again.');
+        setApiError(result.error);
       }
     } catch (error) {
       setApiError('Network error. Could not connect to the server.');
@@ -59,8 +53,8 @@ const SignupPage = () => {
 
   return (
     <div className="flex justify-center items-center py-10 min-h-screen bg-er-dark">
-      <div className="w-full max-w-lg p-8 bg-black rounded-xl shadow-2xl">
-        <h2 className="text-4xl font-extrabold text-er-light mb-8 text-center">Join EventRift</h2>
+      <div className="w-full max-w-lg p-8 bg-er-gray rounded-xl shadow-2xl border border-gray-800">
+        <h2 className="font-heading text-4xl font-extrabold text-er-light mb-8 text-center">Join EventRift</h2>
         {apiError && <p className="text-red-500 bg-red-900/30 p-3 rounded mb-4 text-center">{apiError}</p>}
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -150,7 +144,7 @@ const SignupPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-er-primary text-white font-bold py-3 rounded-lg hover:bg-pink-700 transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
+            className="btn-primary w-full"
           >
             {loading ? 'Registering...' : 'Create Account'}
           </button>

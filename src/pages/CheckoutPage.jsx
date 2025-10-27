@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
+import { eventsService } from '../services/eventsService';
+import { paymentsService } from '../services/paymentsService';
+import { notificationService } from '../services/notificationService';
+import { emailService } from '../services/emailService';
+import { calendarService } from '../services/calendarService';
+import { useAuth } from '../hooks/useAuth';
 
 // Placeholder Data (In a real app, this would be fetched from the BE /events/:id endpoint)
 const mockEventData = {
@@ -12,7 +18,7 @@ const mockEventData = {
 };
 
 const CheckoutPage = () => {
-    const { eventId } = useParams();
+    const { eventId: _eventId } = useParams();
     const navigate = useNavigate();
     const { 
         register, 
@@ -28,7 +34,30 @@ const CheckoutPage = () => {
 
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState('');
-    const event = mockEventData; // Using mock data for simplicity
+    const [event, setEvent] = useState(null);
+    const [eventLoading, setEventLoading] = useState(true);
+    const { user } = useAuth();
+
+    // Fetch event data
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                setEventLoading(true);
+                const eventData = await eventsService.getEvent(eventId);
+                setEvent(eventData.event || eventData);
+            } catch (error) {
+                console.error('Failed to fetch event:', error);
+                // Fallback to mock data
+                setEvent(mockEventData);
+            } finally {
+                setEventLoading(false);
+            }
+        };
+
+        if (eventId) {
+            fetchEvent();
+        }
+    }, [eventId]);
 
     // --- Core Calculation Logic (G-2) ---
     const quantity = watch('quantity');
@@ -42,43 +71,91 @@ const CheckoutPage = () => {
         setLoading(true);
         setApiError('');
         
+        if (!user) {
+            setApiError('Please log in to make a purchase.');
+            setLoading(false);
+            return;
+        }
+
         const paymentData = {
             event_id: event.id,
-            user_id: 1, // Placeholder: Replace with actual user ID from AuthContext
+            user_id: user.id,
             quantity: quantity,
-            mpesa_phone: data.mpesa_phone,
-            total_amount: totalAmount // Send calculated total to BE for verification
+            phone_number: data.mpesa_phone,
+            total_amount: totalAmount
         };
 
         try {
-            // NOTE: This route corresponds to BE-401 (Daraja Setup)
-            const response = await fetch('/api/payments/initiate', { 
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    // Authorization: `Bearer ${localStorage.getItem('token')}` // Include JWT
-                },
-                body: JSON.stringify(paymentData),
-            });
+            const result = await paymentsService.initiateMpesaPayment(paymentData);
             
-            const result = await response.json();
-
-            if (response.ok) {
-                // Payment initiated successfully, prompt user to check phone
-                alert('M-Pesa prompt sent! Check your phone to complete the payment.');
-                navigate(`/payment-status/${event.id}`); 
+            if (result.success) {
+                // Send notification to organizer
+                try {
+                    await notificationService.sendTicketPurchaseNotification(event.id, {
+                        user_id: user.id,
+                        quantity: quantity,
+                        total_amount: totalAmount,
+                        transaction_id: result.transaction_id
+                    });
+                } catch (notifError) {
+                    console.error('Failed to send notification:', notifError);
+                }
+                
+                // Send ticket email
+                try {
+                    await emailService.sendTicketEmail({
+                        user_email: user.email,
+                        event_title: event.title,
+                        event_date: event.date,
+                        event_location: event.venue_name,
+                        quantity: quantity,
+                        total_amount: totalAmount,
+                        transaction_id: result.transaction_id
+                    });
+                } catch (emailError) {
+                    console.error('Failed to send ticket email:', emailError);
+                }
+                
+                // Add to calendar
+                try {
+                    await calendarService.addEventToCalendar({
+                        title: event.title,
+                        date: event.date,
+                        start_time: event.start_time,
+                        end_time: event.end_time,
+                        location: event.address,
+                        description: event.description
+                    });
+                } catch (calendarError) {
+                    console.error('Failed to add to calendar:', calendarError);
+                }
+                
+                alert('Payment successful! Check your email for tickets and calendar for event reminder.');
+                navigate('/goer/dashboard');
             } else {
-                setApiError(result.message || 'Payment initiation failed. Please check your phone number.');
+                setApiError(result.message || 'Payment initiation failed.');
             }
         } catch (error) {
-            setApiError('Network error. Could not connect to the payment server.');
+            setApiError(error.message || 'Network error. Could not connect to the payment server.');
         } finally {
             setLoading(false);
         }
     };
     
     // Check if event data loaded
-    if (!event) return <div className="text-center pt-32">Loading Event Details...</div>;
+    if (eventLoading) return (
+        <div className="text-center pt-32">
+            <div className="animate-spin w-8 h-8 border-4 border-er-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="text-er-light">Loading Event Details...</div>
+        </div>
+    );
+    
+    if (!event) return (
+        <div className="text-center pt-32">
+            <div className="text-6xl mb-4">🙁</div>
+            <div className="text-er-light text-xl">Event not found</div>
+        </div>
+    );
 
     const inputStyle = "w-full p-3 bg-er-dark border border-gray-700 rounded focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light placeholder-gray-500";
     const errorStyle = "text-red-400 text-sm mt-1";
@@ -90,7 +167,7 @@ const CheckoutPage = () => {
             <div className="flex flex-col lg:flex-row gap-10">
                 
                 {/* 1. Order Summary (Left/Top) */}
-                <div className="lg:w-1/2 bg-black p-6 rounded-xl shadow-2xl">
+                <div className="lg:w-1/2 bg-er-gray p-6 rounded-xl shadow-2xl border border-gray-800">
                     <h2 className="text-2xl font-bold mb-4 border-b border-gray-800 pb-3">Order Summary</h2>
                     
                     {/* Item Row */}
@@ -100,21 +177,44 @@ const CheckoutPage = () => {
                     </div>
 
                     {/* Quantity Selector */}
-                    <div className="flex justify-between items-center py-2">
-                        <label htmlFor="quantity" className="text-gray-400">Quantity:</label>
-                        <input
-                            type="number"
-                            id="quantity"
-                            min="1"
-                            max="10" // Example max quantity
-                            {...register('quantity', { 
-                                required: 'Qty is required', 
-                                min: { value: 1, message: 'Min 1 ticket' } 
-                            })}
-                            className="w-20 p-2 bg-er-dark border border-gray-700 rounded text-center text-er-light"
-                        />
+                    <div className="py-4">
+                        <label htmlFor="quantity" className="block text-gray-400 font-semibold mb-3">Number of Tickets:</label>
+                        <div className="flex items-center justify-center space-x-4">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const currentQty = parseInt(watch('quantity') || 1);
+                                    if (currentQty > 1) setValue('quantity', currentQty - 1);
+                                }}
+                                className="w-10 h-10 bg-er-primary text-white rounded-full font-bold hover:bg-pink-600 transition-colors"
+                            >
+                                -
+                            </button>
+                            <input
+                                type="number"
+                                id="quantity"
+                                min="1"
+                                max="10"
+                                {...register('quantity', { 
+                                    required: 'Quantity is required', 
+                                    min: { value: 1, message: 'Minimum 1 ticket' },
+                                    max: { value: 10, message: 'Maximum 10 tickets' }
+                                })}
+                                className="w-20 p-3 bg-er-dark border border-gray-700 rounded-lg text-center text-er-light text-xl font-bold"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const currentQty = parseInt(watch('quantity') || 1);
+                                    if (currentQty < 10) setValue('quantity', currentQty + 1);
+                                }}
+                                className="w-10 h-10 bg-er-primary text-white rounded-full font-bold hover:bg-pink-600 transition-colors"
+                            >
+                                +
+                            </button>
+                        </div>
+                        {errors.quantity && <p className={errorStyle}>{errors.quantity.message}</p>}
                     </div>
-                    {errors.quantity && <p className={errorStyle}>{errors.quantity.message}</p>}
 
                     {/* Calculation Rows */}
                     <hr className="my-4 border-gray-800" />
@@ -136,7 +236,7 @@ const CheckoutPage = () => {
                 </div>
 
                 {/* 2. Payment Form (Right/Bottom) */}
-                <div className="lg:w-1/2 bg-black p-6 rounded-xl shadow-2xl">
+                <div className="lg:w-1/2 bg-er-gray p-6 rounded-xl shadow-2xl border border-gray-800">
                     <h2 className="text-2xl font-bold mb-4 border-b border-gray-800 pb-3">Payment Method (M-Pesa)</h2>
                     
                     {apiError && <p className="text-red-500 bg-red-900/30 p-3 rounded mb-4 text-center">{apiError}</p>}
@@ -173,7 +273,7 @@ const CheckoutPage = () => {
                         <button
                             type="submit"
                             disabled={loading || quantity < 1}
-                            className="w-full bg-er-primary text-white font-bold py-3 rounded-lg hover:bg-pink-700 transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                            className="btn-primary w-full"
                         >
                             {loading ? 'Processing Payment...' : `Pay KES ${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
                         </button>

@@ -1,70 +1,17 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react'; 
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import CheckoutPage from './pages/CheckoutPage'; 
-import { PhotoGallery } from './components/PhotoGallery';
-
-
-const HomePage = () => (
-  <div>
-    <div className="text-center pt-48 pb-16 text-2xl">Welcome to EventRift</div>
-    <PhotoGallery />
-  </div>
-);
-const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
-const OrganizerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Organizer Dashboard</div>;
-const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
-
-const AuthContext = createContext(null);
-
-const AuthProvider = ({ children }) => {
-    // Structure of user: { id: 1, username: 'JohnDoe', role: 'Organizer', token: '...' }
-    const [user, setUser] = useState(null); 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Check for token in localStorage on mount
-        const token = localStorage.getItem('jwt_token');
-        const userData = JSON.parse(localStorage.getItem('user_data'));
-        
-        if (token && userData) {
-            // Basic validation
-            setUser(userData);
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-
-    const login = (token, userData) => {
-        localStorage.setItem('jwt_token', token);
-        localStorage.setItem('user_data', JSON.stringify(userData));
-        setUser(userData);
-        setIsAuthenticated(true);
-    };
-
-    const logout = () => {
-        localStorage.removeItem('jwt_token');
-        localStorage.removeItem('user_data');
-        setUser(null);
-        setIsAuthenticated(false);
-    };
-
-    // Helper for Role-Based Access Control (RBAC)
-    const hasRole = (role) => isAuthenticated && user?.role === role;
-
-    return (
-        <AuthContext.Provider value={{ user, isAuthenticated, hasRole, login, logout, loading }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
-
-// Custom Hook to use the Auth Context
-export const useAuth = () => useContext(AuthContext);
-
+import HomePage from './components/HomePage';
+import EventsPage from './components/EventsPage';
+import EventDetailPage from './components/EventDetailPage';
+import CreateEventForm from './components/CreateEventForm';
+import OrganizerDashboard from './components/OrganizerDashboard';
+import GoerDashboard from './components/GoerDashboard';
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
@@ -108,20 +55,20 @@ const Header = () => {
     ];
 
     return (
-        <header className="fixed w-full top-0 z-50 bg-black shadow-lg border-b border-gray-900">
+        <header className="fixed w-full top-0 z-50 bg-er-dark/95 backdrop-blur-sm shadow-lg border-b border-gray-800">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                <Link to="/" className="text-3xl font-bold text-er-primary hover:text-pink-400 transition">EventRift</Link>
+                <Link to="/" className="font-heading text-3xl font-bold text-er-primary hover:text-pink-400 transition">EventRift</Link>
                 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center space-x-6">
                     {navItems.map(item => (
-                        <Link key={item.name} to={item.path} className="text-er-light hover:text-er-primary transition font-medium flex items-center space-x-1">
+                        <Link key={item.name} to={item.path} className="text-er-text hover:text-er-primary transition font-medium flex items-center space-x-1">
                             <item.icon className="w-4 h-4"/>
                             <span>{item.name}</span>
                         </Link>
                     ))}
                     {isAuthenticated && (
-                        <button onClick={logout} className="bg-red-600 text-white px-4 py-1 rounded-full text-sm hover:bg-red-700 transition flex items-center space-x-1">
+                        <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition flex items-center space-x-1">
                             <LogOut className="w-4 h-4"/>
                             <span>Logout ({user.username})</span>
                         </button>
@@ -129,16 +76,16 @@ const Header = () => {
                 </nav>
 
                 {/* Mobile Menu Button */}
-                <button className="md:hidden text-er-light" onClick={() => setIsOpen(!isOpen)}>
+                <button className="md:hidden text-er-text" onClick={() => setIsOpen(!isOpen)}>
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </div>
 
             {/* Mobile Dropdown */}
             <div className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
-                <nav className="flex flex-col p-4 space-y-2 bg-gray-900">
+                <nav className="flex flex-col p-4 space-y-2 bg-er-gray">
                     {navItems.map(item => (
-                        <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className="text-er-light hover:text-er-primary transition font-medium py-2 border-b border-gray-800">
+                        <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className="text-er-text hover:text-er-primary transition font-medium py-2 border-b border-gray-800">
                             {item.name}
                         </Link>
                     ))}
@@ -154,10 +101,68 @@ const Header = () => {
 };
 
 const Footer = () => (
-    <footer className="bg-black border-t border-gray-900 mt-12 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} EventRift. All rights reserved.</p>
-            <p className="mt-2">Made with ❤️ for the Kenyan event scene.</p>
+    <footer className="bg-er-gray border-t border-gray-800 mt-12 py-12">
+        <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <Link to="/" className="font-heading text-2xl font-bold text-er-primary mb-4 block hover:text-pink-400 transition-colors">
+                        EventRift
+                    </Link>
+                    <p className="text-er-text text-sm mb-4">
+                        Connecting Kenya through unforgettable events and experiences.
+                    </p>
+                    <div className="flex space-x-4">
+                        <button className="w-8 h-8 bg-er-primary rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors transform hover:scale-110">
+                            <span className="text-white text-sm">f</span>
+                        </button>
+                        <button className="w-8 h-8 bg-er-secondary rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors transform hover:scale-110">
+                            <span className="text-white text-sm">t</span>
+                        </button>
+                        <button className="w-8 h-8 bg-er-accent rounded-full flex items-center justify-center hover:bg-yellow-600 transition-colors transform hover:scale-110">
+                            <span className="text-er-dark text-sm">i</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Quick Links</h3>
+                    <ul className="space-y-2">
+                        <li><Link to="/events" className="text-er-text hover:text-er-primary transition-colors text-sm">Browse Events</Link></li>
+                        <li><Link to="/signup" className="text-er-text hover:text-er-primary transition-colors text-sm">Create Account</Link></li>
+                        <li><Link to="/login" className="text-er-text hover:text-er-primary transition-colors text-sm">Sign In</Link></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Host Event</button></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Categories</h3>
+                    <ul className="space-y-2">
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Music & Concerts</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Technology</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Food & Drink</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Sports & Fitness</button></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 className="font-heading text-lg font-semibold text-er-light mb-4">Support</h3>
+                    <ul className="space-y-2">
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Help Center</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Contact Us</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Privacy Policy</button></li>
+                        <li><button className="text-er-text hover:text-er-primary transition-colors text-sm">Terms of Service</button></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div className="border-t border-gray-800 pt-8 text-center">
+                <p className="text-er-text text-sm mb-2">
+                    &copy; {new Date().getFullYear()} EventRift. All rights reserved.
+                </p>
+                <p className="text-er-text text-sm">
+                    Made with <span className="text-er-primary animate-pulse">❤️</span> for the Kenyan event scene.
+                </p>
+            </div>
         </div>
     </footer>
 );
@@ -170,14 +175,14 @@ const App = () => {
         <BrowserRouter>
             {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
-                <div className="min-h-screen bg-er-dark text-er-light flex flex-col">
+                <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
                     <Header />
                     
                     <main className="flex-grow"> 
                         <Routes>
                             {/* Public Routes */}
                             <Route path="/" element={<HomePage />} />
-                            <Route path="/events" element={<HomePage />} /> {/* Placeholder for Event Browsing */}
+                            <Route path="/events" element={<EventsPage />} />
                             <Route path="/events/:eventId" element={<EventDetailPage />} />
 
                             {/* Auth Routes */}
@@ -193,7 +198,15 @@ const App = () => {
                                 element={<ProtectedRoute element={<OrganizerDashboard />} requiredRole="Organizer" />} 
                             />
                             <Route 
+                                path="/organizer/create-event" 
+                                element={<ProtectedRoute element={<CreateEventForm />} requiredRole="Organizer" />} 
+                            />
+                            <Route 
                                 path="/goer/profile" 
+                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
+                            />
+                            <Route 
+                                path="/goer/dashboard" 
                                 element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
                             />
                             <Route 
