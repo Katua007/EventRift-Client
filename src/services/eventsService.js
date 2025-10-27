@@ -27,6 +27,9 @@ export const eventsService = {
       const response = await api.post('/api/events', eventData);
       return response.data;
     } catch (error) {
+      if (error.isCorsError) {
+        throw { message: 'Connection error: Please contact support. The backend needs CORS configuration.' };
+      }
       throw error.response?.data || { message: 'Failed to create event' };
     }
   },
@@ -60,6 +63,36 @@ export const eventsService = {
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Search failed' };
+    }
+  },
+
+  // Get organizer's events
+  async getOrganizerEvents(organizerId) {
+    try {
+      const response = await api.get(`/api/organizer/${organizerId}/events`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch organizer events' };
+    }
+  },
+
+  // Get event analytics
+  async getEventAnalytics(eventId) {
+    try {
+      const response = await api.get(`/api/events/${eventId}/analytics`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch analytics' };
+    }
+  },
+
+  // Get event reviews
+  async getEventReviews(eventId) {
+    try {
+      const response = await api.get(`/api/events/${eventId}/reviews`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch reviews' };
     }
   }
 };

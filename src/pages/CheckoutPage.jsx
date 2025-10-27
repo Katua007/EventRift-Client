@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 import { eventsService } from '../services/eventsService';
 import { paymentsService } from '../services/paymentsService';
+import { notificationService } from '../services/notificationService';
 import { useAuth } from '../hooks/useAuth';
 
 // Placeholder Data (In a real app, this would be fetched from the BE /events/:id endpoint)
@@ -86,6 +87,18 @@ const CheckoutPage = () => {
             const result = await paymentsService.initiateMpesaPayment(paymentData);
             
             if (result.success) {
+                // Send notification to organizer
+                try {
+                    await notificationService.sendTicketPurchaseNotification(event.id, {
+                        user_id: user.id,
+                        quantity: quantity,
+                        total_amount: totalAmount,
+                        transaction_id: result.transaction_id
+                    });
+                } catch (notifError) {
+                    console.error('Failed to send notification:', notifError);
+                }
+                
                 alert('M-Pesa prompt sent! Check your phone to complete the payment.');
                 navigate(`/payment-status/${result.transaction_id}`);
             } else {
