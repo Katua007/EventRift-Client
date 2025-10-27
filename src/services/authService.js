@@ -17,6 +17,9 @@ export const authService = {
       const response = await api.post('/api/auth/register', userData);
       return response.data;
     } catch (error) {
+      if (error.isCorsError) {
+        throw { message: 'Connection error: Please contact support. The backend needs CORS configuration.' };
+      }
       throw error.response?.data || { message: 'Registration failed' };
     }
   },

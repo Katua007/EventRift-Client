@@ -32,6 +32,13 @@ api.interceptors.response.use(
       localStorage.removeItem('user_data');
       window.location.href = '/login';
     }
+    
+    // Handle CORS errors
+    if (error.code === 'ERR_NETWORK' || error.message.includes('CORS')) {
+      console.error('CORS Error: Backend needs to allow requests from this domain');
+      error.isCorsError = true;
+    }
+    
     return Promise.reject(error);
   }
 );
