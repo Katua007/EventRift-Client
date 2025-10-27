@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, DollarSign, Clock, Star, Share2, Heart, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
@@ -13,8 +13,7 @@ const EventDetailPage = () => {
   const [error, setError] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
 
-  // Mock event data for fallback
-  const mockEvent = {
+  const mockEvent = useMemo(() => ({
     id: eventId,
     title: "AfroBeats Festival 2024",
     description: "The biggest Afrobeats celebration in East Africa featuring top artists from across the continent.",
@@ -42,7 +41,7 @@ const EventDetailPage = () => {
     },
     image: "🎵",
     status: "active"
-  };
+  }), [eventId]);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -64,20 +63,7 @@ const EventDetailPage = () => {
     }
   }, [eventId, mockEvent]);
 
-  const fetchEventDetails = async () => {
-    try {
-      setLoading(true);
-      const response = await eventsService.getEvent(eventId);
-      setEvent(response.event || response);
-    } catch (err) {
-      console.error('Failed to fetch event:', err);
-      setError('Using demo data - Backend connection failed');
-      // Use mock data as fallback
-      setEvent(mockEvent);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleBookTicket = () => {
     if (!isAuthenticated) {

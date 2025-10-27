@@ -34,8 +34,8 @@ const OrganizerDashboard = () => {
           totalRevenue,
           averageRating: averageRating.toFixed(1)
         });
-      } catch (err) {
-        console.error('Failed to fetch organizer data:', err);
+      } catch {
+        console.error('Failed to fetch organizer data');
         setEvents([
           {
             id: 1,
@@ -64,73 +64,33 @@ const OrganizerDashboard = () => {
     }
   }, [user?.id]);
 
-  const fetchOrganizerData = async () => {
-    try {
-      setLoading(true);
-      // Fetch organizer's events
-      const eventsResponse = await eventsService.getOrganizerEvents(user.id);
-      setEvents(eventsResponse.events || []);
-      
-      // Calculate stats
-      const totalEvents = eventsResponse.events?.length || 0;
-      const totalTicketsSold = eventsResponse.events?.reduce((sum, event) => sum + (event.tickets_sold || 0), 0) || 0;
-      const totalRevenue = eventsResponse.events?.reduce((sum, event) => sum + (event.revenue || 0), 0) || 0;
-      const averageRating = eventsResponse.events?.reduce((sum, event) => sum + (event.rating || 0), 0) / totalEvents || 0;
-      
-      setStats({
-        totalEvents,
-        totalTicketsSold,
-        totalRevenue,
-        averageRating: averageRating.toFixed(1)
-      });
-    } catch (error) {
-      console.error('Failed to fetch organizer data:', error);
-      // Use mock data for demo
-      setEvents([
-        {
-          id: 1,
-          title: "Tech Conference 2024",
-          date: "2024-12-20",
-          tickets_sold: 150,
-          max_attendees: 200,
-          revenue: 750000,
-          rating: 4.5,
-          status: "active"
-        }
-      ]);
-      setStats({
-        totalEvents: 1,
-        totalTicketsSold: 150,
-        totalRevenue: 750000,
-        averageRating: 4.5
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleDeleteEvent = async (eventId) => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       try {
         await eventsService.deleteEvent(eventId);
         setEvents(events.filter(event => event.id !== eventId));
-      } catch (error) {
+      } catch {
         alert('Failed to delete event');
       }
     }
   };
 
-  const StatCard = ({ icon: Icon, title, value, color = "text-er-primary" }) => (
-    <div className="card hover:transform hover:scale-105 transition-all duration-300">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-er-text text-sm">{title}</p>
-          <p className={`text-2xl font-bold ${color}`}>{value}</p>
+  const StatCard = ({ icon, title, value, color = "text-er-primary" }) => {
+    const IconComponent = icon;
+    return (
+      <div className="card hover:transform hover:scale-105 transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-er-text text-sm">{title}</p>
+            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          </div>
+          <IconComponent className={`w-8 h-8 ${color}`} />
         </div>
-        <Icon className={`w-8 h-8 ${color}`} />
       </div>
-    </div>
-  );
+    );
+  };
 
   const EventCard = ({ event }) => (
     <div className="card hover:transform hover:scale-105 transition-all duration-300">

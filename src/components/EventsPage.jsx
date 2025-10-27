@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, Search, Filter } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
+import { EventCard } from './EventCard';
 
 const EventsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,87 +15,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fallbackEvents = [
-    {
-      id: 1,
-      title: "AfroBeats Festival 2024",
-      date: "2024-12-15",
-      location: "Nairobi, Kenya",
-      ticket_price: 2500,
-      early_bird_price: 2000,
-      category: "Music",
-      theme: "Festival",
-      attendees: 1200,
-      tickets_sold: 800,
-      image: "🎵",
-      description: "The biggest Afrobeats celebration in East Africa",
-      rating: 4.5,
-      days_of_week: ["Saturday"]
-    },
-    {
-      id: 2,
-      title: "Tech Summit Kenya",
-      date: "2025-01-20",
-      location: "Mombasa, Kenya", 
-      ticket_price: 5000,
-      category: "Technology",
-      theme: "Conference",
-      attendees: 800,
-      tickets_sold: 450,
-      image: "💻",
-      description: "Innovation and technology conference",
-      rating: 4.8,
-      days_of_week: ["Monday", "Tuesday"]
-    },
-    {
-      id: 3,
-      title: "Art Gallery Opening",
-      date: "2024-12-30",
-      location: "Kisumu, Kenya",
-      ticket_price: 1500,
-      category: "Art",
-      theme: "Cultural",
-      attendees: 300,
-      tickets_sold: 150,
-      image: "🎨",
-      description: "Contemporary art exhibition",
-      rating: 4.2,
-      days_of_week: ["Friday"]
-    },
-    {
-      id: 4,
-      title: "Food Festival",
-      date: "2025-02-14",
-      location: "Nakuru, Kenya",
-      ticket_price: 0,
-      category: "Food",
-      theme: "Festival",
-      attendees: 1000,
-      tickets_sold: 600,
-      image: "🍽️",
-      description: "Free food tasting event",
-      rating: 4.6,
-      days_of_week: ["Friday", "Saturday"]
-    },
-    {
-      id: 5,
-      title: "Flash Sale Concert",
-      date: "2024-12-25",
-      location: "Nairobi, Kenya",
-      ticket_price: 3000,
-      early_bird_price: 1500,
-      flash_sale: true,
-      discount_percentage: 50,
-      category: "Music",
-      theme: "Concert",
-      attendees: 2000,
-      tickets_sold: 1800,
-      image: "🎤",
-      description: "Special Christmas concert with 50% off",
-      rating: 4.9,
-      days_of_week: ["Wednesday"]
-    }
-  ];
+
 
   const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion'];
   const themes = ['All', 'Corporate', 'Casual', 'Formal', 'Festival', 'Conference', 'Workshop', 'Networking', 'Cultural'];
@@ -115,6 +36,88 @@ const EventsPage = () => {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   useEffect(() => {
+    const fallbackEvents = [
+      {
+        id: 1,
+        title: "AfroBeats Festival 2024",
+        date: "2024-12-15",
+        location: "Nairobi, Kenya",
+        ticket_price: 2500,
+        early_bird_price: 2000,
+        category: "Music",
+        theme: "Festival",
+        attendees: 1200,
+        tickets_sold: 800,
+        image: "🎵",
+        description: "The biggest Afrobeats celebration in East Africa",
+        rating: 4.5,
+        days_of_week: ["Saturday"]
+      },
+      {
+        id: 2,
+        title: "Tech Summit Kenya",
+        date: "2025-01-20",
+        location: "Mombasa, Kenya", 
+        ticket_price: 5000,
+        category: "Technology",
+        theme: "Conference",
+        attendees: 800,
+        tickets_sold: 450,
+        image: "💻",
+        description: "Innovation and technology conference",
+        rating: 4.8,
+        days_of_week: ["Monday", "Tuesday"]
+      },
+      {
+        id: 3,
+        title: "Art Gallery Opening",
+        date: "2024-12-30",
+        location: "Kisumu, Kenya",
+        ticket_price: 1500,
+        category: "Art",
+        theme: "Cultural",
+        attendees: 300,
+        tickets_sold: 150,
+        image: "🎨",
+        description: "Contemporary art exhibition",
+        rating: 4.2,
+        days_of_week: ["Friday"]
+      },
+      {
+        id: 4,
+        title: "Food Festival",
+        date: "2025-02-14",
+        location: "Nakuru, Kenya",
+        ticket_price: 0,
+        category: "Food",
+        theme: "Festival",
+        attendees: 1000,
+        tickets_sold: 600,
+        image: "🍽️",
+        description: "Free food tasting event",
+        rating: 4.6,
+        days_of_week: ["Friday", "Saturday"]
+      },
+      {
+        id: 5,
+        title: "Flash Sale Concert",
+        date: "2024-12-25",
+        location: "Nairobi, Kenya",
+        ticket_price: 3000,
+        early_bird_price: 1500,
+        flash_sale: true,
+        discount_percentage: 50,
+        category: "Music",
+        theme: "Concert",
+        attendees: 2000,
+        tickets_sold: 1800,
+        image: "🎤",
+        description: "Special Christmas concert with 50% off",
+        rating: 4.9,
+        days_of_week: ["Wednesday"]
+      }
+    ];
+
     const fetchEvents = async () => {
       try {
         setLoading(true);
@@ -131,7 +134,7 @@ const EventsPage = () => {
     };
 
     fetchEvents();
-  }, [fallbackEvents]);
+  }, []);
 
   const filteredAndSortedEvents = events
     .filter(event => {
@@ -307,47 +310,14 @@ const EventsPage = () => {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredAndSortedEvents.map((event) => (
-                <div 
-                  key={event.id} 
-                  className="card group hover:transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="relative mb-4 overflow-hidden rounded-lg bg-gradient-to-br from-er-primary/20 to-er-secondary/20 h-40 flex items-center justify-center">
-                    <div className="absolute top-3 left-3 bg-er-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
-                      {event.category}
-                    </div>
-                    <div className="text-4xl">{event.image || '🎉'}</div>
-                  </div>
-                  
-                  <h3 className="font-heading text-lg font-semibold text-er-light mb-2">
-                    {event.title}
-                  </h3>
-                  <p className="text-er-text text-sm mb-3">{event.description}</p>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-er-text text-sm">
-                      <Calendar className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.date}
-                    </div>
-                    <div className="flex items-center text-er-text text-sm">
-                      <MapPin className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.location}
-                    </div>
-                    <div className="flex items-center text-er-text text-sm">
-                      <Users className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.attendees} attending
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-er-primary">{event.price}</span>
-                    <Link 
-                      to={`/events/${event.id}`}
-                      className="bg-er-primary hover:bg-pink-600 text-white px-3 py-2 rounded-lg font-semibold transition-colors text-sm"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
+                <Link key={event.id} to={`/events/${event.id}`}>
+                  <EventCard
+                    image={event.image || '🎉'}
+                    title={event.title}
+                    date={event.date}
+                    location={event.location}
+                  />
+                </Link>
               ))}
             </div>
           )}
