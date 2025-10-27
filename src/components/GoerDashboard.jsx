@@ -20,8 +20,49 @@ const GoerDashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchGoerData();
-  }, []);
+    const fetchGoerData = async () => {
+      try {
+        setLoading(true);
+        const response = await eventsService.getUserTickets(user.id);
+        setTickets(response.tickets || []);
+        
+        const totalTickets = response.tickets?.length || 0;
+        const now = new Date();
+        const upcomingEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) > now).length || 0;
+        const attendedEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) < now).length || 0;
+        const totalSpent = response.tickets?.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0) || 0;
+        
+        setStats({ totalTickets, upcomingEvents, attendedEvents, totalSpent });
+      } catch (err) {
+        console.error('Failed to fetch goer data:', err);
+        setError('Using demo data - Backend connection failed');
+        const mockTickets = [
+          {
+            id: 1,
+            event: {
+              id: 1,
+              title: "AfroBeats Festival 2024",
+              date: "2024-12-15",
+              venue_name: "Uhuru Gardens",
+              image: "🎵"
+            },
+            quantity: 2,
+            total_amount: 5000,
+            status: "confirmed",
+            purchase_date: "2024-11-01"
+          }
+        ];
+        setTickets(mockTickets);
+        setStats({ totalTickets: 1, upcomingEvents: 1, attendedEvents: 0, totalSpent: 5000 });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.id) {
+      fetchGoerData();
+    }
+  }, [user?.id]);
 
   const fetchGoerData = async () => {
     try {
@@ -75,7 +116,7 @@ const GoerDashboard = () => {
       setReviewModal(null);
       setReviewData({ rating: 5, comment: '' });
       alert('Review submitted successfully!');
-    } catch (error) {
+    } catch {
       alert('Failed to submit review');
     }
   };

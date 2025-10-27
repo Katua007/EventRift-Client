@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
                     const profile = await authService.getProfile();
                     setUser(profile.user || JSON.parse(userData));
                     setIsAuthenticated(true);
-                } catch (error) {
+                } catch {
                     // Token invalid, clear storage
                     localStorage.removeItem('jwt_token');
                     localStorage.removeItem('user_data');

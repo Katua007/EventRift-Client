@@ -18,7 +18,7 @@ const mockEventData = {
 };
 
 const CheckoutPage = () => {
-    const { eventId: _eventId } = useParams();
+    const { eventId } = useParams();
     const navigate = useNavigate();
     const { 
         register, 
@@ -183,8 +183,11 @@ const CheckoutPage = () => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    const currentQty = parseInt(watch('quantity') || 1);
-                                    if (currentQty > 1) setValue('quantity', currentQty - 1);
+                                    const currentQty = parseInt(quantity || 1);
+                                    if (currentQty > 1) {
+                                        const newQty = currentQty - 1;
+                                        document.getElementById('quantity').value = newQty;
+                                    }
                                 }}
                                 className="w-10 h-10 bg-er-primary text-white rounded-full font-bold hover:bg-pink-600 transition-colors"
                             >
@@ -205,8 +208,11 @@ const CheckoutPage = () => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    const currentQty = parseInt(watch('quantity') || 1);
-                                    if (currentQty < 10) setValue('quantity', currentQty + 1);
+                                    const currentQty = parseInt(quantity || 1);
+                                    if (currentQty < 10) {
+                                        const newQty = currentQty + 1;
+                                        document.getElementById('quantity').value = newQty;
+                                    }
                                 }}
                                 className="w-10 h-10 bg-er-primary text-white rounded-full font-bold hover:bg-pink-600 transition-colors"
                             >

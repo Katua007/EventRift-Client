@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 const EventDetailPage = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,8 +45,24 @@ const EventDetailPage = () => {
   };
 
   useEffect(() => {
-    fetchEventDetails();
-  }, [eventId]);
+    const fetchEventDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await eventsService.getEvent(eventId);
+        setEvent(response.event || response);
+      } catch (err) {
+        console.error('Failed to fetch event:', err);
+        setError('Using demo data - Backend connection failed');
+        setEvent(mockEvent);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (eventId) {
+      fetchEventDetails();
+    }
+  }, [eventId, mockEvent]);
 
   const fetchEventDetails = async () => {
     try {
