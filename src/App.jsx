@@ -8,10 +8,9 @@ import SignupPage from './pages/SignupPage';
 import CheckoutPage from './pages/CheckoutPage'; 
 import HomePage from './components/HomePage';
 import EventsPage from './components/EventsPage';
+import EventDetailPage from './components/EventDetailPage';
 import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
-
-const EventDetailPage = () => <div className="text-center pt-48 text-2xl">Event Detail Page</div>;
 const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
 
 // Component for Protected Routes (Client-Side RBAC)
