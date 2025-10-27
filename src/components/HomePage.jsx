@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowRight, Play, X } from 'lucide-react';
 import { AboutUs } from './AboutUs';
+import { EventCard } from './EventCard';
 
 const HomePage = () => {
   const [showDemo, setShowDemo] = useState(false);
@@ -133,44 +134,14 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredEvents.map((event) => (
-              <div key={event.id} className="card group hover:transform hover:scale-105 transition-all duration-300">
-                <div className="relative mb-4 overflow-hidden rounded-lg bg-gradient-to-br from-er-primary/20 to-er-secondary/20 h-48 flex items-center justify-center group-hover:from-er-primary/30 group-hover:to-er-secondary/30 transition-all duration-300">
-                  <div className="absolute top-4 left-4 bg-er-primary text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
-                    {event.category}
-                  </div>
-                  <div className="text-6xl animate-bounce">{event.image}</div>
-                </div>
-                
-                <h3 className="font-heading text-xl font-semibold text-er-light mb-2 group-hover:text-er-primary transition-colors">
-                  {event.title}
-                </h3>
-                <p className="text-er-text text-sm mb-3">{event.description}</p>
-                
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-er-text">
-                    <Calendar className="w-4 h-4 mr-2 text-er-primary" />
-                    {event.date}
-                  </div>
-                  <div className="flex items-center text-er-text">
-                    <MapPin className="w-4 h-4 mr-2 text-er-primary" />
-                    {event.location}
-                  </div>
-                  <div className="flex items-center text-er-text">
-                    <Users className="w-4 h-4 mr-2 text-er-primary" />
-                    {event.attendees} attending
-                  </div>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-er-primary">{event.price}</span>
-                  <Link 
-                    to={`/events/${event.id}`}
-                    className="bg-er-primary hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </div>
+              <Link key={event.id} to={`/events/${event.id}`}>
+                <EventCard
+                  image={event.image}
+                  title={event.title}
+                  date={event.date}
+                  location={event.location}
+                />
+              </Link>
             ))}
           </div>
         </div>
