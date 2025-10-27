@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowRight, Play, X } from 'lucide-react';
 import { AboutUs } from './AboutUs';
 import { PhotoGallery } from './PhotoGallery';
 import { Hero } from './Hero';
+import { WhatsGoingOn } from './WhatsGoingOn';
 
 const HomePage = () => {
   const [showDemo, setShowDemo] = useState(false);
+  const navigate = useNavigate();
+  
+  const handleEventClick = (eventId) => {
+    navigate(`/events/${eventId}`);
+  };
   const featuredEvents = [
     {
       id: 1,
@@ -137,6 +143,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* What's Going On Section */}
+      <WhatsGoingOn onEventClick={handleEventClick} />
 
       {/* How It Works */}
       <section className="py-20 px-6 bg-er-gray">
