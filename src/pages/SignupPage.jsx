@@ -41,7 +41,7 @@ const SignupPage = () => {
       } else {
         setApiError(result.error);
       }
-    } catch (error) {
+    } catch {
       setApiError('Network error. Could not connect to the server.');
     } finally {
       setLoading(false);

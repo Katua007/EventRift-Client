@@ -27,7 +27,7 @@ export const calendarService = {
       window.URL.revokeObjectURL(url);
 
       return { success: true, message: 'Event added to calendar' };
-    } catch (error) {
+    } catch {
       throw { message: 'Failed to add event to calendar' };
     }
   },
