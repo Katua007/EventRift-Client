@@ -15,87 +15,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fallbackEvents = [
-    {
-      id: 1,
-      title: "AfroBeats Festival 2024",
-      date: "2024-12-15",
-      location: "Nairobi, Kenya",
-      ticket_price: 2500,
-      early_bird_price: 2000,
-      category: "Music",
-      theme: "Festival",
-      attendees: 1200,
-      tickets_sold: 800,
-      image: "🎵",
-      description: "The biggest Afrobeats celebration in East Africa",
-      rating: 4.5,
-      days_of_week: ["Saturday"]
-    },
-    {
-      id: 2,
-      title: "Tech Summit Kenya",
-      date: "2025-01-20",
-      location: "Mombasa, Kenya", 
-      ticket_price: 5000,
-      category: "Technology",
-      theme: "Conference",
-      attendees: 800,
-      tickets_sold: 450,
-      image: "💻",
-      description: "Innovation and technology conference",
-      rating: 4.8,
-      days_of_week: ["Monday", "Tuesday"]
-    },
-    {
-      id: 3,
-      title: "Art Gallery Opening",
-      date: "2024-12-30",
-      location: "Kisumu, Kenya",
-      ticket_price: 1500,
-      category: "Art",
-      theme: "Cultural",
-      attendees: 300,
-      tickets_sold: 150,
-      image: "🎨",
-      description: "Contemporary art exhibition",
-      rating: 4.2,
-      days_of_week: ["Friday"]
-    },
-    {
-      id: 4,
-      title: "Food Festival",
-      date: "2025-02-14",
-      location: "Nakuru, Kenya",
-      ticket_price: 0,
-      category: "Food",
-      theme: "Festival",
-      attendees: 1000,
-      tickets_sold: 600,
-      image: "🍽️",
-      description: "Free food tasting event",
-      rating: 4.6,
-      days_of_week: ["Friday", "Saturday"]
-    },
-    {
-      id: 5,
-      title: "Flash Sale Concert",
-      date: "2024-12-25",
-      location: "Nairobi, Kenya",
-      ticket_price: 3000,
-      early_bird_price: 1500,
-      flash_sale: true,
-      discount_percentage: 50,
-      category: "Music",
-      theme: "Concert",
-      attendees: 2000,
-      tickets_sold: 1800,
-      image: "🎤",
-      description: "Special Christmas concert with 50% off",
-      rating: 4.9,
-      days_of_week: ["Wednesday"]
-    }
-  ];
+
 
   const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion'];
   const themes = ['All', 'Corporate', 'Casual', 'Formal', 'Festival', 'Conference', 'Workshop', 'Networking', 'Cultural'];
@@ -116,6 +36,88 @@ const EventsPage = () => {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   useEffect(() => {
+    const fallbackEvents = [
+      {
+        id: 1,
+        title: "AfroBeats Festival 2024",
+        date: "2024-12-15",
+        location: "Nairobi, Kenya",
+        ticket_price: 2500,
+        early_bird_price: 2000,
+        category: "Music",
+        theme: "Festival",
+        attendees: 1200,
+        tickets_sold: 800,
+        image: "🎵",
+        description: "The biggest Afrobeats celebration in East Africa",
+        rating: 4.5,
+        days_of_week: ["Saturday"]
+      },
+      {
+        id: 2,
+        title: "Tech Summit Kenya",
+        date: "2025-01-20",
+        location: "Mombasa, Kenya", 
+        ticket_price: 5000,
+        category: "Technology",
+        theme: "Conference",
+        attendees: 800,
+        tickets_sold: 450,
+        image: "💻",
+        description: "Innovation and technology conference",
+        rating: 4.8,
+        days_of_week: ["Monday", "Tuesday"]
+      },
+      {
+        id: 3,
+        title: "Art Gallery Opening",
+        date: "2024-12-30",
+        location: "Kisumu, Kenya",
+        ticket_price: 1500,
+        category: "Art",
+        theme: "Cultural",
+        attendees: 300,
+        tickets_sold: 150,
+        image: "🎨",
+        description: "Contemporary art exhibition",
+        rating: 4.2,
+        days_of_week: ["Friday"]
+      },
+      {
+        id: 4,
+        title: "Food Festival",
+        date: "2025-02-14",
+        location: "Nakuru, Kenya",
+        ticket_price: 0,
+        category: "Food",
+        theme: "Festival",
+        attendees: 1000,
+        tickets_sold: 600,
+        image: "🍽️",
+        description: "Free food tasting event",
+        rating: 4.6,
+        days_of_week: ["Friday", "Saturday"]
+      },
+      {
+        id: 5,
+        title: "Flash Sale Concert",
+        date: "2024-12-25",
+        location: "Nairobi, Kenya",
+        ticket_price: 3000,
+        early_bird_price: 1500,
+        flash_sale: true,
+        discount_percentage: 50,
+        category: "Music",
+        theme: "Concert",
+        attendees: 2000,
+        tickets_sold: 1800,
+        image: "🎤",
+        description: "Special Christmas concert with 50% off",
+        rating: 4.9,
+        days_of_week: ["Wednesday"]
+      }
+    ];
+
     const fetchEvents = async () => {
       try {
         setLoading(true);
@@ -132,7 +134,7 @@ const EventsPage = () => {
     };
 
     fetchEvents();
-  }, [fallbackEvents]);
+  }, []);
 
   const filteredAndSortedEvents = events
     .filter(event => {

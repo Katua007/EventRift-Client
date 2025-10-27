@@ -187,6 +187,8 @@ const HomePage = () => {
         </div>
       </section>
 
+
+
       {/* About Section */}
       <AboutUs />
 
