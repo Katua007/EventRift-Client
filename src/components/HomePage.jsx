@@ -5,6 +5,7 @@ import { AboutUs } from './AboutUs';
 import { PhotoGallery } from './PhotoGallery';
 import { Hero } from './Hero';
 import { WhatsGoingOn } from './WhatsGoingOn';
+import { StayConnected } from './StayConnected';
 
 const HomePage = () => {
   const [showDemo, setShowDemo] = useState(false);
@@ -192,6 +193,9 @@ const HomePage = () => {
 
       {/* About Section */}
       <AboutUs />
+
+      {/* Stay Connected Section */}
+      <StayConnected />
 
       {/* CTA Section */}
       <section className="py-20 px-6">
