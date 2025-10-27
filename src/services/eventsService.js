@@ -1,141 +1,73 @@
-import api from './api';
-
+// Mock events service for demo purposes
 export const eventsService = {
-  // Get all events
-  async getAllEvents(params = {}) {
-    try {
-      const response = await api.get('/api/events', { params });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch events' };
-    }
+  // Goer services
+  getUserTickets: async (userId) => {
+    // Mock data for demo
+    return {
+      tickets: [
+        {
+          id: 1,
+          event: {
+            id: 1,
+            title: "AfroBeats Festival 2024",
+            date: "2024-12-15",
+            venue_name: "Uhuru Gardens",
+            image: "🎵"
+          },
+          quantity: 2,
+          total_amount: 5000,
+          status: "confirmed",
+          purchase_date: "2024-11-01"
+        }
+      ]
+    };
   },
 
-  // Get single event
-  async getEvent(eventId) {
-    try {
-      const response = await api.get(`/api/events/${eventId}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch event' };
-    }
+  submitReview: async (eventId, reviewData) => {
+    // Mock review submission
+    console.log('Review submitted:', { eventId, reviewData });
+    return { success: true };
   },
 
-  // Create event (organizers only)
-  async createEvent(eventData) {
-    try {
-      const response = await api.post('/api/events', eventData);
-      return response.data;
-    } catch (error) {
-      if (error.isCorsError) {
-        throw { message: 'Connection error: Please contact support. The backend needs CORS configuration.' };
-      }
-      throw error.response?.data || { message: 'Failed to create event' };
-    }
+  // Organizer services
+  getOrganizerEvents: async (organizerId) => {
+    // Mock data for demo
+    return {
+      events: [
+        {
+          id: 1,
+          title: "Tech Conference 2024",
+          date: "2024-12-20",
+          tickets_sold: 150,
+          max_attendees: 200,
+          revenue: 750000,
+          rating: 4.5,
+          status: "active"
+        }
+      ]
+    };
   },
 
-  // Update event
-  async updateEvent(eventId, eventData) {
-    try {
-      const response = await api.put(`/api/events/${eventId}`, eventData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to update event' };
-    }
+  deleteEvent: async (eventId) => {
+    // Mock delete
+    console.log('Event deleted:', eventId);
+    return { success: true };
   },
 
-  // Delete event
-  async deleteEvent(eventId) {
-    try {
-      const response = await api.delete(`/api/events/${eventId}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to delete event' };
-    }
-  },
-
-  // Search events with advanced filters
-  async searchEvents(query, filters = {}) {
-    try {
-      const response = await api.get('/api/events/search', { 
-        params: { q: query, ...filters } 
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Search failed' };
-    }
-  },
-
-  // Get events with advanced filtering
-  async getEventsWithFilters(filters) {
-    try {
-      const response = await api.get('/api/events/filter', { params: filters });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch filtered events' };
-    }
-  },
-
-  // Get organizer's events
-  async getOrganizerEvents(organizerId) {
-    try {
-      const response = await api.get(`/api/organizer/${organizerId}/events`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch organizer events' };
-    }
-  },
-
-  // Get event analytics
-  async getEventAnalytics(eventId) {
-    try {
-      const response = await api.get(`/api/events/${eventId}/analytics`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch analytics' };
-    }
-  },
-
-  // Get event reviews
-  async getEventReviews(eventId) {
-    try {
-      const response = await api.get(`/api/events/${eventId}/reviews`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch reviews' };
-    }
-  },
-
-  // Get user's tickets
-  async getUserTickets(userId) {
-    try {
-      const response = await api.get(`/api/users/${userId}/tickets`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch user tickets' };
-    }
-  },
-
-  // Submit event review
-  async submitReview(eventId, reviewData) {
-    try {
-      const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);
-      return response.data;
-    } catch (error) {
-      if (error.isCorsError) {
-        throw { message: 'Connection error: Please contact support.' };
-      }
-      throw error.response?.data || { message: 'Failed to submit review' };
-    }
-  },
-
-  // Get user's event statistics
-  async getUserEventStats(userId) {
-    try {
-      const response = await api.get(`/api/users/${userId}/event-stats`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch user stats' };
-    }
+  // General event services
+  getEvents: async () => {
+    // Mock events data
+    return {
+      events: [
+        {
+          id: 1,
+          title: "AfroBeats Festival 2024",
+          date: "2024-12-15",
+          location: "Nairobi, Kenya",
+          category: "Music",
+          image: "🎵"
+        }
+      ]
+    };
   }
 };

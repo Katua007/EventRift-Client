@@ -80,7 +80,11 @@ export function Header() {
             {isAuthenticated ? (
               <>
                 <Link 
-                  to={user?.role === 'Organizer' ? '/organizer/dashboard' : '/goer/profile'}
+                  to={
+                    user?.role === 'Organizer' ? '/organizer/dashboard' :
+                    user?.role === 'Vendor' ? '/vendor/dashboard' :
+                    '/goer/dashboard'
+                  }
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   Dashboard
@@ -141,7 +145,11 @@ export function Header() {
               {isAuthenticated ? (
                 <>
                   <Link 
-                    to={user?.role === 'Organizer' ? '/organizer/dashboard' : '/goer/profile'}
+                    to={
+                      user?.role === 'Organizer' ? '/organizer/dashboard' :
+                      user?.role === 'Vendor' ? '/vendor/dashboard' :
+                      '/goer/dashboard'
+                    }
                     onClick={() => setMobileMenuOpen(false)}
                     className="text-white/80 hover:text-white transition-colors"
                   >
