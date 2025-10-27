@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, ShoppingCart, Home } from 'lucide-react'; 
+import React from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'; 
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
@@ -13,6 +12,7 @@ import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
 import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 
 
 // Component for Protected Routes (Client-Side RBAC)
@@ -41,67 +41,7 @@ const ProtectedRoute = ({ element, requiredRole }) => {
 };
 
 
-const Header = () => {
-    const { isAuthenticated, user, logout } = useAuth();
-    const [isOpen, setIsOpen] = useState(false);
-    
-    const navItems = [
-        { name: 'Home', path: '/', icon: Home },
-        { name: 'Events', path: '/events', icon: ShoppingCart },
-        ...(isAuthenticated ? [] : [
-            { name: 'Login', path: '/login', icon: User },
-            { name: 'Signup', path: '/signup', icon: LogOut }, // LogOut icon used metaphorically for starting new journey
-        ]),
-        ...(user?.role === 'Organizer' ? [{ name: 'Dashboard', path: '/organizer/dashboard', icon: User }] : []),
-        ...(user?.role === 'Goer' ? [{ name: 'My Profile', path: '/goer/profile', icon: User }] : []),
-        ...(user?.role === 'Vendor' ? [{ name: 'Vendor Setup', path: '/vendor/setup', icon: User }] : []),
-    ];
 
-    return (
-        <header className="fixed w-full top-0 z-50 bg-er-dark/95 backdrop-blur-sm shadow-lg border-b border-gray-800">
-            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                <Link to="/" className="font-heading text-3xl font-bold text-er-primary hover:text-pink-400 transition">EventRift</Link>
-                
-                {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center space-x-6">
-                    {navItems.map(item => (
-                        <Link key={item.name} to={item.path} className="text-er-text hover:text-er-primary transition font-medium flex items-center space-x-1">
-                            <item.icon className="w-4 h-4"/>
-                            <span>{item.name}</span>
-                        </Link>
-                    ))}
-                    {isAuthenticated && (
-                        <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition flex items-center space-x-1">
-                            <LogOut className="w-4 h-4"/>
-                            <span>Logout ({user.username})</span>
-                        </button>
-                    )}
-                </nav>
-
-                {/* Mobile Menu Button */}
-                <button className="md:hidden text-er-text" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
-            </div>
-
-            {/* Mobile Dropdown */}
-            <div className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
-                <nav className="flex flex-col p-4 space-y-2 bg-er-gray">
-                    {navItems.map(item => (
-                        <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className="text-er-text hover:text-er-primary transition font-medium py-2 border-b border-gray-800">
-                            {item.name}
-                        </Link>
-                    ))}
-                    {isAuthenticated && (
-                        <button onClick={() => { logout(); setIsOpen(false); }} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition mt-2">
-                            Logout ({user.username})
-                        </button>
-                    )}
-                </nav>
-            </div>
-        </header>
-    );
-};
 
 
 
