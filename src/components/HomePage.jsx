@@ -147,6 +147,8 @@ const HomePage = () => {
         </div>
       </section>
 
+
+
       {/* How It Works */}
       <section className="py-20 px-6 bg-er-gray">
         <div className="max-w-7xl mx-auto">
@@ -191,6 +193,8 @@ const HomePage = () => {
 
       {/* About Section */}
       <AboutUs />
+
+
 
       {/* CTA Section */}
       <section className="py-20 px-6">
