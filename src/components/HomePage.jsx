@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowRight, Play, X } from 'lucide-react';
+import { AboutUs } from './AboutUs';
 
 const HomePage = () => {
   const [showDemo, setShowDemo] = useState(false);
@@ -216,53 +217,7 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-er-primary/10 to-er-secondary/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-er-light mb-6">
-              About EventRift
-            </h2>
-            <p className="text-xl text-er-text max-w-3xl mx-auto">
-              We're revolutionizing how Kenyans discover, attend, and organize events. 
-              From intimate gatherings to massive festivals, EventRift connects communities through unforgettable experiences.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-er-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-er-primary/30 transition-all duration-300 group-hover:scale-110">
-                <span className="text-3xl">🎆</span>
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-er-light mb-2">500+ Events</h3>
-              <p className="text-er-text text-sm">Curated experiences across Kenya</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-er-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-er-secondary/30 transition-all duration-300 group-hover:scale-110">
-                <span className="text-3xl">👥</span>
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-er-light mb-2">10K+ Users</h3>
-              <p className="text-er-text text-sm">Active community members</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-er-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-er-accent/30 transition-all duration-300 group-hover:scale-110">
-                <span className="text-3xl">🏢</span>
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-er-light mb-2">50+ Cities</h3>
-              <p className="text-er-text text-sm">Nationwide coverage</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-er-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-er-primary/30 transition-all duration-300 group-hover:scale-110">
-                <span className="text-3xl">💳</span>
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-er-light mb-2">M-Pesa Ready</h3>
-              <p className="text-er-text text-sm">Seamless mobile payments</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutUs />
 
       {/* CTA Section */}
       <section className="py-20 px-6">
