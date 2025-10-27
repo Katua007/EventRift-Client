@@ -11,6 +11,7 @@ import EventDetailPage from './components/EventDetailPage';
 import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
+import SinglePageApp from './components/SinglePageApp';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 // Component for Protected Routes (Client-Side RBAC)
@@ -58,6 +59,7 @@ const App = () => {
                         <Routes>
                             {/* Public Routes */}
                             <Route path="/" element={<HomePage />} />
+                            <Route path="/spa" element={<SinglePageApp />} />
                             <Route path="/events" element={<EventsPage />} />
                             <Route path="/events/:eventId" element={<EventDetailPage />} />
 
