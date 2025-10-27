@@ -72,27 +72,27 @@ const App = () => {
                             {/* Protected Routes (Require Authentication and Role) */}
                             <Route 
                                 path="/organizer/dashboard" 
-                                element={<ProtectedRoute element={<OrganizerDashboard />} requiredRole="Organizer" />} 
+                                element={<ProtectedRoute element={<OrganizerDashboard />} />} 
                             />
                             <Route 
                                 path="/organizer/create-event" 
-                                element={<ProtectedRoute element={<CreateEventForm />} requiredRole="Organizer" />} 
+                                element={<ProtectedRoute element={<CreateEventForm />} />} 
                             />
                             <Route 
                                 path="/goer/profile" 
-                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
+                                element={<ProtectedRoute element={<GoerDashboard />} />} 
                             />
                             <Route 
                                 path="/goer/dashboard" 
-                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
+                                element={<ProtectedRoute element={<GoerDashboard />} />} 
                             />
                             <Route 
                                 path="/vendor/setup" 
-                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="Vendor" />} 
+                                element={<ProtectedRoute element={<VendorDashboard />} />} 
                             />
                             <Route 
                                 path="/vendor/dashboard" 
-                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="Vendor" />} 
+                                element={<ProtectedRoute element={<VendorDashboard />} />} 
                             />
                             
                             {/* Catch-all/404 Page */}

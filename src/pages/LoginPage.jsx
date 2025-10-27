@@ -47,6 +47,14 @@ const LoginPage = () => {
       <div className="w-full max-w-md p-8 bg-er-gray rounded-xl shadow-2xl border border-gray-800">
         <h2 className="font-heading text-3xl font-bold text-er-light mb-6 text-center">Log In to EventRift</h2>
         
+        {/* Demo Credentials */}
+        <div className="bg-blue-900/30 p-3 rounded mb-4 text-center text-sm">
+          <p className="text-blue-300 font-semibold mb-2">Demo Credentials:</p>
+          <p className="text-blue-200">Goer: goer@test.com / password</p>
+          <p className="text-blue-200">Organizer: organizer@test.com / password</p>
+          <p className="text-blue-200">Vendor: vendor@test.com / password</p>
+        </div>
+        
         {apiError && <p className="text-red-500 bg-red-900/30 p-3 rounded mb-4 text-center">{apiError}</p>} 
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

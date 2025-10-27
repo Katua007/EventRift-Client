@@ -1,48 +1,52 @@
-import api from './api';
-
+// Mock auth service for demo purposes
 export const authService = {
-  // Login user
-  async login(credentials) {
-    try {
-      const response = await api.post('/api/auth/login', credentials);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Login failed' };
+  login: async (credentials) => {
+    // Mock login - simulate different user roles
+    const { email, password } = credentials;
+    
+    // Mock users for demo
+    const mockUsers = {
+      'goer@test.com': { id: 1, username: 'John Doe', email: 'goer@test.com', role: 'Goer' },
+      'organizer@test.com': { id: 2, username: 'Jane Smith', email: 'organizer@test.com', role: 'Organizer' },
+      'vendor@test.com': { id: 3, username: 'Mike Johnson', email: 'vendor@test.com', role: 'Vendor' }
+    };
+
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const user = mockUsers[email];
+    if (user && password === 'password') {
+      return {
+        token: 'mock-jwt-token-' + Date.now(),
+        user
+      };
     }
+    
+    throw new Error('Invalid credentials');
   },
 
-  // Register user
-  async register(userData) {
-    try {
-      const response = await api.post('/api/auth/register', userData);
-      return response.data;
-    } catch (error) {
-      if (error.isCorsError) {
-        throw { message: 'Connection error: Please contact support. The backend needs CORS configuration.' };
-      }
-      throw error.response?.data || { message: 'Registration failed' };
-    }
+  register: async (userData) => {
+    // Mock registration
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return {
+      message: 'Registration successful! Please login with your credentials.'
+    };
   },
 
-  // Logout user
-  async logout() {
-    try {
-      await api.post('/api/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_data');
-    }
+  logout: async () => {
+    // Mock logout
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_data');
+    return { success: true };
   },
 
-  // Get current user profile
-  async getProfile() {
-    try {
-      const response = await api.get('/api/auth/profile');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to get profile' };
+  getProfile: async () => {
+    // Mock profile fetch
+    const userData = localStorage.getItem('user_data');
+    if (userData) {
+      return { user: JSON.parse(userData) };
     }
+    throw new Error('No user data found');
   }
 };
