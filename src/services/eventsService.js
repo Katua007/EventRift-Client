@@ -54,15 +54,25 @@ export const eventsService = {
     }
   },
 
-  // Search events
-  async searchEvents(query) {
+  // Search events with advanced filters
+  async searchEvents(query, filters = {}) {
     try {
       const response = await api.get('/api/events/search', { 
-        params: { q: query } 
+        params: { q: query, ...filters } 
       });
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Search failed' };
+    }
+  },
+
+  // Get events with advanced filtering
+  async getEventsWithFilters(filters) {
+    try {
+      const response = await api.get('/api/events/filter', { params: filters });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch filtered events' };
     }
   },
 
@@ -93,6 +103,39 @@ export const eventsService = {
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to fetch reviews' };
+    }
+  },
+
+  // Get user's tickets
+  async getUserTickets(userId) {
+    try {
+      const response = await api.get(`/api/users/${userId}/tickets`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch user tickets' };
+    }
+  },
+
+  // Submit event review
+  async submitReview(eventId, reviewData) {
+    try {
+      const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);
+      return response.data;
+    } catch (error) {
+      if (error.isCorsError) {
+        throw { message: 'Connection error: Please contact support.' };
+      }
+      throw error.response?.data || { message: 'Failed to submit review' };
+    }
+  },
+
+  // Get user's event statistics
+  async getUserEventStats(userId) {
+    try {
+      const response = await api.get(`/api/users/${userId}/event-stats`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch user stats' };
     }
   }
 };

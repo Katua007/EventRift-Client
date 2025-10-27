@@ -6,6 +6,10 @@ import { eventsService } from '../services/eventsService';
 const EventsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedTheme, setSelectedTheme] = useState('All');
+  const [sortBy, setSortBy] = useState('date');
+  const [filterBy, setFilterBy] = useState('all');
+  const [selectedDays, setSelectedDays] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +39,23 @@ const EventsPage = () => {
     }
   ];
 
-  const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports'];
+  const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion'];
+  const themes = ['All', 'Corporate', 'Casual', 'Formal', 'Festival', 'Conference', 'Workshop', 'Networking', 'Cultural'];
+  const sortOptions = [
+    { value: 'date', label: 'Date' },
+    { value: 'popularity', label: 'Popularity' },
+    { value: 'price_low', label: 'Price: Low to High' },
+    { value: 'price_high', label: 'Price: High to Low' },
+    { value: 'rating', label: 'Rating' }
+  ];
+  const filterOptions = [
+    { value: 'all', label: 'All Events' },
+    { value: 'upcoming', label: 'Upcoming' },
+    { value: 'offers', label: 'Special Offers' },
+    { value: 'flash_sales', label: 'Flash Sales' },
+    { value: 'free', label: 'Free Events' }
+  ];
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -56,12 +76,46 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
-  const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.location?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredAndSortedEvents = events
+    .filter(event => {
+      const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           event.location?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
+      const matchesTheme = selectedTheme === 'All' || event.theme === selectedTheme;
+      
+      // Filter by type
+      let matchesFilter = true;
+      if (filterBy === 'upcoming') {
+        matchesFilter = new Date(event.date) > new Date();
+      } else if (filterBy === 'offers') {
+        matchesFilter = event.early_bird_price && event.early_bird_price < event.ticket_price;
+      } else if (filterBy === 'flash_sales') {
+        matchesFilter = event.flash_sale || (event.discount_percentage && event.discount_percentage > 20);
+      } else if (filterBy === 'free') {
+        matchesFilter = event.ticket_price === 0;
+      }
+      
+      // Filter by days of week
+      const matchesDays = selectedDays.length === 0 || 
+        selectedDays.some(day => event.days_of_week?.includes(day));
+      
+      return matchesSearch && matchesCategory && matchesTheme && matchesFilter && matchesDays;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'popularity':
+          return (b.tickets_sold || 0) - (a.tickets_sold || 0);
+        case 'price_low':
+          return (a.ticket_price || 0) - (b.ticket_price || 0);
+        case 'price_high':
+          return (b.ticket_price || 0) - (a.ticket_price || 0);
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'date':
+        default:
+          return new Date(a.date) - new Date(b.date);
+      }
+    });
 
   return (
     <div className="min-h-screen bg-er-dark pt-20">
@@ -93,7 +147,8 @@ const EventsPage = () => {
             <Filter className="text-er-primary w-5 h-5" />
             <span className="text-er-light font-semibold">Categories:</span>
           </div>
-          <div className="flex flex-wrap gap-3">
+          {/* Categories */}
+          <div className="flex flex-wrap gap-3 mb-4">
             {categories.map(category => (
               <button
                 key={category}
@@ -108,6 +163,62 @@ const EventsPage = () => {
               </button>
             ))}
           </div>
+          
+          {/* Advanced Filters */}
+          <div className="grid md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-er-light font-semibold mb-2">Theme</label>
+              <select
+                value={selectedTheme}
+                onChange={(e) => setSelectedTheme(e.target.value)}
+                className="w-full p-2 bg-er-dark border border-gray-700 rounded-lg text-er-light"
+              >
+                {themes.map(theme => (
+                  <option key={theme} value={theme}>{theme}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-er-light font-semibold mb-2">Sort By</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full p-2 bg-er-dark border border-gray-700 rounded-lg text-er-light"
+              >
+                {sortOptions.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-er-light font-semibold mb-2">Filter</label>
+              <select
+                value={filterBy}
+                onChange={(e) => setFilterBy(e.target.value)}
+                className="w-full p-2 bg-er-dark border border-gray-700 rounded-lg text-er-light"
+              >
+                {filterOptions.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-er-light font-semibold mb-2">Days</label>
+              <select
+                multiple
+                value={selectedDays}
+                onChange={(e) => setSelectedDays(Array.from(e.target.selectedOptions, option => option.value))}
+                className="w-full p-2 bg-er-dark border border-gray-700 rounded-lg text-er-light"
+              >
+                {daysOfWeek.map(day => (
+                  <option key={day} value={day}>{day}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -121,7 +232,7 @@ const EventsPage = () => {
           
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-er-light">
-              {loading ? 'Loading...' : `${filteredEvents.length} Events Found`}
+              {loading ? 'Loading...' : `${filteredAndSortedEvents.length} Events Found`}
             </h2>
           </div>
           
@@ -138,7 +249,7 @@ const EventsPage = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredEvents.map((event, index) => (
+              {filteredAndSortedEvents.map((event, index) => (
                 <div 
                   key={event.id} 
                   className="card group hover:transform hover:scale-105 transition-all duration-300"
@@ -184,7 +295,7 @@ const EventsPage = () => {
             </div>
           )}
           
-          {filteredEvents.length === 0 && !loading && (
+          {filteredAndSortedEvents.length === 0 && !loading && (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-er-light mb-2">No events found</h3>

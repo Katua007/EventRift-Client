@@ -11,7 +11,8 @@ import EventsPage from './components/EventsPage';
 import EventDetailPage from './components/EventDetailPage';
 import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
-const GoerDashboard = () => <div className="text-center pt-48 text-2xl text-er-primary">Goer Dashboard</div>;
+import GoerDashboard from './components/GoerDashboard';
+
 
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
@@ -204,6 +205,10 @@ const App = () => {
                             />
                             <Route 
                                 path="/goer/profile" 
+                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
+                            />
+                            <Route 
+                                path="/goer/dashboard" 
                                 element={<ProtectedRoute element={<GoerDashboard />} requiredRole="Goer" />} 
                             />
                             <Route 
