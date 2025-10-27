@@ -55,7 +55,7 @@ const EventDetailPage = () => {
       setEvent(response.event || response);
     } catch (err) {
       console.error('Failed to fetch event:', err);
-      setError('Failed to load event details');
+      setError('Using demo data - Backend connection failed');
       // Use mock data as fallback
       setEvent(mockEvent);
     } finally {

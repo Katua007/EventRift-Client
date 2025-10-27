@@ -17,6 +17,7 @@ const GoerDashboard = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [reviewModal, setReviewModal] = useState(null);
   const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchGoerData();
@@ -39,6 +40,7 @@ const GoerDashboard = () => {
       setStats({ totalTickets, upcomingEvents, attendedEvents, totalSpent });
     } catch (error) {
       console.error('Failed to fetch goer data:', error);
+      setError('Using demo data - Backend connection failed');
       // Use mock data for demo
       const mockTickets = [
         {
@@ -179,6 +181,12 @@ const GoerDashboard = () => {
   return (
     <div className="min-h-screen bg-er-dark pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-6">
+        {error && (
+          <div className="mb-6 p-4 bg-yellow-900/30 border border-yellow-700 rounded-lg text-yellow-300 text-center">
+            {error}
+          </div>
+        )}
+        
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
