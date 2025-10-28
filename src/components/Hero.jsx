@@ -1,29 +1,70 @@
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export function Hero() {
   return (
-    <div className="relative h-[600px] md:h-[700px] overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <ImageWithFallback
-          src="https://images.unsplash.com/photo-1709731191876-899e32264420?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25jZXJ0JTIwY3Jvd2QlMjBuaWdodCUyMGxpZ2h0c3xlbnwxfHx8fDE3NjE1NjU5NTd8MA&ixlib=rb-4.1.0&q=80&w=1080"
-          alt="Concert crowd"
+        <img
+          src="/src/assets/images/hero image.jpg"
+          alt="EventRift Hero"
           className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'block';
+          }}
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div 
+          className="w-full h-full bg-gradient-to-br from-er-primary/30 to-er-secondary/30 flex items-center justify-center text-6xl"
+          style={{ display: 'none' }}
+        >
+          🎉
+        </div>
+        
+        {/* Overlay gradients */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-er-dark/90 via-transparent to-transparent" />
+      </div>
+
+      {/* Floating Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-20 h-20 bg-er-primary/20 rounded-full animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-er-secondary/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-40 left-20 w-12 h-12 bg-er-accent/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-60 left-1/2 w-8 h-8 bg-er-primary/30 rounded-full animate-float" style={{animationDelay: '0.5s'}}></div>
       </div>
 
       {/* Content */}
-      <div className="relative h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h1 className="mb-6 tracking-wide uppercase text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-            World of live experiences<br />
-            where every event tells a story<br />
+      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+        <div className="animate-fade-in">
+          {/* Main Heading - Simple clean text matching Figma */}
+          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-12 leading-tight text-shadow">
+            World of live experiences
+            <br />
+            where every event tells a story
+            <br />
             and every story becomes a memory
           </h1>
-          <p className="text-white/80 text-lg md:text-xl">Unforgettable events</p>
+
+          {/* CTA Button - "Find an Event" */}
+          <div className="flex justify-center mb-16">
+            <Link 
+              to="/signup" 
+              className="bg-er-primary hover:bg-er-primary/90 text-white font-bold text-lg px-12 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-glow"
+            >
+              Find an Event
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-er-primary rounded-full flex justify-center glass-effect">
+          <div className="w-1 h-3 bg-er-primary rounded-full mt-2 animate-pulse"></div>
+        </div>
+      </div>
+    </section>
   );
 }
