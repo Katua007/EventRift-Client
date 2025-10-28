@@ -1,9 +1,9 @@
 // M-Pesa Daraja API service
 const MPESA_BASE_URL = 'https://sandbox.safaricom.co.ke';
-const CONSUMER_KEY = process.env.REACT_APP_MPESA_CONSUMER_KEY;
-const CONSUMER_SECRET = process.env.REACT_APP_MPESA_CONSUMER_SECRET;
-const BUSINESS_SHORT_CODE = process.env.REACT_APP_MPESA_SHORTCODE || '174379';
-const PASSKEY = process.env.REACT_APP_MPESA_PASSKEY;
+const CONSUMER_KEY = import.meta.env.VITE_MPESA_CONSUMER_KEY || 'demo_key';
+const CONSUMER_SECRET = import.meta.env.VITE_MPESA_CONSUMER_SECRET || 'demo_secret';
+const BUSINESS_SHORT_CODE = import.meta.env.VITE_MPESA_SHORTCODE || '174379';
+const PASSKEY = import.meta.env.VITE_MPESA_PASSKEY || 'demo_passkey';
 
 export const mpesaService = {
   // Get OAuth token
