@@ -59,6 +59,8 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_data');
             setUser(null);
             setIsAuthenticated(false);
         }

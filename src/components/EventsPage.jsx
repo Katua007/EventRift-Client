@@ -118,7 +118,7 @@ const EventsPage = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await eventsService.getAllEvents();
+        const response = await eventsService.getEvents();
         setEvents(response.events || response || []);
         setError(null);
       } catch (err) {
