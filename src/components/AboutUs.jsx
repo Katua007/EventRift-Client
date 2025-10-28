@@ -1,51 +1,40 @@
+import React from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function AboutUs() {
   return (
-    <section className="bg-er-dark py-16 px-4 sm:px-6 lg:px-8">
+    <section id="about" className="py-20 px-6 bg-er-gray">
       <div className="max-w-7xl mx-auto">
-        <h2 className="font-heading text-4xl md:text-5xl font-bold text-er-light mb-8 text-center">
-          About EventRift
-        </h2>
+        {/* Header - Exact Figma Text */}
+        <div className="text-center mb-16 animate-fade-in">
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+            About <span className="gradient-text">EventRift</span>
+          </h2>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="relative h-[400px] overflow-hidden rounded-xl">
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1727096857692-e9dadf2bc92e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGZlc3RpdmFsJTIwc3RhZ2V8ZW58MXx8fHwxNzYxNTU5MTE4fDA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Concert crowd at music festival"
-              className="w-full h-full object-cover rounded-xl"
-              fallback="🎵"
-            />
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Image */}
+          <div className="relative animate-slide-up">
+            <div className="relative h-[500px] overflow-hidden rounded-3xl shadow-2xl hover-lift">
+              <ImageWithFallback
+                src="/src/assets/images/AboutSectionPic.jpeg"
+                alt="EventRift About Us"
+                className="w-full h-full object-cover"
+                fallback="🎉"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-er-dark/50 to-transparent"></div>
+            </div>
           </div>
           
-          <div className="text-er-light space-y-6">
+          {/* Content - Exact Figma Text with White Color */}
+          <div className="space-y-8 animate-slide-up">
             <div>
-              <h3 className="font-heading text-2xl font-semibold text-er-primary mb-4">
-                Connecting Kenya Through Events
-              </h3>
-              <p className="text-er-text text-lg leading-relaxed">
-                EventRift is Kenya's premier platform where people can discover, plan, and organize unforgettable events. 
-                From intimate gatherings to massive festivals, we connect communities through shared experiences.
+              <p className="text-lg text-white leading-relaxed">
+                EventRift is Kenya's premier platform where people discover, plan, and organize 
+                unforgettable events. From intimate gatherings to massive festivals, we connect 
+                communities through shared experiences.
               </p>
-            </div>
-            
-            <div>
-              <h4 className="font-heading text-xl font-semibold text-er-light mb-3">Our Mission</h4>
-              <p className="text-er-text leading-relaxed">
-                To revolutionize how Kenyans experience events by providing a seamless platform that brings 
-                organizers and attendees together, fostering connections and creating lasting memories.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6 pt-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-er-primary">500+</div>
-                <div className="text-er-text text-sm">Events Hosted</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-er-secondary">10K+</div>
-                <div className="text-er-text text-sm">Happy Users</div>
-              </div>
             </div>
           </div>
         </div>
