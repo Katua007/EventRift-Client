@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, DollarSign, Clock, Star, Share2, Heart, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
+import { TicketPurchase } from './TicketPurchase';
 
 const EventDetailPage = () => {
   const { eventId } = useParams();
@@ -12,6 +13,7 @@ const EventDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [showTicketPurchase, setShowTicketPurchase] = useState(false);
 
   const mockEvent = useMemo(() => ({
     id: eventId,
@@ -70,7 +72,7 @@ const EventDetailPage = () => {
       navigate('/login');
       return;
     }
-    navigate(`/events/${eventId}/checkout`);
+    setShowTicketPurchase(true);
   };
 
   const handleShare = async () => {
@@ -347,6 +349,26 @@ const EventDetailPage = () => {
                 >
                   Sold Out
                 </button>
+              )}
+
+              {/* Ticket Purchase Modal */}
+              {showTicketPurchase && (
+                <TicketPurchase
+                  event={{
+                    ...event,
+                    availableTickets: ticketsRemaining
+                  }}
+                  onClose={() => setShowTicketPurchase(false)}
+                  onSuccess={(purchaseData) => {
+                    console.log('Purchase successful:', purchaseData);
+                    setShowTicketPurchase(false);
+                    // Update event data
+                    setEvent(prev => ({
+                      ...prev,
+                      tickets_sold: (prev.tickets_sold || 0) + purchaseData.tickets
+                    }));
+                  }}
+                />
               )}
 
               <div className="mt-4 text-center text-sm text-er-text">

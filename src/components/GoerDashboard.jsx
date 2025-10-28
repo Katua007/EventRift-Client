@@ -71,8 +71,18 @@ const GoerDashboard = () => {
       await eventsService.submitReview(eventId, {
         user_id: user.id,
         rating: reviewData.rating,
-        comment: reviewData.comment
+        comment: reviewData.comment,
+        recommend: reviewData.rating >= 4,
+        complaint: reviewData.rating <= 2 ? reviewData.comment : null
       });
+      
+      // Update ticket as reviewed
+      setTickets(tickets.map(ticket => 
+        ticket.event.id === eventId 
+          ? { ...ticket, reviewed: true }
+          : ticket
+      ));
+      
       setReviewModal(null);
       setReviewData({ rating: 5, comment: '' });
       alert('Review submitted successfully!');
@@ -318,7 +328,7 @@ const GoerDashboard = () => {
             
             <div className="mb-6">
               <label className="block text-er-light font-semibold mb-2">Rating</label>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 mb-2">
                 {[1, 2, 3, 4, 5].map(star => (
                   <button
                     key={star}
@@ -329,6 +339,11 @@ const GoerDashboard = () => {
                   </button>
                 ))}
               </div>
+              <p className="text-er-text text-sm">
+                {reviewData.rating >= 4 ? 'Would you recommend this event?' : 
+                 reviewData.rating <= 2 ? 'Please share your concerns below' : 
+                 'How was your experience?'}
+              </p>
             </div>
 
             <div className="mb-6">

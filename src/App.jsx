@@ -12,6 +12,7 @@ import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
 import VendorDashboard from './components/VendorDashboard';
+import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 // Component for Protected Routes (Client-Side RBAC)
@@ -88,7 +89,7 @@ const App = () => {
                             />
                             <Route 
                                 path="/vendor/setup" 
-                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="Vendor" />} 
+                                element={<ProtectedRoute element={<VendorSetup />} requiredRole="Vendor" />} 
                             />
                             <Route 
                                 path="/vendor/dashboard" 

@@ -135,12 +135,18 @@ const EventsPage = () => {
 
   const filteredAndSortedEvents = events
     .filter(event => {
+      // Search by name
       const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           event.location?.toLowerCase().includes(searchTerm.toLowerCase());
+                           event.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           event.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Filter by category
       const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
+      
+      // Filter by theme
       const matchesTheme = selectedTheme === 'All' || event.theme === selectedTheme;
       
-      // Filter by type
+      // Filter by type (upcoming, offers, flash sales, etc.)
       let matchesFilter = true;
       if (filterBy === 'upcoming') {
         matchesFilter = new Date(event.date) > new Date();
