@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp } from 'lucide-react';
+import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp, Search, Filter, Heart } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
 
@@ -15,27 +15,13 @@ const GoerDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
-  const [reviewModal, setReviewModal] = useState(null);
-  const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
-  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchGoerData = async () => {
       try {
         setLoading(true);
-        const response = await eventsService.getUserTickets(user.id);
-        setTickets(response.tickets || []);
-        
-        const totalTickets = response.tickets?.length || 0;
-        const now = new Date();
-        const upcomingEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) > now).length || 0;
-        const attendedEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) < now).length || 0;
-        const totalSpent = response.tickets?.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0) || 0;
-        
-        setStats({ totalTickets, upcomingEvents, attendedEvents, totalSpent });
-      } catch (err) {
-        console.error('Failed to fetch goer data:', err);
-        setError('Using demo data - Backend connection failed');
+        // Mock data for demo
         const mockTickets = [
           {
             id: 1,
@@ -44,16 +30,40 @@ const GoerDashboard = () => {
               title: "AfroBeats Festival 2024",
               date: "2024-12-15",
               venue_name: "Uhuru Gardens",
-              image: "🎵"
+              image: "🎵",
+              category: "Music"
             },
             quantity: 2,
             total_amount: 5000,
             status: "confirmed",
             purchase_date: "2024-11-01"
+          },
+          {
+            id: 2,
+            event: {
+              id: 2,
+              title: "Tech Conference Kenya",
+              date: "2025-01-20",
+              venue_name: "KICC",
+              image: "💻",
+              category: "Technology"
+            },
+            quantity: 1,
+            total_amount: 8000,
+            status: "confirmed",
+            purchase_date: "2024-11-15"
           }
         ];
+        
         setTickets(mockTickets);
-        setStats({ totalTickets: 1, upcomingEvents: 1, attendedEvents: 0, totalSpent: 5000 });
+        setStats({
+          totalTickets: 3,
+          upcomingEvents: 2,
+          attendedEvents: 1,
+          totalSpent: 13000
+        });
+      } catch (err) {
+        console.error('Failed to fetch goer data:', err);
       } finally {
         setLoading(false);
       }
@@ -64,112 +74,83 @@ const GoerDashboard = () => {
     }
   }, [user?.id]);
 
-
-
-  const handleReviewSubmit = async (eventId) => {
-    try {
-      await eventsService.submitReview(eventId, {
-        user_id: user.id,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
-        recommend: reviewData.rating >= 4,
-        complaint: reviewData.rating <= 2 ? reviewData.comment : null
-      });
-      
-      // Update ticket as reviewed
-      setTickets(tickets.map(ticket => 
-        ticket.event.id === eventId 
-          ? { ...ticket, reviewed: true }
-          : ticket
-      ));
-      
-      setReviewModal(null);
-      setReviewData({ rating: 5, comment: '' });
-      alert('Review submitted successfully!');
-    } catch {
-      alert('Failed to submit review');
-    }
-  };
-
-  const StatCard = ({ icon, title, value, color = "text-er-primary" }) => {
-    const IconComponent = icon;
-    return (
-      <div className="card hover:transform hover:scale-105 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-er-text text-sm">{title}</p>
-            <p className={`text-2xl font-bold ${color}`}>{value}</p>
-          </div>
-          <IconComponent className={`w-8 h-8 ${color}`} />
+  const StatCard = ({ icon: Icon, title, value, color = "text-er-primary", bgColor = "bg-er-primary/10" }) => (
+    <div className="card hover-lift animate-fade-in">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-er-text text-sm font-medium mb-1">{title}</p>
+          <p className={`text-3xl font-bold ${color}`}>{value}</p>
+        </div>
+        <div className={`w-14 h-14 ${bgColor} rounded-2xl flex items-center justify-center`}>
+          <Icon className={`w-7 h-7 ${color}`} />
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   const TicketCard = ({ ticket }) => {
     const isUpcoming = new Date(ticket.event.date) > new Date();
     const isPast = new Date(ticket.event.date) < new Date();
     
     return (
-      <div className="card hover:transform hover:scale-105 transition-all duration-300">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center">
-            <div className="text-4xl mr-4">{ticket.event.image || '🎉'}</div>
+      <div className="card hover-lift animate-fade-in">
+        <div className="flex justify-between items-start mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-er-primary/30 to-er-secondary/30 rounded-2xl flex items-center justify-center text-3xl">
+              {ticket.event.image || '🎉'}
+            </div>
             <div>
-              <h3 className="font-heading text-xl font-semibold text-er-light mb-1">
+              <h3 className="font-heading text-xl font-bold text-er-light mb-2">
                 {ticket.event.title}
               </h3>
-              <p className="text-er-text flex items-center">
-                <Calendar className="w-4 h-4 mr-2" />
-                {new Date(ticket.event.date).toLocaleDateString()}
-              </p>
-              <p className="text-er-text flex items-center mt-1">
-                <MapPin className="w-4 h-4 mr-2" />
+              <div className="flex items-center text-er-text mb-1">
+                <Calendar className="w-4 h-4 mr-2 text-er-primary" />
+                {new Date(ticket.event.date).toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </div>
+              <div className="flex items-center text-er-text">
+                <MapPin className="w-4 h-4 mr-2 text-er-secondary" />
                 {ticket.event.venue_name}
-              </p>
+              </div>
             </div>
           </div>
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            ticket.status === 'confirmed' ? 'bg-green-900/30 text-green-300' :
-            ticket.status === 'pending' ? 'bg-yellow-900/30 text-yellow-300' :
-            'bg-red-900/30 text-red-300'
+          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+            ticket.status === 'confirmed' ? 'bg-er-success/20 text-er-success' :
+            ticket.status === 'pending' ? 'bg-er-warning/20 text-er-warning' :
+            'bg-er-error/20 text-er-error'
           }`}>
-            {ticket.status}
+            {ticket.status.toUpperCase()}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-er-text text-sm">Tickets</p>
-            <p className="text-er-primary font-bold">{ticket.quantity}</p>
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="text-center p-4 bg-er-dark/50 rounded-xl">
+            <p className="text-er-text text-sm mb-1">Tickets</p>
+            <p className="text-2xl font-bold text-er-primary">{ticket.quantity}</p>
           </div>
-          <div>
-            <p className="text-er-text text-sm">Total Paid</p>
-            <p className="text-er-secondary font-bold">KES {ticket.total_amount?.toLocaleString()}</p>
+          <div className="text-center p-4 bg-er-dark/50 rounded-xl">
+            <p className="text-er-text text-sm mb-1">Total Paid</p>
+            <p className="text-2xl font-bold text-er-secondary">KES {ticket.total_amount?.toLocaleString()}</p>
           </div>
         </div>
 
         <div className="flex justify-between items-center">
           <Link
             to={`/events/${ticket.event.id}`}
-            className="text-er-primary hover:text-pink-400 font-semibold"
+            className="text-er-primary hover:text-er-primary/80 font-semibold transition-colors"
           >
-            View Event
+            View Event Details
           </Link>
-          
-          {isPast && !ticket.reviewed && (
-            <button
-              onClick={() => setReviewModal(ticket.event)}
-              className="bg-er-primary text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors text-sm"
-            >
-              Write Review
-            </button>
-          )}
           
           {isUpcoming && (
             <div className="flex space-x-2">
-              <button className="bg-er-secondary text-white px-3 py-1 rounded text-sm hover:bg-teal-600 transition-colors">
-                Add to Calendar
+              <button className="btn-outline text-sm px-4 py-2">
+                <Heart className="w-4 h-4 mr-2" />
+                Add to Favorites
               </button>
             </div>
           )}
@@ -180,13 +161,21 @@ const GoerDashboard = () => {
 
   const upcomingTickets = tickets.filter(ticket => new Date(ticket.event.date) > new Date());
   const pastTickets = tickets.filter(ticket => new Date(ticket.event.date) < new Date());
+  const filteredUpcoming = upcomingTickets.filter(ticket => 
+    ticket.event.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const filteredPast = pastTickets.filter(ticket => 
+    ticket.event.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return (
       <div className="min-h-screen bg-er-dark pt-20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-er-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-er-light">Loading dashboard...</p>
+        <div className="text-center animate-fade-in">
+          <div className="w-16 h-16 bg-gradient-to-r from-er-primary to-er-secondary rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full"></div>
+          </div>
+          <p className="text-er-light text-lg">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -195,72 +184,95 @@ const GoerDashboard = () => {
   return (
     <div className="min-h-screen bg-er-dark pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-6">
-        {error && (
-          <div className="mb-6 p-4 bg-yellow-900/30 border border-yellow-700 rounded-lg text-yellow-300 text-center">
-            {error}
-          </div>
-        )}
-        
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 animate-fade-in">
           <div>
-            <h1 className="font-heading text-4xl font-bold text-er-light mb-2">
-              Welcome back, {user?.username}! 🎉
+            <h1 className="font-heading text-4xl lg:text-5xl font-bold text-er-light mb-3">
+              Welcome back, <span className="gradient-text">{user?.username}</span>! 🎉
             </h1>
-            <p className="text-er-text">Track your events and create amazing memories</p>
+            <p className="text-xl text-er-text">Track your events and create amazing memories</p>
           </div>
-          <Link to="/events" className="btn-primary flex items-center">
-            <Calendar className="w-5 h-5 mr-2" />
-            Browse Events
+          <Link to="/events" className="btn-primary flex items-center mt-6 lg:mt-0 hover-lift">
+            <Search className="w-5 h-5 mr-2" />
+            Discover Events
           </Link>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <StatCard
             icon={Ticket}
             title="Total Tickets"
             value={stats.totalTickets}
             color="text-er-primary"
+            bgColor="bg-er-primary/10"
           />
           <StatCard
             icon={Calendar}
             title="Upcoming Events"
             value={stats.upcomingEvents}
             color="text-er-secondary"
+            bgColor="bg-er-secondary/10"
           />
           <StatCard
             icon={History}
             title="Events Attended"
             value={stats.attendedEvents}
             color="text-er-accent"
+            bgColor="bg-er-accent/10"
           />
           <StatCard
             icon={TrendingUp}
             title="Total Spent"
             value={`KES ${stats.totalSpent.toLocaleString()}`}
-            color="text-green-400"
+            color="text-er-success"
+            bgColor="bg-er-success/10"
           />
         </div>
 
+        {/* Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-er-muted w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search your events..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field pl-12 pr-4"
+            />
+          </div>
+          <button className="btn-outline flex items-center px-6">
+            <Filter className="w-4 h-4 mr-2" />
+            Filter
+          </button>
+        </div>
+
         {/* Tabs */}
-        <div className="flex space-x-1 mb-8 bg-er-gray rounded-lg p-1">
+        <div className="flex space-x-1 mb-8 bg-er-gray rounded-2xl p-1 animate-fade-in">
           {[
-            { id: 'upcoming', label: 'Upcoming Events', icon: Calendar },
-            { id: 'history', label: 'Event History', icon: History },
-            { id: 'reviews', label: 'My Reviews', icon: MessageSquare }
+            { id: 'upcoming', label: 'Upcoming Events', icon: Calendar, count: upcomingTickets.length },
+            { id: 'history', label: 'Event History', icon: History, count: pastTickets.length },
+            { id: 'favorites', label: 'Favorites', icon: Heart, count: 0 }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+              className={`flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-er-primary text-white'
-                  : 'text-er-text hover:text-er-primary'
+                  ? 'bg-gradient-to-r from-er-primary to-er-secondary text-white shadow-glow'
+                  : 'text-er-text hover:text-er-primary hover:bg-er-primary/5'
               }`}
             >
-              <tab.icon className="w-4 h-4 mr-2" />
+              <tab.icon className="w-5 h-5 mr-2" />
               {tab.label}
+              {tab.count > 0 && (
+                <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+                  activeTab === tab.id ? 'bg-white/20' : 'bg-er-primary/20 text-er-primary'
+                }`}>
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -268,19 +280,23 @@ const GoerDashboard = () => {
         {/* Tab Content */}
         {activeTab === 'upcoming' && (
           <div>
-            {upcomingTickets.length === 0 ? (
-              <div className="text-center py-16">
-                <Calendar className="w-16 h-16 text-er-text mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-er-light mb-2">No upcoming events</h3>
-                <p className="text-er-text mb-6">Discover amazing events happening near you</p>
-                <Link to="/events" className="btn-primary">
-                  <Calendar className="w-5 h-5 mr-2" />
+            {filteredUpcoming.length === 0 ? (
+              <div className="text-center py-20 animate-fade-in">
+                <div className="w-24 h-24 bg-gradient-to-r from-er-primary/20 to-er-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Calendar className="w-12 h-12 text-er-primary" />
+                </div>
+                <h3 className="text-3xl font-bold text-er-light mb-4">No upcoming events</h3>
+                <p className="text-er-text text-lg mb-8 max-w-md mx-auto">
+                  Discover amazing events happening near you and start creating memories
+                </p>
+                <Link to="/events" className="btn-primary hover-lift">
+                  <Search className="w-5 h-5 mr-2" />
                   Browse Events
                 </Link>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {upcomingTickets.map(ticket => (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {filteredUpcoming.map(ticket => (
                   <TicketCard key={ticket.id} ticket={ticket} />
                 ))}
               </div>
@@ -290,15 +306,17 @@ const GoerDashboard = () => {
 
         {activeTab === 'history' && (
           <div>
-            {pastTickets.length === 0 ? (
-              <div className="text-center py-16">
-                <History className="w-16 h-16 text-er-text mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-er-light mb-2">No past events</h3>
-                <p className="text-er-text">Your event history will appear here</p>
+            {filteredPast.length === 0 ? (
+              <div className="text-center py-20 animate-fade-in">
+                <div className="w-24 h-24 bg-gradient-to-r from-er-accent/20 to-er-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <History className="w-12 h-12 text-er-accent" />
+                </div>
+                <h3 className="text-3xl font-bold text-er-light mb-4">No past events</h3>
+                <p className="text-er-text text-lg">Your event history will appear here</p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {pastTickets.map(ticket => (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {filteredPast.map(ticket => (
                   <TicketCard key={ticket.id} ticket={ticket} />
                 ))}
               </div>
@@ -306,74 +324,22 @@ const GoerDashboard = () => {
           </div>
         )}
 
-        {activeTab === 'reviews' && (
-          <div className="card">
-            <h2 className="font-heading text-2xl font-semibold text-er-light mb-4">My Reviews</h2>
-            <div className="text-center py-16">
-              <MessageSquare className="w-16 h-16 text-er-text mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-er-light mb-2">Reviews Coming Soon</h3>
-              <p className="text-er-text">Your event reviews will be displayed here</p>
+        {activeTab === 'favorites' && (
+          <div className="text-center py-20 animate-fade-in">
+            <div className="w-24 h-24 bg-gradient-to-r from-er-primary/20 to-er-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Heart className="w-12 h-12 text-er-primary" />
             </div>
+            <h3 className="text-3xl font-bold text-er-light mb-4">No favorites yet</h3>
+            <p className="text-er-text text-lg mb-8 max-w-md mx-auto">
+              Save events you love to easily find them later
+            </p>
+            <Link to="/events" className="btn-primary hover-lift">
+              <Search className="w-5 h-5 mr-2" />
+              Find Events to Love
+            </Link>
           </div>
         )}
       </div>
-
-      {/* Review Modal */}
-      {reviewModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-er-gray rounded-xl p-8 max-w-md w-full">
-            <h3 className="font-heading text-2xl font-bold text-er-light mb-4">
-              Review: {reviewModal.title}
-            </h3>
-            
-            <div className="mb-6">
-              <label className="block text-er-light font-semibold mb-2">Rating</label>
-              <div className="flex space-x-2 mb-2">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button
-                    key={star}
-                    onClick={() => setReviewData({...reviewData, rating: star})}
-                    className={`text-2xl ${star <= reviewData.rating ? 'text-yellow-400' : 'text-gray-600'}`}
-                  >
-                    ⭐
-                  </button>
-                ))}
-              </div>
-              <p className="text-er-text text-sm">
-                {reviewData.rating >= 4 ? 'Would you recommend this event?' : 
-                 reviewData.rating <= 2 ? 'Please share your concerns below' : 
-                 'How was your experience?'}
-              </p>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-er-light font-semibold mb-2">Comment</label>
-              <textarea
-                value={reviewData.comment}
-                onChange={(e) => setReviewData({...reviewData, comment: e.target.value})}
-                rows={4}
-                className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg text-er-light"
-                placeholder="Share your experience..."
-              />
-            </div>
-
-            <div className="flex space-x-4">
-              <button
-                onClick={() => handleReviewSubmit(reviewModal.id)}
-                className="btn-primary flex-1"
-              >
-                Submit Review
-              </button>
-              <button
-                onClick={() => setReviewModal(null)}
-                className="btn-secondary flex-1"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
