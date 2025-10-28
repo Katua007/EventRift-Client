@@ -19,10 +19,16 @@ export const AuthProvider = ({ children }) => {
                     const profile = await authService.getProfile();
                     setUser(profile.user || JSON.parse(userData));
                     setIsAuthenticated(true);
-                } catch {
-                    // Token invalid, clear storage
-                    localStorage.removeItem('jwt_token');
-                    localStorage.removeItem('user_data');
+                } catch (error) {
+                    // If CORS error, use cached data
+                    if (error.isCorsError) {
+                        setUser(JSON.parse(userData));
+                        setIsAuthenticated(true);
+                    } else {
+                        // Token invalid, clear storage
+                        localStorage.removeItem('jwt_token');
+                        localStorage.removeItem('user_data');
+                    }
                 }
             }
             setLoading(false);
