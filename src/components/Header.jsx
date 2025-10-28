@@ -60,7 +60,7 @@ export function Header() {
             className="cursor-pointer"
           >
             <img 
-              src="/src/assets/images/EventRift LOGO.png" 
+              src="src/assets/images/EventRift LOGO.png" 
               alt="EventRift" 
               className="h-16 w-auto"
             />
