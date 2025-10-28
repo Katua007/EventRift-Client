@@ -1,7 +1,7 @@
 // Mock events service for demo purposes
 export const eventsService = {
   // Goer services
-  getUserTickets: async (userId) => {
+  getUserTickets: async () => {
     // Mock data for demo
     return {
       tickets: [
@@ -30,7 +30,7 @@ export const eventsService = {
   },
 
   // Organizer services
-  getOrganizerEvents: async (organizerId) => {
+  getOrganizerEvents: async () => {
     // Mock data for demo
     return {
       events: [

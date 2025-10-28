@@ -12,8 +12,9 @@ import CreateEventForm from './components/CreateEventForm';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
 import VendorDashboard from './components/VendorDashboard';
+import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
-import { Header } from './components/Header';
+import Navbar from './components/Navbar';
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
@@ -53,7 +54,7 @@ const App = () => {
             {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
                 <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
-                    <Header />
+                    <Navbar />
                     
                     <main className="flex-grow"> 
                         <Routes>
@@ -88,7 +89,7 @@ const App = () => {
                             />
                             <Route 
                                 path="/vendor/setup" 
-                                element={<ProtectedRoute element={<VendorDashboard />} />} 
+                                element={<ProtectedRoute element={<VendorSetup />} requiredRole="Vendor" />} 
                             />
                             <Route 
                                 path="/vendor/dashboard" 

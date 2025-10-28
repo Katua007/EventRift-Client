@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, DollarSign, Clock, Star, Share2, Heart, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
+import { TicketPurchase } from './TicketPurchase';
 
 const EventDetailPage = () => {
   const { eventId } = useParams();
@@ -12,9 +13,9 @@ const EventDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [showTicketPurchase, setShowTicketPurchase] = useState(false);
 
-  // Mock event data for fallback
-  const mockEvent = {
+  const mockEvent = useMemo(() => ({
     id: eventId,
     title: "AfroBeats Festival 2024",
     description: "The biggest Afrobeats celebration in East Africa featuring top artists from across the continent.",
@@ -42,7 +43,7 @@ const EventDetailPage = () => {
     },
     image: "🎵",
     status: "active"
-  };
+  }), [eventId]);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -64,27 +65,14 @@ const EventDetailPage = () => {
     }
   }, [eventId, mockEvent]);
 
-  const fetchEventDetails = async () => {
-    try {
-      setLoading(true);
-      const response = await eventsService.getEvent(eventId);
-      setEvent(response.event || response);
-    } catch (err) {
-      console.error('Failed to fetch event:', err);
-      setError('Using demo data - Backend connection failed');
-      // Use mock data as fallback
-      setEvent(mockEvent);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleBookTicket = () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    navigate(`/events/${eventId}/checkout`);
+    setShowTicketPurchase(true);
   };
 
   const handleShare = async () => {
@@ -361,6 +349,26 @@ const EventDetailPage = () => {
                 >
                   Sold Out
                 </button>
+              )}
+
+              {/* Ticket Purchase Modal */}
+              {showTicketPurchase && (
+                <TicketPurchase
+                  event={{
+                    ...event,
+                    availableTickets: ticketsRemaining
+                  }}
+                  onClose={() => setShowTicketPurchase(false)}
+                  onSuccess={(purchaseData) => {
+                    console.log('Purchase successful:', purchaseData);
+                    setShowTicketPurchase(false);
+                    // Update event data
+                    setEvent(prev => ({
+                      ...prev,
+                      tickets_sold: (prev.tickets_sold || 0) + purchaseData.tickets
+                    }));
+                  }}
+                />
               )}
 
               <div className="mt-4 text-center text-sm text-er-text">

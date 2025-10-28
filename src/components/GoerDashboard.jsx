@@ -64,55 +64,25 @@ const GoerDashboard = () => {
     }
   }, [user?.id]);
 
-  const fetchGoerData = async () => {
-    try {
-      setLoading(true);
-      // Fetch user's tickets and events
-      const response = await eventsService.getUserTickets(user.id);
-      setTickets(response.tickets || []);
-      
-      // Calculate stats
-      const totalTickets = response.tickets?.length || 0;
-      const now = new Date();
-      const upcomingEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) > now).length || 0;
-      const attendedEvents = response.tickets?.filter(ticket => new Date(ticket.event.date) < now).length || 0;
-      const totalSpent = response.tickets?.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0) || 0;
-      
-      setStats({ totalTickets, upcomingEvents, attendedEvents, totalSpent });
-    } catch (error) {
-      console.error('Failed to fetch goer data:', error);
-      setError('Using demo data - Backend connection failed');
-      // Use mock data for demo
-      const mockTickets = [
-        {
-          id: 1,
-          event: {
-            id: 1,
-            title: "AfroBeats Festival 2024",
-            date: "2024-12-15",
-            venue_name: "Uhuru Gardens",
-            image: "🎵"
-          },
-          quantity: 2,
-          total_amount: 5000,
-          status: "confirmed",
-          purchase_date: "2024-11-01"
-        }
-      ];
-      setTickets(mockTickets);
-      setStats({ totalTickets: 1, upcomingEvents: 1, attendedEvents: 0, totalSpent: 5000 });
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleReviewSubmit = async (eventId) => {
     try {
       await eventsService.submitReview(eventId, {
         user_id: user.id,
         rating: reviewData.rating,
-        comment: reviewData.comment
+        comment: reviewData.comment,
+        recommend: reviewData.rating >= 4,
+        complaint: reviewData.rating <= 2 ? reviewData.comment : null
       });
+      
+      // Update ticket as reviewed
+      setTickets(tickets.map(ticket => 
+        ticket.event.id === eventId 
+          ? { ...ticket, reviewed: true }
+          : ticket
+      ));
+      
       setReviewModal(null);
       setReviewData({ rating: 5, comment: '' });
       alert('Review submitted successfully!');
@@ -121,17 +91,20 @@ const GoerDashboard = () => {
     }
   };
 
-  const StatCard = ({ icon: Icon, title, value, color = "text-er-primary" }) => (
-    <div className="card hover:transform hover:scale-105 transition-all duration-300">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-er-text text-sm">{title}</p>
-          <p className={`text-2xl font-bold ${color}`}>{value}</p>
+  const StatCard = ({ icon, title, value, color = "text-er-primary" }) => {
+    const IconComponent = icon;
+    return (
+      <div className="card hover:transform hover:scale-105 transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-er-text text-sm">{title}</p>
+            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          </div>
+          <IconComponent className={`w-8 h-8 ${color}`} />
         </div>
-        <Icon className={`w-8 h-8 ${color}`} />
       </div>
-    </div>
-  );
+    );
+  };
 
   const TicketCard = ({ ticket }) => {
     const isUpcoming = new Date(ticket.event.date) > new Date();
@@ -355,7 +328,7 @@ const GoerDashboard = () => {
             
             <div className="mb-6">
               <label className="block text-er-light font-semibold mb-2">Rating</label>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 mb-2">
                 {[1, 2, 3, 4, 5].map(star => (
                   <button
                     key={star}
@@ -366,6 +339,11 @@ const GoerDashboard = () => {
                   </button>
                 ))}
               </div>
+              <p className="text-er-text text-sm">
+                {reviewData.rating >= 4 ? 'Would you recommend this event?' : 
+                 reviewData.rating <= 2 ? 'Please share your concerns below' : 
+                 'How was your experience?'}
+              </p>
             </div>
 
             <div className="mb-6">
