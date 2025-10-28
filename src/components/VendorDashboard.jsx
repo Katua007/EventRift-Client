@@ -74,17 +74,20 @@ const VendorDashboard = () => {
     }
   }, [user?.id]);
 
-  const StatCard = ({ icon: Icon, title, value, color = "text-er-primary" }) => (
-    <div className="card hover:transform hover:scale-105 transition-all duration-300">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-er-text text-sm">{title}</p>
-          <p className={`text-2xl font-bold ${color}`}>{value}</p>
+  const StatCard = ({ icon, title, value, color = "text-er-primary" }) => {
+    const IconComponent = icon;
+    return (
+      <div className="card hover:transform hover:scale-105 transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-er-text text-sm">{title}</p>
+            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          </div>
+          <IconComponent className={`w-8 h-8 ${color}`} />
         </div>
-        <Icon className={`w-8 h-8 ${color}`} />
       </div>
-    </div>
-  );
+    );
+  };
 
   const ServiceCard = ({ service }) => (
     <div className="card hover:transform hover:scale-105 transition-all duration-300">
