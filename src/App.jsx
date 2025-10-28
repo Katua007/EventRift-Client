@@ -4,17 +4,13 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
-import CheckoutPage from './pages/CheckoutPage'; 
 import HomePage from './components/HomePage';
-import EventsPage from './components/EventsPage';
-import EventDetailPage from './components/EventDetailPage';
-import CreateEventForm from './components/CreateEventForm';
-import OrganizerDashboard from './components/OrganizerDashboard';
 import GoerDashboard from './components/GoerDashboard';
+import OrganizerDashboard from './components/OrganizerDashboard';
 import VendorDashboard from './components/VendorDashboard';
-import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
 import Navbar from './components/Navbar';
+
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
@@ -40,13 +36,6 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     return element;
 };
 
-
-
-
-
-
-
-
 const App = () => {
     return (
         // BrowserRouter must wrap the whole application
@@ -58,38 +47,21 @@ const App = () => {
                     
                     <main className="flex-grow"> 
                         <Routes>
-                            {/* Public Routes */}
+                            {/* Public Routes - Only what exists in Figma */}
                             <Route path="/" element={<HomePage />} />
-                            <Route path="/events" element={<EventsPage />} />
-                            <Route path="/events/:eventId" element={<EventDetailPage />} />
 
                             {/* Auth Routes */}
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/signup" element={<SignupPage />} />
-                            
-                            {/*Checkout Route*/}
-                            <Route path="/events/:eventId/checkout" element={<CheckoutPage />} /> 
 
-                            {/* Protected Routes (Require Authentication and Role) */}
+                            {/* Protected Dashboard Routes */}
                             <Route 
                                 path="/organizer/dashboard" 
                                 element={<ProtectedRoute element={<OrganizerDashboard />} />} 
                             />
                             <Route 
-                                path="/organizer/create-event" 
-                                element={<ProtectedRoute element={<CreateEventForm />} />} 
-                            />
-                            <Route 
-                                path="/goer/profile" 
-                                element={<ProtectedRoute element={<GoerDashboard />} />} 
-                            />
-                            <Route 
                                 path="/goer/dashboard" 
                                 element={<ProtectedRoute element={<GoerDashboard />} />} 
-                            />
-                            <Route 
-                                path="/vendor/setup" 
-                                element={<ProtectedRoute element={<VendorSetup />} requiredRole="Vendor" />} 
                             />
                             <Route 
                                 path="/vendor/dashboard" 
