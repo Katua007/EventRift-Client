@@ -1,47 +1,148 @@
+import React, { useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function PhotoGallery() {
+  const [selectedImage, setSelectedImage] = useState(null);
+  
   const photos = [
     {
-      url: 'https://images.unsplash.com/photo-1649471323554-aa4cb720261c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJ0eSUyMG5pZ2h0Y2x1YiUyMGRhbmNpbmd8ZW58MXx8fHwxNzYxNTY1OTU4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Party dancing'
+      src: '/src/assets/images/G1.jpeg',
+      alt: 'EventRift Gallery 1',
+      fallback: '🎉'
     },
     {
-      url: 'https://images.unsplash.com/photo-1759873148521-c49d9497cf64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMHZlbnVlJTIwY2VsZWJyYXRpb258ZW58MXx8fHwxNzYxNTY1OTU4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Event venue'
+      src: '/src/assets/images/G2.jpeg',
+      alt: 'EventRift Gallery 2',
+      fallback: '🎵'
     },
     {
-      url: 'https://images.unsplash.com/photo-1512702530765-acc2a012170d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25jZXJ0JTIwYXVkaWVuY2UlMjBoYW5kc3xlbnwxfHx8fDE3NjE1NjU5NTl8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Concert audience'
+      src: '/src/assets/images/G3.jpeg',
+      alt: 'EventRift Gallery 3',
+      fallback: '🎊'
     },
     {
-      url: 'https://images.unsplash.com/photo-1625612446042-afd3fe024131?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuaWdodGNsdWIlMjBwYXJ0eSUyMGxpZ2h0c3xlbnwxfHx8fDE3NjE0NzcyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Nightclub lights'
+      src: '/src/assets/images/G4.jpeg',
+      alt: 'EventRift Gallery 4',
+      fallback: '🎭'
     },
     {
-      url: 'https://images.unsplash.com/photo-1561264819-1ccc1c6e0ae9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaXZlJTIwbXVzaWMlMjBwZXJmb3JtYW5jZXxlbnwxfHx8fDE3NjE1MjU2NTV8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Live music'
+      src: '/src/assets/images/G5.jpeg',
+      alt: 'EventRift Gallery 5',
+      fallback: '🎪'
     },
     {
-      url: 'https://images.unsplash.com/photo-1561264819-ec6538dc260e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaXZlJTIwYmFuZCUyMHBlcmZvcm1hbmNlfGVufDF8fHx8MTc2MTQ3ODI0M3ww&ixlib=rb-4.1.0&q=80&w=1080',
-      alt: 'Live band'
+      src: '/src/assets/images/G6.jpeg',
+      alt: 'EventRift Gallery 6',
+      fallback: '🎨'
+    },
+    {
+      src: '/src/assets/images/G7.jpeg',
+      alt: 'EventRift Gallery 7',
+      fallback: '🎸'
     }
   ];
 
+  const openModal = (index) => {
+    setSelectedImage(index);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % photos.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImage((prev) => (prev - 1 + photos.length) % photos.length);
+  };
+
   return (
-    <section className="bg-black py-16 px-4 sm:px-6 lg:px-8">
+    <section id="gallery" className="py-20 px-6 bg-er-dark">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {/* Header */}
+        <div className="text-center mb-16 animate-fade-in">
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-er-light mb-6">
+            Event <span className="gradient-text">Gallery</span>
+          </h2>
+          <p className="text-xl text-er-text max-w-3xl mx-auto leading-relaxed">
+            Capturing unforgettable moments from amazing events across Kenya
+          </p>
+        </div>
+
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {photos.map((photo, index) => (
-            <div key={index} className="relative aspect-square overflow-hidden rounded-lg group cursor-pointer">
+            <div 
+              key={index} 
+              className="relative aspect-square overflow-hidden rounded-2xl group cursor-pointer hover-lift animate-fade-in"
+              style={{animationDelay: `${index * 0.1}s`}}
+              onClick={() => openModal(index)}
+            >
               <ImageWithFallback
-                src={photo.url}
+                src={photo.src}
                 alt={photo.alt}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                fallback={photo.fallback}
               />
+              
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-er-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="text-white font-semibold text-sm">View Image</div>
+                </div>
+              </div>
+              
+              {/* Hover Effect */}
+              <div className="absolute inset-0 bg-er-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
           ))}
         </div>
+
+        {/* Modal */}
+        {selectedImage !== null && (
+          <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-white hover:text-er-primary transition-colors z-10 p-2 rounded-full bg-er-dark/50 hover:bg-er-dark/80"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-er-primary transition-colors z-10 p-2 rounded-full bg-er-dark/50 hover:bg-er-dark/80"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-er-primary transition-colors z-10 p-2 rounded-full bg-er-dark/50 hover:bg-er-dark/80"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Image */}
+            <div className="max-w-4xl max-h-[80vh] w-full h-full flex items-center justify-center">
+              <ImageWithFallback
+                src={photos[selectedImage].src}
+                alt={photos[selectedImage].alt}
+                className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
+                fallback={photos[selectedImage].fallback}
+              />
+            </div>
+
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-er-dark/50 px-4 py-2 rounded-full">
+              {selectedImage + 1} / {photos.length}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
