@@ -2,6 +2,7 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import logo from '../assets/images/EventRift LOGO.png';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,13 +56,13 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link 
+          <Link
             to="/"
             className="cursor-pointer"
           >
-            <img 
-              src="/src/assets/images/EventRift LOGO.png" 
-              alt="EventRift" 
+            <img
+              src={logo}
+              alt="EventRift"
               className="h-16 w-auto"
             />
           </Link>

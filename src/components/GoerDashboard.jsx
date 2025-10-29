@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp, Search, Filter, Heart } from 'lucide-react';
-import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
 
 const GoerDashboard = () => {
@@ -90,8 +89,7 @@ const GoerDashboard = () => {
 
   const TicketCard = ({ ticket }) => {
     const isUpcoming = new Date(ticket.event.date) > new Date();
-    const isPast = new Date(ticket.event.date) < new Date();
-    
+
     return (
       <div className="card hover-lift animate-fade-in">
         <div className="flex justify-between items-start mb-6">
