@@ -15,7 +15,6 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^6.28.0",
     "lucide-react": "^0.460.0",
-    "react-hook-form": "^7.53.2",
     "axios": "^1.7.7",
     "@googlemaps/js-api-loader": "^1.16.8",
     "react-datepicker": "^7.4.0",
