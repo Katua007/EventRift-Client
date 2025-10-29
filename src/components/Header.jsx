@@ -64,6 +64,7 @@ export function Header() {
               src={logo}
               alt="EventRift"
               className="h-16 w-auto"
+              style={{ mixBlendMode: 'screen' }}
             />
           </Link>
 

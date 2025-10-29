@@ -100,6 +100,7 @@ const Navbar = () => {
               src="/src/assets/images/EventRift LOGO.png" 
               alt="EventRift" 
               className="h-14 w-auto"
+              style={{ mixBlendMode: 'screen' }}
             />
           </Link>
 
