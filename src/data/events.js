@@ -7,7 +7,7 @@ export const events = [
     date: "Dec 15, 2024",
     location: "Nairobi, Kenya",
     category: "Music",
-    image: "🎵"
+    image: "/src/assets/images/EP1.jpeg"
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const events = [
     date: "Jan 20, 2025",
     location: "Mombasa, Kenya",
     category: "Technology",
-    image: "💻"
+    image: "/src/assets/images/EP2.jpeg"
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ export const events = [
     date: "Feb 10, 2025",
     location: "Kisumu, Kenya",
     category: "Art",
-    image: "🎨"
+    image: "/src/assets/images/EP3.jpeg"
   },
   {
     id: 4,
@@ -31,7 +31,7 @@ export const events = [
     date: "Mar 5, 2025",
     location: "Nakuru, Kenya",
     category: "Food",
-    image: "🍷"
+    image: "/src/assets/images/EP4.jpeg"
   },
   {
     id: 5,
@@ -39,7 +39,7 @@ export const events = [
     date: "Mar 18, 2025",
     location: "Nairobi, Kenya",
     category: "Business",
-    image: "🚀"
+    image: "/src/assets/images/G1.jpeg"
   },
   {
     id: 6,
@@ -47,6 +47,6 @@ export const events = [
     date: "Apr 2, 2025",
     location: "Eldoret, Kenya",
     category: "Sports",
-    image: "🏃"
+    image: "/src/assets/images/G2.jpeg"
   }
 ];
