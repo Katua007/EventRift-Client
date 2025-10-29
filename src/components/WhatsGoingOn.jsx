@@ -13,7 +13,7 @@ export function WhatsGoingOn() {
       price: "KES 2,500",
       category: "Music",
       attendees: 1200,
-      image: "🎵",
+      image: "/src/assets/images/EP1.jpeg",
       description: "The biggest Afrobeats celebration in East Africa"
     },
     {
@@ -24,7 +24,7 @@ export function WhatsGoingOn() {
       price: "KES 5,000",
       category: "Technology",
       attendees: 800,
-      image: "💻",
+      image: "/src/assets/images/EP2.jpeg",
       description: "Innovation and technology conference"
     },
     {
@@ -35,7 +35,7 @@ export function WhatsGoingOn() {
       price: "KES 1,500",
       category: "Art",
       attendees: 600,
-      image: "🎨",
+      image: "/src/assets/images/EP3.jpeg",
       description: "Celebrating local artists and cultural heritage"
     }
   ];
@@ -60,7 +60,11 @@ export function WhatsGoingOn() {
                 <div className="absolute top-4 left-4 bg-er-primary text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
                   {event.category}
                 </div>
-                <div className="text-6xl animate-bounce">{event.image}</div>
+                <img 
+                  src={event.image} 
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
               
               <h3 className="font-heading text-xl font-semibold text-white mb-2 group-hover:text-er-primary transition-colors">
