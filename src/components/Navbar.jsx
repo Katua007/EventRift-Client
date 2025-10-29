@@ -94,12 +94,13 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-er-primary/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo - Exact Figma Style */}
-          <Link to="/" className="flex items-center space-x-3 hover-lift">
-            <div className="w-12 h-12 bg-gradient-to-r from-er-primary to-er-secondary rounded-2xl flex items-center justify-center shadow-glow">
-              <span className="text-white font-bold text-xl">E</span>
-            </div>
-            <span className="text-white font-heading font-bold text-2xl">EventRift</span>
+          {/* Logo - Image Logo */}
+          <Link to="/" className="flex items-center hover-lift">
+            <img 
+              src="/src/assets/images/EventRift LOGO.png" 
+              alt="EventRift" 
+              className="h-14 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
