@@ -42,7 +42,7 @@ const ProtectedRoute = ({ element, requiredRole }) => {
 const App = () => {
     return (
         // BrowserRouter must wrap the whole application
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
                 <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
@@ -60,7 +60,7 @@ const App = () => {
                             />
                             <Route
                                 path="/events/:eventId"
-                                element={<EventDetailPage />}
+                                element={<ProtectedRoute element={<EventDetailPage />} />}
                             />
 
                             {/* Auth Routes */}

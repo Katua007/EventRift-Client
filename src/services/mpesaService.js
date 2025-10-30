@@ -8,6 +8,7 @@ const PASSKEY = import.meta.env.VITE_MPESA_PASSKEY || 'demo_passkey';
 export const mpesaService = {
   // Get OAuth token
   getAccessToken: async () => {
+    console.log('Demo Mode: M-Pesa service running in demo mode due to CORS restrictions');
     try {
       const auth = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
       const response = await fetch(`${MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials`, {
@@ -26,6 +27,7 @@ export const mpesaService = {
 
   // Initiate STK Push
   stkPush: async (phoneNumber, amount, accountReference, transactionDesc) => {
+    console.log('Demo Mode: M-Pesa STK Push simulation', { phoneNumber, amount, accountReference, transactionDesc });
     try {
       const token = await mpesaService.getAccessToken();
       const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);

@@ -15,7 +15,7 @@ const Navbar = () => {
   const navItems = [
     { name: 'Home', href: '/', section: 'home' },
     { name: 'About', href: '#about', section: 'about' },
-    { name: 'Events', href: '#events', section: 'events' },
+    { name: 'Events', href: '/events', section: 'events', requireAuth: true },
     { name: 'Gallery', href: '#gallery', section: 'gallery' },
     { name: 'Contact', href: '#contact', section: 'contact' }
   ];
@@ -46,8 +46,14 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location]);
 
-  const handleNavClick = (href, section) => {
+  const handleNavClick = (href, section, requireAuth = false) => {
     setIsOpen(false);
+    
+    if (requireAuth && !isAuthenticated) {
+      localStorage.setItem('redirectAfterLogin', href);
+      navigate('/login');
+      return;
+    }
     
     if (href.startsWith('#')) {
       if (location.pathname !== '/') {
@@ -100,7 +106,6 @@ const Navbar = () => {
               src="/src/assets/images/EventRift LOGO.png" 
               alt="EventRift" 
               className="h-14 w-auto"
-              style={{ mixBlendMode: 'screen' }}
             />
           </Link>
 
@@ -109,7 +114,7 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.name}
-                onClick={() => handleNavClick(item.href, item.section)}
+                onClick={() => handleNavClick(item.href, item.section, item.requireAuth)}
                 className={`relative px-4 py-2 text-base font-semibold transition-all duration-300 hover-lift ${
                   activeSection === item.section
                     ? 'text-er-primary'
@@ -189,7 +194,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => handleNavClick(item.href, item.section)}
+                  onClick={() => handleNavClick(item.href, item.section, item.requireAuth)}
                   className={`text-left px-4 py-3 text-base font-semibold transition-colors rounded-lg ${
                     activeSection === item.section
                       ? 'text-er-primary bg-er-primary/10'

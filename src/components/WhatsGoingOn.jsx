@@ -3,12 +3,12 @@ import { Calendar, MapPin, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function WhatsGoingOn() {
-  // Featured events data matching Figma
+  // Featured events data - updated to 2025
   const featuredEvents = [
     {
       id: 1,
-      title: "AfroBeats Festival 2024",
-      date: "Dec 15, 2024",
+      title: "AfroBeats Festival 2025",
+      date: "Dec 15, 2025",
       location: "Nairobi, Kenya",
       price: "KES 2,500",
       category: "Music",
@@ -20,7 +20,7 @@ export function WhatsGoingOn() {
       id: 2,
       title: "Tech Summit Kenya",
       date: "Jan 20, 2025",
-      location: "Mombasa, Kenya", 
+      location: "Mombasa, Kenya",
       price: "KES 5,000",
       category: "Technology",
       attendees: 800,
@@ -89,8 +89,8 @@ export function WhatsGoingOn() {
               
               <div className="flex justify-between items-center">
                 <span className="text-2xl font-bold text-er-primary">{event.price}</span>
-                <Link 
-                  to={`/signup`}
+                <Link
+                  to={`/events/${event.id}`}
                   className="bg-er-primary hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
                 >
                   View Details
