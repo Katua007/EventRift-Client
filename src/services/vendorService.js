@@ -1,125 +1,89 @@
-// Vendor service for managing vendor operations
+// Helper to get stored services from localStorage
+const getStoredServices = () => {
+  const stored = localStorage.getItem('vendorServices');
+  return stored ? JSON.parse(stored) : [];
+};
+
+// Helper to save services to localStorage
+const saveStoredServices = (services) => {
+  localStorage.setItem('vendorServices', JSON.stringify(services));
+};
+
 export const vendorService = {
-  // Register vendor
-  registerVendor: async (vendorData) => {
-    try {
-      // Mock API call - replace with actual endpoint
-      console.log('Registering vendor:', vendorData);
-      return {
-        success: true,
-        vendor: {
-          id: Date.now(),
-          ...vendorData,
-          status: 'pending_verification',
-          badge: null,
-          created_at: new Date().toISOString()
-        }
-      };
-    } catch (error) {
-      console.error('Error registering vendor:', error);
-      throw error;
-    }
+  // Get all services for a vendor
+  getVendorServices: async (vendorId) => {
+    const storedServices = getStoredServices();
+    const vendorServices = storedServices.filter(s => s.vendor_id === vendorId);
+    return {
+      services: vendorServices.map(s => ({
+        id: s.id,
+        name: s.name,
+        category: s.category,
+        price: s.price,
+        bookings: s.bookings || 0,
+        rating: s.rating || 0,
+        status: s.status
+      }))
+    };
   },
 
-  // Update vendor services
-  updateServices: async (vendorId, services) => {
-    try {
-      console.log('Updating vendor services:', { vendorId, services });
-      return {
-        success: true,
-        services: services.map(service => ({
-          id: Date.now() + Math.random(),
-          vendor_id: vendorId,
-          ...service,
-          created_at: new Date().toISOString()
-        }))
-      };
-    } catch (error) {
-      console.error('Error updating services:', error);
-      throw error;
-    }
+  // Create new service
+  createService: async (serviceData) => {
+    console.log('Creating service:', serviceData);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const newService = {
+      id: Date.now(),
+      ...serviceData,
+      bookings: 0,
+      rating: 0,
+      reviews_count: 0,
+      created_at: new Date().toISOString()
+    };
+
+    const storedServices = getStoredServices();
+    storedServices.push(newService);
+    saveStoredServices(storedServices);
+
+    return {
+      success: true,
+      service: newService
+    };
   },
 
-  // Upload license
-  uploadLicense: async (vendorId, licenseFile) => {
-    try {
-      console.log('Uploading license:', { vendorId, licenseFile });
-      return {
-        success: true,
-        license: {
-          id: Date.now(),
-          vendor_id: vendorId,
-          filename: licenseFile.name,
-          status: 'pending_review',
-          uploaded_at: new Date().toISOString()
-        }
-      };
-    } catch (error) {
-      console.error('Error uploading license:', error);
-      throw error;
+  // Update service
+  updateService: async (serviceId, serviceData) => {
+    console.log('Updating service:', serviceId, serviceData);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const storedServices = getStoredServices();
+    const index = storedServices.findIndex(s => s.id === parseInt(serviceId));
+    if (index !== -1) {
+      storedServices[index] = { ...storedServices[index], ...serviceData };
+      saveStoredServices(storedServices);
+      return { success: true, service: storedServices[index] };
     }
+    throw new Error('Service not found');
   },
 
-  // Book stall
-  bookStall: async (vendorId, eventId, stallData) => {
-    try {
-      console.log('Booking stall:', { vendorId, eventId, stallData });
-      return {
-        success: true,
-        booking: {
-          id: Date.now(),
-          vendor_id: vendorId,
-          event_id: eventId,
-          ...stallData,
-          status: 'confirmed',
-          booked_at: new Date().toISOString()
-        }
-      };
-    } catch (error) {
-      console.error('Error booking stall:', error);
-      throw error;
+  // Get single service
+  getService: async (serviceId) => {
+    const storedServices = getStoredServices();
+    const service = storedServices.find(s => s.id.toString() === serviceId);
+    if (service) {
+      return { service };
     }
+    throw new Error('Service not found');
   },
 
-  // Get vendor dashboard data
-  getDashboardData: async (vendorId) => {
-    try {
-      return {
-        vendor: {
-          id: vendorId,
-          name: 'Demo Vendor',
-          email: 'vendor@example.com',
-          status: 'verified',
-          badge: 'certified',
-          services: [
-            {
-              id: 1,
-              name: 'Photography',
-              category: 'Media',
-              price: 50000,
-              bookings: 12
-            }
-          ],
-          bookings: [
-            {
-              id: 1,
-              event_name: 'Tech Conference 2024',
-              date: '2024-12-20',
-              amount: 25000,
-              status: 'confirmed'
-            }
-          ],
-          stats: {
-            totalServices: 3,
-            totalBookings: 15,
-            totalRevenue: 750000,
-            averageRating: 4.7
-          }
-        }
-      };
-    } catch (error) {
-      console.error('Error fetching vendor data:', error);
-      throw error;
-    }
+  // Delete service
+  deleteService: async (serviceId) => {
+    console.log('Deleting service:', serviceId);
+    const storedServices = getStoredServices();
+    const filtered = storedServices.filter(s => s.id !== parseInt(serviceId));
+    saveStoredServices(filtered);
+    return { success: true };
   }
 };

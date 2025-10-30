@@ -42,13 +42,16 @@ const EventsPage = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        // Always use static events data for reliable display
-        if (staticEvents && staticEvents.length > 0) {
-          setEvents(staticEvents);
+        // Combine static events with created events from localStorage
+        const storedEvents = JSON.parse(localStorage.getItem('createdEvents') || '[]');
+        const allEvents = [...staticEvents, ...storedEvents];
+        
+        if (allEvents && allEvents.length > 0) {
+          setEvents(allEvents);
           setError(null);
-          console.log('Loaded', staticEvents.length, 'events from static data');
+          console.log('Loaded', allEvents.length, 'events (', staticEvents.length, 'static +', storedEvents.length, 'created)');
         } else {
-          console.error('No static events found');
+          console.error('No events found');
           setError('No events available');
           setEvents([]);
         }

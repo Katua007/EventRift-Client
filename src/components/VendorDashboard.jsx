@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Calendar, Users, DollarSign, Star, Eye, Edit, Trash2, TrendingUp, Package, Clock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { vendorService } from '../services/vendorService';
 
 const VendorDashboard = () => {
   const { user } = useAuth();
@@ -16,32 +17,33 @@ const VendorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
+  const handleDeleteService = async (serviceId) => {
+    if (window.confirm('Are you sure you want to delete this service?')) {
+      try {
+        await vendorService.deleteService(serviceId);
+        setServices(services.filter(service => service.id !== serviceId));
+        // Show notification
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-24 right-6 z-50 p-4 rounded-lg shadow-lg bg-green-900/90 border border-green-700 text-green-300';
+        notification.innerHTML = '<div class="flex items-center"><div class="mr-3">✅</div><div class="font-medium">Service deleted successfully!</div></div>';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+      } catch (err) {
+        alert('Failed to delete service');
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchVendorData = async () => {
       try {
         setLoading(true);
-        // Mock data for demo
-        const mockServices = [
-          {
-            id: 1,
-            name: "Photography Package",
-            category: "Photography",
-            price: 50000,
-            bookings: 12,
-            rating: 4.8,
-            status: "active"
-          },
-          {
-            id: 2,
-            name: "Catering Service",
-            category: "Food & Beverage",
-            price: 25000,
-            bookings: 8,
-            rating: 4.5,
-            status: "active"
-          }
-        ];
-
+        const servicesResponse = await vendorService.getVendorServices(user.id);
+        const vendorServices = servicesResponse.services || [];
+        
+        setServices(vendorServices);
+        
+        // Mock bookings for demo
         const mockBookings = [
           {
             id: 1,
@@ -53,17 +55,25 @@ const VendorDashboard = () => {
             status: "confirmed"
           }
         ];
-
-        setServices(mockServices);
         setBookings(mockBookings);
+        
+        // Calculate stats
+        const totalServices = vendorServices.length;
+        const totalBookings = vendorServices.reduce((sum, s) => sum + (s.bookings || 0), 0);
+        const totalRevenue = vendorServices.reduce((sum, s) => sum + ((s.bookings || 0) * s.price), 0);
+        const averageRating = totalServices > 0 ? 
+          vendorServices.reduce((sum, s) => sum + (s.rating || 0), 0) / totalServices : 0;
+        
         setStats({
-          totalServices: 2,
-          totalBookings: 20,
-          totalRevenue: 1000000,
-          averageRating: 4.7
+          totalServices,
+          totalBookings,
+          totalRevenue,
+          averageRating: averageRating.toFixed(1)
         });
       } catch (err) {
         console.error('Failed to fetch vendor data:', err);
+        setServices([]);
+        setBookings([]);
       } finally {
         setLoading(false);
       }
@@ -122,19 +132,19 @@ const VendorDashboard = () => {
         </div>
         <div className="flex space-x-2">
           <button
-            onClick={() => alert('View service details coming soon!')}
+            onClick={() => alert(`Service: ${service.name}\nCategory: ${service.category}\nPrice: KES ${service.price.toLocaleString()}`)}
             className="p-2 bg-er-primary/20 text-er-primary rounded-lg hover:bg-er-primary/30 transition-colors"
           >
             <Eye className="w-4 h-4" />
           </button>
-          <button
-            onClick={() => alert('Edit service coming soon!')}
+          <Link
+            to={`/vendor/edit-service/${service.id}`}
             className="p-2 bg-er-secondary/20 text-er-secondary rounded-lg hover:bg-er-secondary/30 transition-colors"
           >
             <Edit className="w-4 h-4" />
-          </button>
+          </Link>
           <button
-            onClick={() => alert('Delete service coming soon!')}
+            onClick={() => handleDeleteService(service.id)}
             className="p-2 bg-red-900/20 text-red-400 rounded-lg hover:bg-red-900/30 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
@@ -197,11 +207,11 @@ const VendorDashboard = () => {
             <p className="text-er-text">Manage your services and track your bookings</p>
           </div>
           <Link
-            to="/vendor/setup"
+            to="/vendor/add-service"
             className="btn-primary flex items-center"
           >
             <Plus className="w-5 h-5 mr-2" />
-            Setup Services
+            Add Service
           </Link>
         </div>
 
@@ -287,9 +297,9 @@ const VendorDashboard = () => {
                 <Package className="w-16 h-16 text-er-text mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-er-light mb-2">No services yet</h3>
                 <p className="text-er-text mb-6">Add your first service to get started</p>
-                <Link to="/vendor/setup" className="btn-primary">
+                <Link to="/vendor/add-service" className="btn-primary">
                   <Plus className="w-5 h-5 mr-2" />
-                  Setup Your First Service
+                  Add Your First Service
                 </Link>
               </div>
             ) : (

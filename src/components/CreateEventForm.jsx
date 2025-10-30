@@ -1,55 +1,68 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, MapPin, DollarSign, Users, Clock, Tag, Save } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
 
 const CreateEventForm = () => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const mapRef = useRef(null);
+  const { eventId } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
   const categories = ['Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion', 'Education', 'Health'];
   const themes = ['Corporate', 'Casual', 'Formal', 'Festival', 'Conference', 'Workshop', 'Networking', 'Cultural'];
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  // Initialize Google Maps
   useEffect(() => {
-    const initMap = async () => {
-      if (window.google) {
-        const mapInstance = new window.google.maps.Map(mapRef.current, {
-          center: { lat: -1.2921, lng: 36.8219 }, // Nairobi
-          zoom: 13,
-        });
-
-        const markerInstance = new window.google.maps.Marker({
-          position: { lat: -1.2921, lng: 36.8219 },
-          map: mapInstance,
-          draggable: true,
-        });
-
-        markerInstance.addListener('dragend', () => {
-          const position = markerInstance.getPosition();
-          setValue('latitude', position.lat());
-          setValue('longitude', position.lng());
-        });
-      }
-    };
-
-    // Load Google Maps script
-    if (!window.google) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.onload = initMap;
-      document.head.appendChild(script);
-    } else {
-      initMap();
+    if (eventId) {
+      setIsEditing(true);
+      const loadEventData = async () => {
+        try {
+          const response = await eventsService.getEvent(eventId);
+          const event = response.event;
+          reset({
+            title: event.title,
+            category: event.category,
+            theme: event.theme,
+            dress_code: event.dress_code,
+            description: event.description,
+            date: event.date || event.start_date,
+            start_time: event.start_time,
+            end_time: event.end_time,
+            venue_name: event.venue_name,
+            address: event.address,
+            ticket_price: event.ticket_price,
+            early_bird_price: event.early_bird_price,
+            max_attendees: event.max_attendees
+          });
+        } catch (err) {
+          setError('Failed to load event data');
+        }
+      };
+      loadEventData();
     }
-  }, [setValue]);
+  }, [eventId, reset]);
+
+  const showNotification = (message, type = 'success') => {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-24 right-6 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+      type === 'success' ? 'bg-green-900/90 border border-green-700 text-green-300' :
+      'bg-red-900/90 border border-red-700 text-red-300'
+    }`;
+    notification.innerHTML = `
+      <div class="flex items-center">
+        <div class="mr-3">${type === 'success' ? '✅' : '❌'}</div>
+        <div class="font-medium">${message}</div>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 4000);
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -59,30 +72,51 @@ const CreateEventForm = () => {
       const eventData = {
         ...data,
         organizer_id: user.id,
-        created_at: new Date().toISOString(),
+        location: `${data.venue_name}, ${data.address}`,
+        image: getEventEmoji(data.category),
+        start_date: data.date,
         status: 'active'
       };
 
-      const result = await eventsService.createEvent(eventData);
-      
+      const result = isEditing
+        ? await eventsService.updateEvent(eventId, eventData)
+        : await eventsService.createEvent(eventData);
+
       if (result.success) {
-        navigate('/organizer/dashboard');
+        showNotification(
+          `Event "${data.title}" ${isEditing ? 'updated' : 'created'} successfully!`,
+          'success'
+        );
+        setTimeout(() => navigate('/organizer/dashboard'), 1500);
       } else {
-        setError(result.message || 'Failed to create event');
+        setError(result.message || `Failed to ${isEditing ? 'update' : 'create'} event`);
       }
     } catch (err) {
-      setError(err.message || 'Failed to create event');
+      setError(err.message || `Failed to ${isEditing ? 'update' : 'create'} event`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getEventEmoji = (category) => {
+    const emojiMap = {
+      'Music': '🎵', 'Technology': '💻', 'Art': '🎨', 'Food': '🍽️',
+      'Business': '💼', 'Sports': '🏃♂️', 'Entertainment': '🎭',
+      'Fashion': '👗', 'Education': '📚', 'Health': '🏥'
+    };
+    return emojiMap[category] || '🎉';
   };
 
   return (
     <div className="min-h-screen bg-er-dark pt-20 pb-12">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-8">
-          <h1 className="font-heading text-4xl font-bold text-er-light mb-4">Create New Event</h1>
-          <p className="text-er-text">Fill in the details to create your amazing event</p>
+          <h1 className="font-heading text-4xl font-bold text-er-light mb-4">
+            {isEditing ? 'Edit Event' : 'Create New Event'}
+          </h1>
+          <p className="text-er-text">
+            {isEditing ? 'Update your event details' : 'Fill in the details to create your amazing event'}
+          </p>
         </div>
 
         {error && (
@@ -168,13 +202,13 @@ const CreateEventForm = () => {
             
             <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-er-light font-semibold mb-2">Start Date *</label>
+                <label className="block text-er-light font-semibold mb-2">Event Date *</label>
                 <input
                   type="date"
-                  {...register('start_date', { required: 'Start date is required' })}
+                  {...register('date', { required: 'Event date is required' })}
                   className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
                 />
-                {errors.start_date && <p className="text-red-400 text-sm mt-1">{errors.start_date.message}</p>}
+                {errors.date && <p className="text-red-400 text-sm mt-1">{errors.date.message}</p>}
               </div>
 
               <div>
@@ -196,23 +230,6 @@ const CreateEventForm = () => {
                 />
               </div>
             </div>
-
-            <div className="mt-6">
-              <label className="block text-er-light font-semibold mb-2">Days of Week</label>
-              <div className="flex flex-wrap gap-3">
-                {daysOfWeek.map(day => (
-                  <label key={day} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      value={day}
-                      {...register('days_of_week')}
-                      className="mr-2 text-er-primary"
-                    />
-                    <span className="text-er-text">{day}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Location */}
@@ -222,13 +239,13 @@ const CreateEventForm = () => {
               Location
             </h2>
             
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-er-light font-semibold mb-2">Venue Name *</label>
                 <input
                   {...register('venue_name', { required: 'Venue name is required' })}
                   className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-                  placeholder="e.g., KICC, Carnivore Restaurant"
+                  placeholder="Enter venue name"
                 />
                 {errors.venue_name && <p className="text-red-400 text-sm mt-1">{errors.venue_name.message}</p>}
               </div>
@@ -238,27 +255,18 @@ const CreateEventForm = () => {
                 <input
                   {...register('address', { required: 'Address is required' })}
                   className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-                  placeholder="Full address"
+                  placeholder="Enter full address"
                 />
                 {errors.address && <p className="text-red-400 text-sm mt-1">{errors.address.message}</p>}
               </div>
             </div>
-
-            <div className="mb-4">
-              <label className="block text-er-light font-semibold mb-2">Select Location on Map</label>
-              <div ref={mapRef} className="w-full h-64 rounded-lg border border-gray-700"></div>
-              <p className="text-er-text text-sm mt-2">Drag the marker to set the exact location</p>
-            </div>
-
-            <input type="hidden" {...register('latitude')} />
-            <input type="hidden" {...register('longitude')} />
           </div>
 
           {/* Pricing */}
           <div className="card">
             <h2 className="font-heading text-2xl font-semibold text-er-light mb-6 flex items-center">
               <DollarSign className="mr-3 text-er-primary" />
-              Pricing & Tickets
+              Pricing
             </h2>
             
             <div className="grid md:grid-cols-3 gap-6">
@@ -293,79 +301,28 @@ const CreateEventForm = () => {
                 />
               </div>
             </div>
-
-            <div className="mt-6">
-              <label className="block text-er-light font-semibold mb-2">Payment Method</label>
-              <select
-                {...register('payment_method')}
-                className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-              >
-                <option value="mpesa">M-Pesa</option>
-                <option value="bank">Bank Transfer</option>
-                <option value="cash">Cash at Venue</option>
-                <option value="multiple">Multiple Options</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Additional Details */}
-          <div className="card">
-            <h2 className="font-heading text-2xl font-semibold text-er-light mb-6 flex items-center">
-              <Users className="mr-3 text-er-primary" />
-              Additional Details
-            </h2>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-er-light font-semibold mb-2">What to Expect</label>
-                <textarea
-                  {...register('what_to_expect')}
-                  rows={3}
-                  className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-                  placeholder="Describe what attendees can expect..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-er-light font-semibold mb-2">Services Available</label>
-                <textarea
-                  {...register('services_available')}
-                  rows={3}
-                  className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-                  placeholder="List services like parking, catering, WiFi..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-er-light font-semibold mb-2">Terms and Conditions</label>
-                <textarea
-                  {...register('terms_conditions')}
-                  rows={4}
-                  className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
-                  placeholder="Enter terms and conditions for the event..."
-                />
-              </div>
-            </div>
           </div>
 
           {/* Submit Button */}
-          <div className="text-center">
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/organizer/dashboard')}
+              className="btn-secondary px-8 py-3"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary text-lg px-12 py-4 flex items-center mx-auto"
+              className="btn-primary px-8 py-3 flex items-center"
             >
               {loading ? (
-                <>
-                  <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-3"></div>
-                  Creating Event...
-                </>
+                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
               ) : (
-                <>
-                  <Save className="mr-3 w-5 h-5" />
-                  Create Event
-                </>
+                <Save className="w-5 h-5 mr-2" />
               )}
+              {loading ? 'Saving...' : (isEditing ? 'Update Event' : 'Create Event')}
             </button>
           </div>
         </form>

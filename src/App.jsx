@@ -11,6 +11,7 @@ import GoerDashboard from './components/GoerDashboard';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import VendorDashboard from './components/VendorDashboard';
 import CreateEventForm from './components/CreateEventForm';
+import ServiceForm from './components/ServiceForm';
 import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
 import Navbar from './components/Navbar';
@@ -93,6 +94,10 @@ const App = () => {
                                 element={<ProtectedRoute element={<CreateEventForm />} requiredRole="organizer" />}
                             />
                             <Route
+                                path="/organizer/edit-event/:eventId"
+                                element={<ProtectedRoute element={<CreateEventForm />} requiredRole="organizer" />}
+                            />
+                            <Route
                                 path="/goer/dashboard"
                                 element={<ProtectedRoute element={<GoerDashboard />} />}
                             />
@@ -103,6 +108,14 @@ const App = () => {
                             <Route
                                 path="/vendor/setup"
                                 element={<ProtectedRoute element={<VendorSetup />} requiredRole="vendor" />}
+                            />
+                            <Route
+                                path="/vendor/add-service"
+                                element={<ProtectedRoute element={<ServiceForm />} requiredRole="vendor" />}
+                            />
+                            <Route
+                                path="/vendor/edit-service/:serviceId"
+                                element={<ProtectedRoute element={<ServiceForm />} requiredRole="vendor" />}
                             />
                             
                             {/* Catch-all/404 Page */}

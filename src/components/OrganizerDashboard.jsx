@@ -21,12 +21,14 @@ const OrganizerDashboard = () => {
       try {
         setLoading(true);
         const eventsResponse = await eventsService.getOrganizerEvents(user.id);
-        setEvents(eventsResponse.events || []);
+        const organizerEvents = eventsResponse.events || [];
+        setEvents(organizerEvents);
         
-        const totalEvents = eventsResponse.events?.length || 0;
-        const totalTicketsSold = eventsResponse.events?.reduce((sum, event) => sum + (event.tickets_sold || 0), 0) || 0;
-        const totalRevenue = eventsResponse.events?.reduce((sum, event) => sum + (event.revenue || 0), 0) || 0;
-        const averageRating = eventsResponse.events?.reduce((sum, event) => sum + (event.rating || 0), 0) / totalEvents || 0;
+        const totalEvents = organizerEvents.length;
+        const totalTicketsSold = organizerEvents.reduce((sum, event) => sum + (event.tickets_sold || 0), 0);
+        const totalRevenue = organizerEvents.reduce((sum, event) => sum + (event.revenue || 0), 0);
+        const averageRating = totalEvents > 0 ? 
+          organizerEvents.reduce((sum, event) => sum + (event.rating || 0), 0) / totalEvents : 0;
         
         setStats({
           totalEvents,
@@ -36,23 +38,12 @@ const OrganizerDashboard = () => {
         });
       } catch (err) {
         console.error('Failed to fetch organizer data:', err);
-        setEvents([
-          {
-            id: 1,
-            title: "Tech Conference 2024",
-            date: "2024-12-20",
-            tickets_sold: 150,
-            max_attendees: 200,
-            revenue: 750000,
-            rating: 4.5,
-            status: "active"
-          }
-        ]);
+        setEvents([]);
         setStats({
-          totalEvents: 1,
-          totalTicketsSold: 150,
-          totalRevenue: 750000,
-          averageRating: 4.5
+          totalEvents: 0,
+          totalTicketsSold: 0,
+          totalRevenue: 0,
+          averageRating: 0
         });
       } finally {
         setLoading(false);
@@ -71,7 +62,13 @@ const OrganizerDashboard = () => {
       try {
         await eventsService.deleteEvent(eventId);
         setEvents(events.filter(event => event.id !== eventId));
-      } catch {
+        // Show notification
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-24 right-6 z-50 p-4 rounded-lg shadow-lg bg-green-900/90 border border-green-700 text-green-300';
+        notification.innerHTML = '<div class="flex items-center"><div class="mr-3">✅</div><div class="font-medium">Event deleted successfully!</div></div>';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+      } catch (err) {
         alert('Failed to delete event');
       }
     }
@@ -134,12 +131,12 @@ const OrganizerDashboard = () => {
           >
             <Eye className="w-4 h-4" />
           </Link>
-          <button
-            onClick={() => alert('Edit functionality coming soon!')}
+          <Link
+            to={`/organizer/edit-event/${event.id}`}
             className="p-2 bg-er-secondary/20 text-er-secondary rounded-lg hover:bg-er-secondary/30 transition-colors"
           >
             <Edit className="w-4 h-4" />
-          </button>
+          </Link>
           <button
             onClick={() => handleDeleteEvent(event.id)}
             className="p-2 bg-red-900/20 text-red-400 rounded-lg hover:bg-red-900/30 transition-colors"
