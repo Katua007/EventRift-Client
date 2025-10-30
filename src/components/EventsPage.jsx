@@ -260,7 +260,19 @@ const EventsPage = () => {
                         {event.theme}
                       </div>
                     )}
-                    <div className="w-full h-full bg-cover bg-center rounded-lg" style={{ backgroundImage: `url(${event.image})` }}></div>
+                    {event.image && event.image.startsWith('/assets/') ? (
+                      <img 
+                        src={event.image} 
+                        alt={event.title} 
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML += '<div class="w-full h-full flex items-center justify-center text-6xl">🎉</div>';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-cover bg-center rounded-lg" style={{ backgroundImage: `url(${event.image})` }}></div>
+                    )}
                   </div>
                   
                   <h3 className="font-heading text-lg font-semibold text-er-light mb-2">
