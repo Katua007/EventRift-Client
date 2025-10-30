@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import heroImage from '../assets/images/hero image.jpg';
 
 export function Hero() {
   const navigate = useNavigate();
@@ -18,23 +19,10 @@ export function Hero() {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0">
-        <img
-          src="/src/assets/images/hero image.jpg"
-          alt="EventRift Hero"
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'block';
-          }}
-        />
-        <div 
-          className="w-full h-full bg-gradient-to-br from-er-primary/30 to-er-secondary/30 flex items-center justify-center text-6xl"
-          style={{ display: 'none' }}
-        >
-          🎉
-        </div>
-        
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
         {/* Overlay gradients */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80" />
         <div className="absolute inset-0 bg-gradient-to-t from-er-dark/90 via-transparent to-transparent" />
