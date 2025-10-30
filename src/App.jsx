@@ -1,15 +1,17 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'; 
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage'; 
+import SignupPage from './pages/SignupPage';
 import HomePage from './components/HomePage';
 import EventsPage from './components/EventsPage';
 import EventDetailPage from './components/EventDetailPage';
 import GoerDashboard from './components/GoerDashboard';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import VendorDashboard from './components/VendorDashboard';
+import CreateEventForm from './components/CreateEventForm';
+import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
 import Navbar from './components/Navbar';
 
@@ -68,17 +70,25 @@ const App = () => {
                             <Route path="/signup" element={<SignupPage />} />
 
                             {/* Protected Dashboard Routes */}
-                            <Route 
-                                path="/organizer/dashboard" 
-                                element={<ProtectedRoute element={<OrganizerDashboard />} />} 
+                            <Route
+                                path="/organizer/dashboard"
+                                element={<ProtectedRoute element={<OrganizerDashboard />} />}
                             />
-                            <Route 
-                                path="/goer/dashboard" 
-                                element={<ProtectedRoute element={<GoerDashboard />} />} 
+                            <Route
+                                path="/organizer/create-event"
+                                element={<ProtectedRoute element={<CreateEventForm />} requiredRole="organizer" />}
                             />
-                            <Route 
-                                path="/vendor/dashboard" 
-                                element={<ProtectedRoute element={<VendorDashboard />} />} 
+                            <Route
+                                path="/goer/dashboard"
+                                element={<ProtectedRoute element={<GoerDashboard />} />}
+                            />
+                            <Route
+                                path="/vendor/dashboard"
+                                element={<ProtectedRoute element={<VendorDashboard />} />}
+                            />
+                            <Route
+                                path="/vendor/setup"
+                                element={<ProtectedRoute element={<VendorSetup />} requiredRole="vendor" />}
                             />
                             
                             {/* Catch-all/404 Page */}

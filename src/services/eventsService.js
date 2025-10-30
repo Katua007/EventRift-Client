@@ -32,8 +32,8 @@ export const eventsService = {
   },
 
   // Organizer services
-  getOrganizerEvents: async () => {
-    // Mock data for demo
+  getOrganizerEvents: async (organizerId) => {
+    // Mock data for demo - in real app, this would fetch from backend
     return {
       events: [
         {
@@ -47,6 +47,25 @@ export const eventsService = {
           status: "active"
         }
       ]
+    };
+  },
+
+  createEvent: async (eventData) => {
+    // Mock event creation - in real app, this would send to backend
+    console.log('Creating event:', eventData);
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Mock successful response
+    return {
+      success: true,
+      event: {
+        id: Date.now(),
+        ...eventData,
+        status: 'active',
+        created_at: new Date().toISOString()
+      }
     };
   },
 
