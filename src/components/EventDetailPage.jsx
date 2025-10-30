@@ -161,8 +161,16 @@ const EventDetailPage = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Event Image */}
             <div className="lg:col-span-1">
-              <div className="relative bg-gradient-to-br from-er-primary/30 to-er-secondary/30 rounded-xl h-80 flex items-center justify-center">
-                <div className="text-8xl">{event.image || '🎉'}</div>
+              <div className="relative bg-gradient-to-br from-er-primary/30 to-er-secondary/30 rounded-xl h-80 flex items-center justify-center overflow-hidden">
+                {event.image && event.image.startsWith('/assets/') ? (
+                  <img src={event.image} alt={event.title} className="w-full h-full object-cover" onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }} />
+                ) : null}
+                <div className={`w-full h-full flex items-center justify-center text-6xl ${event.image && event.image.startsWith('/assets/') ? 'hidden' : ''}`}>
+                  {event.image && !event.image.startsWith('/assets/') ? event.image : '🎉'}
+                </div>
                 <div className="absolute top-4 left-4 bg-er-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
                   {event.category}
                 </div>

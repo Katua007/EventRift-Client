@@ -260,7 +260,7 @@ const EventsPage = () => {
                         {event.theme}
                       </div>
                     )}
-                    <div className="text-4xl">{event.image || '🎉'}</div>
+                    <div className="w-full h-full bg-cover bg-center rounded-lg" style={{ backgroundImage: `url(${event.image})` }}></div>
                   </div>
                   
                   <h3 className="font-heading text-lg font-semibold text-er-light mb-2">

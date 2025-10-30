@@ -13,7 +13,7 @@ export function WhatsGoingOn() {
       price: "KES 2,500",
       category: "Music",
       attendees: 1200,
-      image: "/src/assets/images/EP1.jpeg",
+      image: "/assets/images/EP1.jpeg",
       description: "The biggest Afrobeats celebration in East Africa"
     },
     {
@@ -24,7 +24,7 @@ export function WhatsGoingOn() {
       price: "KES 5,000",
       category: "Technology",
       attendees: 800,
-      image: "/src/assets/images/EP2.jpeg",
+      image: "/assets/images/EP2.jpeg",
       description: "Innovation and technology conference"
     },
     {
@@ -35,7 +35,7 @@ export function WhatsGoingOn() {
       price: "KES 1,500",
       category: "Art",
       attendees: 600,
-      image: "/src/assets/images/EP3.jpeg",
+      image: "/assets/images/EP3.jpeg",
       description: "Celebrating local artists and cultural heritage"
     }
   ];
@@ -64,6 +64,10 @@ export function WhatsGoingOn() {
                   src={event.image} 
                   alt={event.title}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-6xl">🎉</div>';
+                  }}
                 />
               </div>
               
