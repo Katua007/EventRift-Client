@@ -61,5 +61,5 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
           # Set the working directory to the path where the artifact was downloaded (dist)
-          working-directory: dist 
+          working-directory: .
           vercel-args: '--prod'
