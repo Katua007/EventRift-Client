@@ -1,5 +1,6 @@
 import React from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import aboutImage from '../assets/images/AboutSectionPic.jpeg';
 
 export function AboutUs() {
   return (
@@ -18,7 +19,11 @@ export function AboutUs() {
           <div className="relative animate-slide-up">
             <div className="relative h-[500px] overflow-hidden rounded-3xl shadow-2xl hover-lift">
               <ImageWithFallback
+<<<<<<< Updated upstream
                 src="/assets/images/AboutSectionPic.jpeg"
+=======
+                src={aboutImage}
+>>>>>>> Stashed changes
                 alt="EventRift About Us"
                 className="w-full h-full object-cover"
                 fallback="🎉"

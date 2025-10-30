@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import logo from '../assets/images/EventRift LOGO.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,9 +103,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo - Image Logo */}
           <Link to="/" className="flex items-center hover-lift">
-            <img 
-              src="/src/assets/images/EventRift LOGO.png" 
-              alt="EventRift" 
+            <img
+              src={logo}
+              alt="EventRift"
               className="h-14 w-auto"
             />
           </Link>

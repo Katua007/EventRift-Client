@@ -1,43 +1,78 @@
 import React, { useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import G1 from '../assets/images/G1.jpeg';
+import G2 from '../assets/images/G2.jpeg';
+import G3 from '../assets/images/G3.jpeg';
+import G4 from '../assets/images/G4.jpeg';
+import G5 from '../assets/images/G5.jpeg';
+import G6 from '../assets/images/G6.jpeg';
+import G7 from '../assets/images/G7.jpeg';
 
 export function PhotoGallery() {
   const [selectedImage, setSelectedImage] = useState(null);
   
   const photos = [
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G1.jpeg',
+=======
+      src: G1,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 1',
       fallback: '🎉'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G2.jpeg',
+=======
+      src: G2,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 2',
       fallback: '🎵'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G3.jpeg',
+=======
+      src: G3,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 3',
       fallback: '🎊'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G4.jpeg',
+=======
+      src: G4,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 4',
       fallback: '🎭'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G5.jpeg',
+=======
+      src: G5,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 5',
       fallback: '🎪'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G6.jpeg',
+=======
+      src: G6,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 6',
       fallback: '🎨'
     },
     {
+<<<<<<< Updated upstream
       src: '/assets/images/G7.jpeg',
+=======
+      src: G7,
+>>>>>>> Stashed changes
       alt: 'EventRift Gallery 7',
       fallback: '🎸'
     }
