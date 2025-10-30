@@ -167,7 +167,10 @@ const GoerDashboard = () => {
               View Ticket
             </button>
             {isUpcoming && (
-              <button className="btn-outline text-sm px-4 py-2">
+              <button
+                onClick={() => alert('Add to favorites coming soon!')}
+                className="btn-outline text-sm px-4 py-2"
+              >
                 <Heart className="w-4 h-4 mr-2" />
                 Add to Favorites
               </button>
@@ -261,7 +264,10 @@ const GoerDashboard = () => {
               className="input-field pl-12 pr-4"
             />
           </div>
-          <button className="btn-outline flex items-center px-6">
+          <button
+            onClick={() => alert('Filter functionality coming soon!')}
+            className="btn-outline flex items-center px-6"
+          >
             <Filter className="w-4 h-4 mr-2" />
             Filter
           </button>

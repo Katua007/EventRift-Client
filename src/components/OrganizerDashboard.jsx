@@ -134,12 +134,12 @@ const OrganizerDashboard = () => {
           >
             <Eye className="w-4 h-4" />
           </Link>
-          <Link
-            to={`/organizer/events/${event.id}/edit`}
+          <button
+            onClick={() => alert('Edit functionality coming soon!')}
             className="p-2 bg-er-secondary/20 text-er-secondary rounded-lg hover:bg-er-secondary/30 transition-colors"
           >
             <Edit className="w-4 h-4" />
-          </Link>
+          </button>
           <button
             onClick={() => handleDeleteEvent(event.id)}
             className="p-2 bg-red-900/20 text-red-400 rounded-lg hover:bg-red-900/30 transition-colors"

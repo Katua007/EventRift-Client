@@ -121,13 +121,22 @@ const VendorDashboard = () => {
           <span className="text-er-text">{service.rating}</span>
         </div>
         <div className="flex space-x-2">
-          <button className="p-2 bg-er-primary/20 text-er-primary rounded-lg hover:bg-er-primary/30 transition-colors">
+          <button
+            onClick={() => alert('View service details coming soon!')}
+            className="p-2 bg-er-primary/20 text-er-primary rounded-lg hover:bg-er-primary/30 transition-colors"
+          >
             <Eye className="w-4 h-4" />
           </button>
-          <button className="p-2 bg-er-secondary/20 text-er-secondary rounded-lg hover:bg-er-secondary/30 transition-colors">
+          <button
+            onClick={() => alert('Edit service coming soon!')}
+            className="p-2 bg-er-secondary/20 text-er-secondary rounded-lg hover:bg-er-secondary/30 transition-colors"
+          >
             <Edit className="w-4 h-4" />
           </button>
-          <button className="p-2 bg-red-900/20 text-red-400 rounded-lg hover:bg-red-900/30 transition-colors">
+          <button
+            onClick={() => alert('Delete service coming soon!')}
+            className="p-2 bg-red-900/20 text-red-400 rounded-lg hover:bg-red-900/30 transition-colors"
+          >
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
@@ -188,11 +197,11 @@ const VendorDashboard = () => {
             <p className="text-er-text">Manage your services and track your bookings</p>
           </div>
           <Link
-            to="/vendor/create-service"
+            to="/vendor/setup"
             className="btn-primary flex items-center"
           >
             <Plus className="w-5 h-5 mr-2" />
-            Add Service
+            Setup Services
           </Link>
         </div>
 
@@ -278,9 +287,9 @@ const VendorDashboard = () => {
                 <Package className="w-16 h-16 text-er-text mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-er-light mb-2">No services yet</h3>
                 <p className="text-er-text mb-6">Add your first service to get started</p>
-                <Link to="/vendor/create-service" className="btn-primary">
+                <Link to="/vendor/setup" className="btn-primary">
                   <Plus className="w-5 h-5 mr-2" />
-                  Add Your First Service
+                  Setup Your First Service
                 </Link>
               </div>
             ) : (
