@@ -7,37 +7,37 @@ export function PhotoGallery() {
   
   const photos = [
     {
-      src: '/src/assets/images/G1.jpeg',
+      src: '/assets/images/G1.jpeg',
       alt: 'EventRift Gallery 1',
       fallback: '🎉'
     },
     {
-      src: '/src/assets/images/G2.jpeg',
+      src: '/assets/images/G2.jpeg',
       alt: 'EventRift Gallery 2',
       fallback: '🎵'
     },
     {
-      src: '/src/assets/images/G3.jpeg',
+      src: '/assets/images/G3.jpeg',
       alt: 'EventRift Gallery 3',
       fallback: '🎊'
     },
     {
-      src: '/src/assets/images/G4.jpeg',
+      src: '/assets/images/G4.jpeg',
       alt: 'EventRift Gallery 4',
       fallback: '🎭'
     },
     {
-      src: '/src/assets/images/G5.jpeg',
+      src: '/assets/images/G5.jpeg',
       alt: 'EventRift Gallery 5',
       fallback: '🎪'
     },
     {
-      src: '/src/assets/images/G6.jpeg',
+      src: '/assets/images/G6.jpeg',
       alt: 'EventRift Gallery 6',
       fallback: '🎨'
     },
     {
-      src: '/src/assets/images/G7.jpeg',
+      src: '/assets/images/G7.jpeg',
       alt: 'EventRift Gallery 7',
       fallback: '🎸'
     }

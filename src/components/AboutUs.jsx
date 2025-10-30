@@ -18,7 +18,7 @@ export function AboutUs() {
           <div className="relative animate-slide-up">
             <div className="relative h-[500px] overflow-hidden rounded-3xl shadow-2xl hover-lift">
               <ImageWithFallback
-                src="/src/assets/images/AboutSectionPic.jpeg"
+                src="/assets/images/AboutSectionPic.jpeg"
                 alt="EventRift About Us"
                 className="w-full h-full object-cover"
                 fallback="🎉"
