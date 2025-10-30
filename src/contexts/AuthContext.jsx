@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const hasRole = (role) => isAuthenticated && user?.role === role;
+    const hasRole = (role) => isAuthenticated && user?.role?.toLowerCase() === role.toLowerCase();
 
     const register = async (userData) => {
         try {
