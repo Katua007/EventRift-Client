@@ -27,15 +27,21 @@ const LoginPage = () => {
       if (result.success) {
         setSuccessMessage(`Welcome back, ${result.user.username}!`);
         
-        // Redirect based on role after short delay
+        // Check for redirect URL or redirect based on role after short delay
         setTimeout(() => {
-          const role = result.user.role.toLowerCase();
-          if (role === 'organizer') {
-            navigate('/organizer/dashboard');
-          } else if (role === 'vendor') {
-            navigate('/vendor/dashboard');
+          const redirectUrl = localStorage.getItem('redirectAfterLogin');
+          if (redirectUrl) {
+            localStorage.removeItem('redirectAfterLogin');
+            navigate(redirectUrl);
           } else {
-            navigate('/goer/dashboard');
+            const role = result.user.role.toLowerCase();
+            if (role === 'organizer') {
+              navigate('/organizer/dashboard');
+            } else if (role === 'vendor') {
+              navigate('/vendor/dashboard');
+            } else {
+              navigate('/goer/dashboard');
+            }
           }
         }, 1500);
       } else {

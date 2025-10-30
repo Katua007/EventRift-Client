@@ -1,4 +1,6 @@
 // Mock events service for demo purposes
+import { events } from '../data/events.js';
+
 export const eventsService = {
   // Goer services
   getUserTickets: async () => {
@@ -69,5 +71,14 @@ export const eventsService = {
         }
       ]
     };
+  },
+
+  getEvent: async (eventId) => {
+    // Mock single event data
+    const event = events.find(e => e.id.toString() === eventId);
+    if (event) {
+      return { event };
+    }
+    throw new Error('Event not found');
   }
 };

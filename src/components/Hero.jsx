@@ -1,7 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export function Hero() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleFindEvents = () => {
+    if (!isAuthenticated) {
+      localStorage.setItem('redirectAfterLogin', '/events');
+      navigate('/login');
+    } else {
+      navigate('/events');
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -49,12 +62,12 @@ export function Hero() {
 
           {/* CTA Button - "Find an Event" */}
           <div className="flex justify-center mb-16">
-            <Link 
-              to="/signup" 
+            <button 
+              onClick={handleFindEvents}
               className="bg-er-primary hover:bg-er-primary/90 text-white font-bold text-lg px-12 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-glow"
             >
               Find an Event
-            </Link>
+            </button>
           </div>
         </div>
       </div>

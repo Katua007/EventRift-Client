@@ -5,6 +5,8 @@ import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage'; 
 import HomePage from './components/HomePage';
+import EventsPage from './components/EventsPage';
+import EventDetailPage from './components/EventDetailPage';
 import GoerDashboard from './components/GoerDashboard';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import VendorDashboard from './components/VendorDashboard';
@@ -22,7 +24,8 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     }
 
     if (!isAuthenticated) {
-        // Redirect unauthenticated users to login
+        // Store current path for redirect after login
+        localStorage.setItem('redirectAfterLogin', window.location.pathname);
         navigate('/login');
         return null;
     }
@@ -39,7 +42,7 @@ const ProtectedRoute = ({ element, requiredRole }) => {
 const App = () => {
     return (
         // BrowserRouter must wrap the whole application
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             {/* AuthProvider wraps the layout and routes */}
             <AuthProvider>
                 <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
@@ -47,8 +50,18 @@ const App = () => {
                     
                     <main className="flex-grow"> 
                         <Routes>
-                            {/* Public Routes - Only what exists in Figma */}
+                            {/* Public Routes */}
                             <Route path="/" element={<HomePage />} />
+                            
+                            {/* Events Routes - Require Authentication */}
+                            <Route
+                                path="/events"
+                                element={<ProtectedRoute element={<EventsPage />} />}
+                            />
+                            <Route
+                                path="/events/:eventId"
+                                element={<ProtectedRoute element={<EventDetailPage />} />}
+                            />
 
                             {/* Auth Routes */}
                             <Route path="/login" element={<LoginPage />} />

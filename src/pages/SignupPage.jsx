@@ -37,9 +37,16 @@ const SignupPage = () => {
       const result = await registerUser(userData);
       
       if (result.success) {
-        setSuccessMessage('Account created successfully! Redirecting to login...');
+        setSuccessMessage('Account created successfully! Please sign in to continue.');
         setTimeout(() => {
-          navigate('/login');
+          // Check if there's a redirect URL stored
+          const redirectUrl = localStorage.getItem('redirectAfterLogin');
+          if (redirectUrl) {
+            // Keep the redirect URL for after login
+            navigate('/login');
+          } else {
+            navigate('/login');
+          }
         }, 2000);
       } else {
         setApiError(result.error);

@@ -4,6 +4,7 @@ import { Calendar, MapPin, Users, DollarSign, Clock, Star, Share2, Heart, Shoppi
 import { eventsService } from '../services/eventsService';
 import { useAuth } from '../hooks/useAuth';
 import { TicketPurchase } from './TicketPurchase';
+import { events } from '../data/events.js';
 
 const EventDetailPage = () => {
   const { eventId } = useParams();
@@ -15,35 +16,47 @@ const EventDetailPage = () => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [showTicketPurchase, setShowTicketPurchase] = useState(false);
 
-  const mockEvent = useMemo(() => ({
-    id: eventId,
-    title: "AfroBeats Festival 2024",
-    description: "The biggest Afrobeats celebration in East Africa featuring top artists from across the continent.",
-    category: "Music",
-    theme: "Festival",
-    date: "2024-12-15",
-    start_time: "18:00",
-    end_time: "23:00",
-    venue_name: "Uhuru Gardens",
-    address: "Uhuru Gardens, Nairobi, Kenya",
-    ticket_price: 2500,
-    early_bird_price: 2000,
-    max_attendees: 5000,
-    tickets_sold: 1200,
-    rating: 4.5,
-    reviews_count: 89,
-    dress_code: "Casual/Festival Wear",
-    what_to_expect: "Live performances from top Afrobeats artists, food vendors, art installations, and an unforgettable night of music and culture.",
-    services_available: "Free parking, Food & beverages, Security, First aid, WiFi, Cloakroom services",
-    terms_conditions: "No outside food or drinks. Age restriction: 18+. Tickets are non-refundable. Valid ID required for entry.",
-    organizer: {
-      name: "EventRift Organizers",
-      rating: 4.8,
-      events_count: 25
-    },
-    image: "🎵",
-    status: "active"
-  }), [eventId]);
+  const mockEvent = useMemo(() => {
+    const foundEvent = events.find(e => e.id.toString() === eventId);
+    
+    if (foundEvent) {
+      return {
+        ...foundEvent,
+        availableTickets: (foundEvent.max_attendees || 1000) - (foundEvent.tickets_sold || 0)
+      };
+    }
+    
+    // Fallback event if not found
+    return {
+      id: eventId,
+      title: "AfroBeats Festival 2024",
+      description: "The biggest Afrobeats celebration in East Africa featuring top artists from across the continent.",
+      category: "Music",
+      theme: "Festival",
+      date: "2024-12-15",
+      start_time: "18:00",
+      end_time: "23:00",
+      venue_name: "Uhuru Gardens",
+      address: "Uhuru Gardens, Nairobi, Kenya",
+      ticket_price: 2500,
+      early_bird_price: 2000,
+      max_attendees: 5000,
+      tickets_sold: 1200,
+      rating: 4.5,
+      reviews_count: 89,
+      dress_code: "Casual/Festival Wear",
+      what_to_expect: "Live performances from top Afrobeats artists, food vendors, art installations, and an unforgettable night of music and culture.",
+      services_available: "Free parking, Food & beverages, Security, First aid, WiFi, Cloakroom services",
+      terms_conditions: "No outside food or drinks. Age restriction: 18+. Tickets are non-refundable. Valid ID required for entry.",
+      organizer: {
+        name: "EventRift Organizers",
+        rating: 4.8,
+        events_count: 25
+      },
+      image: "🎵",
+      status: "active"
+    };
+  }, [eventId]);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -53,8 +66,8 @@ const EventDetailPage = () => {
         setEvent(response.event || response);
       } catch (err) {
         console.error('Failed to fetch event:', err);
-        setError('Using demo data - Backend connection failed');
-        setEvent(mockEvent);
+        setError('Event not found');
+        setEvent(null);
       } finally {
         setLoading(false);
       }
@@ -63,12 +76,14 @@ const EventDetailPage = () => {
     if (eventId) {
       fetchEventDetails();
     }
-  }, [eventId, mockEvent]);
+  }, [eventId]);
 
 
 
   const handleBookTicket = () => {
     if (!isAuthenticated) {
+      // Store the current event URL to redirect back after login
+      localStorage.setItem('redirectAfterLogin', window.location.pathname);
       navigate('/login');
       return;
     }

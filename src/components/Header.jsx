@@ -37,6 +37,14 @@ export function Header() {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
+    } else if (path === '/events') {
+      // Check authentication for events page
+      if (!isAuthenticated) {
+        localStorage.setItem('redirectAfterLogin', path);
+        navigate('/login');
+      } else {
+        navigate(path);
+      }
     } else {
       navigate(path);
     }
@@ -64,7 +72,6 @@ export function Header() {
               src={logo}
               alt="EventRift"
               className="h-16 w-auto"
-              style={{ mixBlendMode: 'screen' }}
             />
           </Link>
 
@@ -117,7 +124,7 @@ export function Header() {
                   Sign Up
                 </button>
                 <button 
-                  onClick={() => navigate('/events')}
+                  onClick={() => handleNavClick('/events')}
                   className="bg-white text-black px-4 py-2 rounded hover:bg-white/90 transition-colors"
                 >
                   Find Events

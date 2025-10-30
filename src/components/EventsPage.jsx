@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, Search, Filter } from 'lucide-react';
 import { eventsService } from '../services/eventsService';
+import { events as staticEvents } from '../data/events.js';
+
+// Log events count for debugging
+console.log('Static events imported:', staticEvents?.length || 0, 'events');
 
 const EventsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,7 +20,7 @@ const EventsPage = () => {
 
 
 
-  const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion'];
+  const categories = ['All', 'Music', 'Technology', 'Art', 'Food', 'Business', 'Sports', 'Entertainment', 'Fashion', 'Education', 'Health', 'Cultural'];
   const themes = ['All', 'Corporate', 'Casual', 'Formal', 'Festival', 'Conference', 'Workshop', 'Networking', 'Cultural'];
   const sortOptions = [
     { value: 'date', label: 'Date' },
@@ -38,95 +42,20 @@ const EventsPage = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await eventsService.getEvents();
-        setEvents(response.events || response || []);
-        setError(null);
+        // Always use static events data for reliable display
+        if (staticEvents && staticEvents.length > 0) {
+          setEvents(staticEvents);
+          setError(null);
+          console.log('Loaded', staticEvents.length, 'events from static data');
+        } else {
+          console.error('No static events found');
+          setError('No events available');
+          setEvents([]);
+        }
       } catch (err) {
-        console.error('Failed to fetch events:', err);
-        setError('Using demo data - Backend connection failed');
-        // Define fallbackEvents inside useEffect to avoid dependency issues
-        const fallbackEvents = [
-          {
-            id: 1,
-            title: "AfroBeats Festival 2024",
-            date: "2024-12-15",
-            location: "Nairobi, Kenya",
-            ticket_price: 2500,
-            early_bird_price: 2000,
-            category: "Music",
-            theme: "Festival",
-            attendees: 1200,
-            tickets_sold: 800,
-            image: "🎵",
-            description: "The biggest Afrobeats celebration in East Africa",
-            rating: 4.5,
-            days_of_week: ["Saturday"]
-          },
-          {
-            id: 2,
-            title: "Tech Summit Kenya",
-            date: "2025-01-20",
-            location: "Mombasa, Kenya",
-            ticket_price: 5000,
-            category: "Technology",
-            theme: "Conference",
-            attendees: 800,
-            tickets_sold: 450,
-            image: "💻",
-            description: "Innovation and technology conference",
-            rating: 4.8,
-            days_of_week: ["Monday", "Tuesday"]
-          },
-          {
-            id: 3,
-            title: "Art Gallery Opening",
-            date: "2024-12-30",
-            location: "Kisumu, Kenya",
-            ticket_price: 1500,
-            category: "Art",
-            theme: "Cultural",
-            attendees: 300,
-            tickets_sold: 150,
-            image: "🎨",
-            description: "Contemporary art exhibition",
-            rating: 4.2,
-            days_of_week: ["Friday"]
-          },
-          {
-            id: 4,
-            title: "Food Festival",
-            date: "2025-02-14",
-            location: "Nakuru, Kenya",
-            ticket_price: 0,
-            category: "Food",
-            theme: "Festival",
-            attendees: 1000,
-            tickets_sold: 600,
-            image: "🍽️",
-            description: "Free food tasting event",
-            rating: 4.6,
-            days_of_week: ["Friday", "Saturday"]
-          },
-          {
-            id: 5,
-            title: "Flash Sale Concert",
-            date: "2024-12-25",
-            location: "Nairobi, Kenya",
-            ticket_price: 3000,
-            early_bird_price: 1500,
-            flash_sale: true,
-            discount_percentage: 50,
-            category: "Music",
-            theme: "Concert",
-            attendees: 2000,
-            tickets_sold: 1800,
-            image: "🎤",
-            description: "Special Christmas concert with 50% off",
-            rating: 4.9,
-            days_of_week: ["Wednesday"]
-          }
-        ];
-        setEvents(fallbackEvents);
+        console.error('Failed to load events:', err);
+        setError('Error loading events');
+        setEvents([]);
       } finally {
         setLoading(false);
       }
@@ -323,6 +252,11 @@ const EventsPage = () => {
                     <div className="absolute top-3 left-3 bg-er-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
                       {event.category}
                     </div>
+                    {event.theme && (
+                      <div className="absolute top-3 right-3 bg-er-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                        {event.theme}
+                      </div>
+                    )}
                     <div className="text-4xl">{event.image || '🎉'}</div>
                   </div>
                   
@@ -334,20 +268,40 @@ const EventsPage = () => {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center text-er-text text-sm">
                       <Calendar className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.date}
+                      {new Date(event.date).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
                     </div>
                     <div className="flex items-center text-er-text text-sm">
                       <MapPin className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.location}
+                      {event.location || event.venue_name}
                     </div>
                     <div className="flex items-center text-er-text text-sm">
                       <Users className="w-4 h-4 mr-2 text-er-primary" />
-                      {event.attendees} attending
+                      {event.tickets_sold || event.attendees || 0} attending
                     </div>
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-er-primary">{event.price}</span>
+                    <div className="flex flex-col">
+                      {event.ticket_price === 0 ? (
+                        <span className="text-xl font-bold text-er-secondary">FREE</span>
+                      ) : (
+                        <>
+                          <span className="text-xl font-bold text-er-primary">
+                            KES {(event.early_bird_price || event.ticket_price)?.toLocaleString()}
+                          </span>
+                          {event.early_bird_price && event.early_bird_price < event.ticket_price && (
+                            <span className="text-xs text-er-text line-through">
+                              KES {event.ticket_price?.toLocaleString()}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
                     <Link 
                       to={`/events/${event.id}`}
                       className="bg-er-primary hover:bg-pink-600 text-white px-3 py-2 rounded-lg font-semibold transition-colors text-sm"

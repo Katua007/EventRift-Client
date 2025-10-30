@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp, Search, Filter, Heart } from 'lucide-react';
+import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp, Search, Filter, Heart, Eye } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { TicketDetails } from './TicketDetails';
 
 const GoerDashboard = () => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const GoerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   useEffect(() => {
     const fetchGoerData = async () => {
@@ -28,12 +30,18 @@ const GoerDashboard = () => {
               id: 1,
               title: "AfroBeats Festival 2024",
               date: "2024-12-15",
+              start_time: "18:00",
+              end_time: "23:00",
               venue_name: "Uhuru Gardens",
+              address: "Langata Road, Nairobi, Kenya",
               image: "🎵",
-              category: "Music"
+              category: "Music",
+              dress_code: "Casual/Festival Wear"
             },
             quantity: 2,
             total_amount: 5000,
+            totalPaid: 5000,
+            transactionId: "TXN-1699123456789",
             status: "confirmed",
             purchase_date: "2024-11-01"
           },
@@ -43,12 +51,18 @@ const GoerDashboard = () => {
               id: 2,
               title: "Tech Conference Kenya",
               date: "2025-01-20",
+              start_time: "08:00",
+              end_time: "18:00",
               venue_name: "KICC",
+              address: "Harambee Avenue, Nairobi, Kenya",
               image: "💻",
-              category: "Technology"
+              category: "Technology",
+              dress_code: "Business Casual"
             },
             quantity: 1,
             total_amount: 8000,
+            totalPaid: 8000,
+            transactionId: "TXN-1700234567890",
             status: "confirmed",
             purchase_date: "2024-11-15"
           }
@@ -144,14 +158,21 @@ const GoerDashboard = () => {
             View Event Details
           </Link>
           
-          {isUpcoming && (
-            <div className="flex space-x-2">
+          <div className="flex space-x-2">
+            <button 
+              onClick={() => setSelectedTicket(ticket)}
+              className="btn-primary text-sm px-4 py-2 flex items-center"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View Ticket
+            </button>
+            {isUpcoming && (
               <button className="btn-outline text-sm px-4 py-2">
                 <Heart className="w-4 h-4 mr-2" />
                 Add to Favorites
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     );
@@ -338,6 +359,14 @@ const GoerDashboard = () => {
           </div>
         )}
       </div>
+      
+      {/* Ticket Details Modal */}
+      {selectedTicket && (
+        <TicketDetails 
+          ticket={selectedTicket} 
+          onClose={() => setSelectedTicket(null)} 
+        />
+      )}
     </div>
   );
 };
