@@ -18,8 +18,7 @@ import Navbar from './components/Navbar';
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
-    const navigate = useNavigate();
-    
+
     // Show a minimal loading state while checking token
     if (loading) {
         return <div className="text-center pt-48 text-xl text-gray-400">Loading user session...</div>;
@@ -28,17 +27,32 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     if (!isAuthenticated) {
         // Store current path for redirect after login
         localStorage.setItem('redirectAfterLogin', window.location.pathname);
-        navigate('/login');
-        return null;
+        return <NavigateToLogin />;
     }
 
     if (requiredRole && !hasRole(requiredRole)) {
         // Redirect unauthorized users
-        navigate('/'); 
-        return <div className="text-center pt-48 text-xl text-red-500">Access Denied: Insufficient Permissions.</div>;
+        return <NavigateToHome />;
     }
 
     return element;
+};
+
+// Separate components to avoid calling hooks during render
+const NavigateToLogin = () => {
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        navigate('/login');
+    }, [navigate]);
+    return null;
+};
+
+const NavigateToHome = () => {
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        navigate('/');
+    }, [navigate]);
+    return <div className="text-center pt-48 text-xl text-red-500">Access Denied: Insufficient Permissions.</div>;
 };
 
 const App = () => {
