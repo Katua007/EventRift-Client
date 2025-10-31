@@ -2,7 +2,7 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import logo from '../assets/images/EventRift LOGO.png';
+// Use absolute path to logo in public directory instead of import
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,7 +69,7 @@ export function Header() {
             className="cursor-pointer"
           >
             <img
-              src={logo}
+              src="/assets/images/EventRift LOGO.png"
               alt="EventRift"
               className="h-16 w-auto"
             />

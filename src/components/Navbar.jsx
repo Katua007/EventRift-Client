@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import logo from '../assets/images/EventRift LOGO.png';
+// Use absolute path to logo in public directory instead of import
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -104,7 +104,7 @@ const Navbar = () => {
           {/* Logo - Image Logo */}
           <Link to="/" className="flex items-center hover-lift">
             <img
-              src={logo}
+              src="/assets/images/EventRift LOGO.png"
               alt="EventRift"
               className="h-14 w-auto"
             />
