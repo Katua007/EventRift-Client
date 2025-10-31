@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.o
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // Increased timeout to 30 seconds for slow connections
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,10 +33,14 @@ api.interceptors.response.use(
       window.location.href = '/login';
     }
     
-    // Handle CORS errors
-    if (error.code === 'ERR_NETWORK' || error.message.includes('CORS')) {
-      console.error('CORS Error: Backend needs to allow requests from this domain');
+    // Enhanced CORS and network error handling
+    if (error.code === 'ERR_NETWORK' || 
+        error.message.includes('CORS') || 
+        error.code === 'ECONNABORTED' ||
+        error.name === 'TypeError') {
+      console.error('Network Error: Backend connection issue or CORS restriction');
       error.isCorsError = true;
+      error.isNetworkError = true;
     }
     
     return Promise.reject(error);

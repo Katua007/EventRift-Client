@@ -87,16 +87,37 @@ export const eventsService = {
 
   getEvent: async (eventId) => {
     try {
+      console.log(`Fetching event details for ID: ${eventId}`);
       const response = await api.get(`/events/${eventId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching event:', error);
+      
+      // Enhanced error handling for network errors and timeouts
+      if (error.code === 'ECONNABORTED' || 
+          error.isNetworkError || 
+          error.isCorsError || 
+          error.message?.includes('timeout') || 
+          error.message?.includes('Network Error')) {
+        console.log('Network error detected, falling back to local data');
+      }
+      
       // Fallback to local data if API fails
       const event = events.find(e => e.id.toString() === eventId);
       if (event) {
-        return { event };
+        console.log('Using local event data as fallback');
+        // Add any missing fields that might be expected from the API
+        return { 
+          event: {
+            ...event,
+            availableTickets: (event.max_attendees || 1000) - (event.tickets_sold || 0),
+            status: event.status || 'active'
+          } 
+        };
       }
-      throw new Error('Event not found');
+      
+      // If no local data found, throw a more descriptive error
+      throw new Error(`Event with ID ${eventId} not found. Please try again later.`);
     }
   }
 };
