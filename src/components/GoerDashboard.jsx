@@ -34,7 +34,7 @@ const GoerDashboard = () => {
               end_time: "23:00",
               venue_name: "Uhuru Gardens",
               address: "Langata Road, Nairobi, Kenya",
-              image: "🎵",
+              image: "",
               category: "Music",
               dress_code: "Casual/Festival Wear"
             },
@@ -109,7 +109,7 @@ const GoerDashboard = () => {
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-gradient-to-br from-er-primary/30 to-er-secondary/30 rounded-2xl flex items-center justify-center text-3xl">
-              {ticket.event.image || '🎉'}
+              {ticket.event.image || ''}
             </div>
             <div>
               <h3 className="font-heading text-xl font-bold text-er-light mb-2">
@@ -210,7 +210,7 @@ const GoerDashboard = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 animate-fade-in">
           <div>
             <h1 className="font-heading text-4xl lg:text-5xl font-bold text-er-light mb-3">
-              Welcome back, <span className="gradient-text">{user?.username}</span>! 🎉
+              Welcome back, <span className="gradient-text">{user?.username}</span>! 
             </h1>
             <p className="text-xl text-er-text">Track your events and create amazing memories</p>
           </div>

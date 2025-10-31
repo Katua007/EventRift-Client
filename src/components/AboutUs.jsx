@@ -22,7 +22,7 @@ export function AboutUs() {
                 src={aboutImage}
                 alt="EventRift About Us"
                 className="w-full h-full object-cover"
-                fallback="🎉"
+                fallback=""
               />
               <div className="absolute inset-0 bg-gradient-to-t from-er-dark/50 to-transparent"></div>
             </div>

@@ -53,7 +53,7 @@ const EventDetailPage = () => {
         rating: 4.8,
         events_count: 25
       },
-      image: "🎵",
+      image: null,
       status: "active"
     };
   }, [eventId]);
@@ -128,7 +128,7 @@ const EventDetailPage = () => {
     return (
       <div className="min-h-screen bg-er-dark pt-20 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">😞</div>
+          <div className="text-6xl mb-4"></div>
           <h2 className="text-2xl font-bold text-er-light mb-2">Event Not Found</h2>
           <p className="text-er-text mb-6">The event you're looking for doesn't exist or has been removed.</p>
           <Link to="/events" className="btn-primary">
@@ -168,8 +168,8 @@ const EventDetailPage = () => {
                     e.target.nextSibling.style.display = 'flex';
                   }} />
                 ) : null}
-                <div className={`w-full h-full flex items-center justify-center text-6xl ${event.image && event.image.startsWith('/assets/') ? 'hidden' : ''}`}>
-                  {event.image && !event.image.startsWith('/assets/') ? event.image : '🎉'}
+                <div className={`w-full h-full flex items-center justify-center ${event.image && event.image.startsWith('/assets/') ? 'hidden' : ''}`}>
+                  <span className="text-white font-semibold text-lg">No Image Available</span>
                 </div>
                 <div className="absolute top-4 left-4 bg-er-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
                   {event.category}

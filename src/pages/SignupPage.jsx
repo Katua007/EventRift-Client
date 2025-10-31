@@ -63,7 +63,7 @@ const SignupPage = () => {
       value: 'Goer', 
       label: 'Event Goer', 
       desc: 'Discover and attend amazing events',
-      icon: '🎉'
+      icon: ''
     },
     { 
       value: 'Organizer', 
@@ -75,7 +75,7 @@ const SignupPage = () => {
       value: 'Vendor', 
       label: 'Service Vendor', 
       desc: 'Provide services for events',
-      icon: '🛠️'
+      icon: '🛠'
     }
   ];
 

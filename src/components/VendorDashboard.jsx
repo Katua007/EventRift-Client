@@ -202,7 +202,7 @@ const VendorDashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="font-heading text-4xl font-bold text-er-light mb-2">
-              Welcome back, {user?.username}! 🛠️
+              Welcome back, {user?.username}! 🛠
             </h1>
             <p className="text-er-text">Manage your services and track your bookings</p>
           </div>

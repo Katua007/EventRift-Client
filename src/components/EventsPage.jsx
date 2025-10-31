@@ -267,7 +267,7 @@ const EventsPage = () => {
                         className="w-full h-full object-cover rounded-lg"
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.parentElement.innerHTML += '<div class="w-full h-full flex items-center justify-center text-6xl">🎉</div>';
+                          e.target.parentElement.innerHTML += '<div class="w-full h-full flex items-center justify-center text-6xl"></div>';
                         }}
                       />
                     ) : (

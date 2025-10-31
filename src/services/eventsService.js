@@ -79,7 +79,7 @@ export const eventsService = {
           date: e.start_date || e.date,
           location: e.location || `${e.venue_name}, ${e.address}`,
           category: e.category,
-          image: e.image || "🎉"
+          image: e.image || null
         }))
       };
     }

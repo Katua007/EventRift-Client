@@ -152,7 +152,7 @@ export const TicketPurchase = ({ event, onClose, onSuccess }) => {
       <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-er-gray rounded-xl p-8 max-w-lg w-full">
           <div className="text-center mb-6">
-            <div className="text-6xl mb-4">🎉</div>
+            <div className="text-6xl mb-4"></div>
             <h3 className="text-xl font-bold text-er-light mb-2">Payment Successful!</h3>
             <p className="text-er-secondary font-semibold">Transaction ID: TXN-{Date.now()}</p>
           </div>

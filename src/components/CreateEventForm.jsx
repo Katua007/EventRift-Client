@@ -100,11 +100,11 @@ const CreateEventForm = () => {
 
   const getEventEmoji = (category) => {
     const emojiMap = {
-      'Music': '🎵', 'Technology': '💻', 'Art': '🎨', 'Food': '🍽️',
-      'Business': '💼', 'Sports': '🏃♂️', 'Entertainment': '🎭',
-      'Fashion': '👗', 'Education': '📚', 'Health': '🏥'
+      'Music': '', 'Technology': '💻', 'Art': '', 'Food': '',
+      'Business': '💼', 'Sports': '', 'Entertainment': '',
+      'Fashion': '', 'Education': '', 'Health': ''
     };
-    return emojiMap[category] || '🎉';
+    return emojiMap[category] || '';
   };
 
   return (

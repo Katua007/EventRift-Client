@@ -16,12 +16,12 @@ export function EventCard({ image, title, date, location }) {
               onError={handleImageError}
             />
             <div className="w-full h-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center" style={{ display: 'none' }}>
-              <span className="text-4xl">🎉</span>
+              <span className="text-white font-semibold">No Image</span>
             </div>
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl">🎉</span>
+            <span className="text-white font-semibold">No Image</span>
           </div>
         )}
       </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export function ImageWithFallback({ src, alt, className, fallback = '🎉' }) {
+export function ImageWithFallback({ src, alt, className, fallback = '' }) {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 

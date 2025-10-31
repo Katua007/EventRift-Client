@@ -69,7 +69,7 @@ export function WhatsGoingOn() {
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-6xl">🎉</div>';
+                    e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center"><span class="text-white font-semibold">No Image</span></div>';
                   }}
                 />
               </div>
