@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-// Use absolute path to image in public directory instead of import
+import heroImage from '../assets/images/hero image.jpg';
 
 export function Hero() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export function Hero() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(/assets/images/hero image.jpg)` }}
+        style={{ backgroundImage: `url(${heroImage})` }}
       >
         {/* Overlay gradients */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80" />
