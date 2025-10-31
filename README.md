@@ -1,4 +1,4 @@
-# 🎉 EventRift Client
+#  EventRift Client
 
 > **Connecting people through unforgettable experiences across Kenya**
 
