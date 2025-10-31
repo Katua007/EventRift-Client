@@ -14,65 +14,37 @@ export function PhotoGallery() {
   
   const photos = [
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G1.jpeg',
-=======
       src: G1,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 1',
       fallback: '🎉'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G2.jpeg',
-=======
       src: G2,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 2',
       fallback: '🎵'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G3.jpeg',
-=======
       src: G3,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 3',
       fallback: '🎊'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G4.jpeg',
-=======
       src: G4,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 4',
       fallback: '🎭'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G5.jpeg',
-=======
       src: G5,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 5',
       fallback: '🎪'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G6.jpeg',
-=======
       src: G6,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 6',
       fallback: '🎨'
     },
     {
-<<<<<<< Updated upstream
-      src: '/assets/images/G7.jpeg',
-=======
       src: G7,
->>>>>>> Stashed changes
       alt: 'EventRift Gallery 7',
       fallback: '🎸'
     }

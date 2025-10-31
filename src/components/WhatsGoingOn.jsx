@@ -16,11 +16,7 @@ export function WhatsGoingOn() {
       price: "KES 2,500",
       category: "Music",
       attendees: 1200,
-<<<<<<< Updated upstream
-      image: "/assets/images/EP1.jpeg",
-=======
       image: EP1,
->>>>>>> Stashed changes
       description: "The biggest Afrobeats celebration in East Africa"
     },
     {
@@ -31,11 +27,7 @@ export function WhatsGoingOn() {
       price: "KES 5,000",
       category: "Technology",
       attendees: 800,
-<<<<<<< Updated upstream
-      image: "/assets/images/EP2.jpeg",
-=======
       image: EP2,
->>>>>>> Stashed changes
       description: "Innovation and technology conference"
     },
     {
@@ -46,11 +38,7 @@ export function WhatsGoingOn() {
       price: "KES 1,500",
       category: "Art",
       attendees: 600,
-<<<<<<< Updated upstream
-      image: "/assets/images/EP3.jpeg",
-=======
       image: EP3,
->>>>>>> Stashed changes
       description: "Celebrating local artists and cultural heritage"
     }
   ];
