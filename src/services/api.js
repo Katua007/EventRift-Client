@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.onrender.com';
 
 // Create axios instance
 const api = axios.create({
@@ -9,6 +9,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable credentials for CORS
 });
 
 // Request interceptor to add auth token
@@ -32,17 +33,18 @@ api.interceptors.response.use(
       localStorage.removeItem('user_data');
       window.location.href = '/login';
     }
-    
+
     // Enhanced CORS and network error handling
-    if (error.code === 'ERR_NETWORK' || 
-        error.message.includes('CORS') || 
+    if (error.code === 'ERR_NETWORK' ||
+        error.message.includes('CORS') ||
         error.code === 'ECONNABORTED' ||
-        error.name === 'TypeError') {
+        error.name === 'TypeError' ||
+        error.message.includes('ERR_FAILED')) {
       console.error('Network Error: Backend connection issue or CORS restriction');
       error.isCorsError = true;
       error.isNetworkError = true;
     }
-    
+
     return Promise.reject(error);
   }
 );
