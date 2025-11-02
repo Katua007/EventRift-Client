@@ -69,14 +69,28 @@ const CreateEventForm = () => {
     setError('');
 
     try {
+      // Convert string numbers to actual numbers and handle empty image
       const eventData = {
-        ...data,
+        title: data.title,
+        category: data.category,
+        theme: data.theme,
+        dress_code: data.dress_code,
+        description: data.description,
+        date: data.date, // Use date field, remove start_date to avoid duplication
+        start_time: data.start_time,
+        end_time: data.end_time,
+        venue_name: data.venue_name,
+        address: data.address,
+        ticket_price: parseFloat(data.ticket_price) || 0,
+        early_bird_price: data.early_bird_price ? parseFloat(data.early_bird_price) : null,
+        max_attendees: parseInt(data.max_attendees) || null,
         organizer_id: user.id,
         location: `${data.venue_name}, ${data.address}`,
-        image: getEventEmoji(data.category),
-        start_date: data.date,
+        image: getEventEmoji(data.category) || null, // Convert empty string to null
         status: 'active'
       };
+
+      console.log('Final event data being sent:', eventData);
 
       const result = isEditing
         ? await eventsService.updateEvent(eventId, eventData)
@@ -92,6 +106,7 @@ const CreateEventForm = () => {
         setError(result.message || `Failed to ${isEditing ? 'update' : 'create'} event`);
       }
     } catch (err) {
+      console.error('Event creation/update error:', err);
       setError(err.message || `Failed to ${isEditing ? 'update' : 'create'} event`);
     } finally {
       setLoading(false);
