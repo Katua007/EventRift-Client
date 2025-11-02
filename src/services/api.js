@@ -4,7 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.o
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: import.meta.env.DEV ? '/api' : API_BASE_URL,
   timeout: 30000, // Increased timeout to 30 seconds for slow connections
   headers: {
     'Content-Type': 'application/json',
