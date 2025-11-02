@@ -76,7 +76,7 @@ const CreateEventForm = () => {
         theme: data.theme,
         dress_code: data.dress_code,
         description: data.description,
-        date: data.date, // Use date field, remove start_date to avoid duplication
+        start_date: data.date, // Changed to start_date to match backend expectations
         start_time: data.start_time,
         end_time: data.end_time,
         venue_name: data.venue_name,
@@ -307,13 +307,14 @@ const CreateEventForm = () => {
               </div>
 
               <div>
-                <label className="block text-er-light font-semibold mb-2">Max Attendees</label>
+                <label className="block text-er-light font-semibold mb-2">Max Attendees *</label>
                 <input
                   type="number"
-                  {...register('max_attendees', { min: 1 })}
+                  {...register('max_attendees', { required: 'Max attendees is required', min: 1 })}
                   className="w-full p-3 bg-er-dark border border-gray-700 rounded-lg focus:border-er-primary focus:ring-1 focus:ring-er-primary text-er-light"
                   placeholder="100"
                 />
+                {errors.max_attendees && <p className="text-red-400 text-sm mt-1">{errors.max_attendees.message}</p>}
               </div>
             </div>
           </div>

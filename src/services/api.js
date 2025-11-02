@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://eventrift-server.onrender.com';
 
 // Create axios instance
 const api = axios.create({
@@ -41,6 +41,7 @@ api.interceptors.response.use(
         error.name === 'TypeError' ||
         error.message.includes('ERR_FAILED')) {
       console.error('Network Error: Backend connection issue or CORS restriction');
+      console.error('Error details:', error);
       error.isCorsError = true;
       error.isNetworkError = true;
     }

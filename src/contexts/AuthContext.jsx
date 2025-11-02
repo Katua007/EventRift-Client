@@ -33,16 +33,19 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         try {
+            console.log('🔐 AuthContext: Attempting login with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
             const response = await authService.login(credentials);
             const { token, user } = response;
-            
+
+            console.log('🔐 AuthContext: Login successful, setting user:', user);
             localStorage.setItem('jwt_token', token);
             localStorage.setItem('user_data', JSON.stringify(user));
             setUser(user);
             setIsAuthenticated(true);
-            
+
             return { success: true, user };
         } catch (error) {
+            console.error('🔐 AuthContext: Login failed:', error);
             return { success: false, error: error.message || 'Login failed' };
         }
     };
@@ -64,9 +67,12 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
+            console.log('🔐 AuthContext: Attempting registration with data:', { username: userData.username, email: userData.email, role: userData.role, password: '***' });
             const response = await authService.register(userData);
+            console.log('🔐 AuthContext: Registration successful:', response);
             return { success: true, message: response.message };
         } catch (error) {
+            console.error('🔐 AuthContext: Registration failed:', error);
             return { success: false, error: error.message || 'Registration failed' };
         }
     };
