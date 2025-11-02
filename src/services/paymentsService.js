@@ -4,7 +4,7 @@ export const paymentsService = {
   // Initiate M-Pesa payment
   async initiateMpesaPayment(paymentData) {
     try {
-      const response = await api.post('/payments/mpesa/initiate', paymentData);
+      const response = await api.post('/api/payments/mpesa/initiate', paymentData);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Payment initiation failed' };
@@ -14,7 +14,7 @@ export const paymentsService = {
   // Check payment status
   async checkPaymentStatus(transactionId) {
     try {
-      const response = await api.get(`/payments/status/${transactionId}`);
+      const response = await api.get(`/api/payments/status/${transactionId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to check payment status' };
@@ -24,7 +24,7 @@ export const paymentsService = {
   // Get user's payment history
   async getPaymentHistory() {
     try {
-      const response = await api.get('/payments/history');
+      const response = await api.get('/api/payments/history');
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to fetch payment history' };
@@ -34,10 +34,23 @@ export const paymentsService = {
   // Get event tickets
   async getTickets(eventId) {
     try {
-      const response = await api.get(`/tickets/event/${eventId}`);
+      const response = await api.get(`/api/tickets/event/${eventId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to fetch tickets' };
+    }
+  },
+
+  // Book tickets for an event
+  async bookTickets(eventId, quantity) {
+    try {
+      const response = await api.post('/api/tickets/book', {
+        event_id: eventId,
+        quantity: quantity
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to book tickets' };
     }
   }
 };

@@ -25,7 +25,8 @@ const LoginPage = () => {
       const result = await login(credentials);
       
       if (result.success) {
-        setSuccessMessage(`Welcome back, ${result.user.username}!`);
+        const displayName = result.user?.name || result.user?.username || 'User';
+        setSuccessMessage(`Welcome back, ${displayName}!`);
         
         // Check for redirect URL or redirect based on role after short delay
         setTimeout(() => {
