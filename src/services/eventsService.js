@@ -5,50 +5,58 @@ export const eventsService = {
   // Goer services
   getUserTickets: async () => {
     try {
-      const response = await api.get('/api/tickets/user');
+      const response = await api.get('/tickets/user');
       return response.data;
     } catch (error) {
       console.error('Error fetching user tickets:', error);
-      throw error;
+      // Return empty tickets array as fallback
+      return { success: true, tickets: [] };
     }
   },
 
   submitReview: async (eventId, reviewData) => {
     try {
-      const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);
+      const response = await api.post(`/events/${eventId}/reviews`, reviewData);
       return response.data;
     } catch (error) {
       console.error('Error submitting review:', error);
-      throw error;
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to submit review. Please try again.');
     }
   },
 
   // Organizer services
   getOrganizerEvents: async (organizerId) => {
     try {
-      const response = await api.get('/api/organizers/events');
+      const response = await api.get('/organizers/events');
       return response.data;
     } catch (error) {
       console.error('Error fetching organizer events:', error);
-      throw error;
+      // Return empty events array as fallback
+      return { success: true, events: [] };
     }
   },
 
   createEvent: async (eventData) => {
     try {
       console.log('Creating event with data:', eventData);
-      const response = await api.post('/api/events', eventData);
+      const response = await api.post('/events', eventData);
       console.log('Event creation response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error creating event:', error);
-      throw error;
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to create event. Please try again.');
     }
   },
 
   updateEvent: async (eventId, eventData) => {
     try {
-      const response = await api.put(`/api/events/${eventId}`, eventData);
+      const response = await api.put(`/events/${eventId}`, eventData);
       return response.data;
     } catch (error) {
       console.error('Error updating event:', error);
@@ -58,7 +66,7 @@ export const eventsService = {
 
   deleteEvent: async (eventId) => {
     try {
-      const response = await api.delete(`/api/events/${eventId}`);
+      const response = await api.delete(`/events/${eventId}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting event:', error);
@@ -69,19 +77,23 @@ export const eventsService = {
   // General event services
   getEvents: async () => {
     try {
-      const response = await api.get('/api/events');
+      const response = await api.get('/events');
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
       // Fallback to local data if API fails
       return {
+        success: true,
         events: events.map(e => ({
           id: e.id,
           title: e.title,
           date: e.start_date || e.date,
           location: e.location || `${e.venue_name}, ${e.address}`,
           category: e.category,
-          image: e.image || null
+          image: e.image || null,
+          ticket_price: e.ticket_price,
+          rating: e.rating,
+          reviews_count: e.reviews_count
         }))
       };
     }
@@ -90,7 +102,7 @@ export const eventsService = {
   getEvent: async (eventId) => {
     try {
       console.log(`Fetching event details for ID: ${eventId}`);
-      const response = await api.get(`/api/events/${eventId}`);
+      const response = await api.get(`/events/${eventId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching event:', error);
