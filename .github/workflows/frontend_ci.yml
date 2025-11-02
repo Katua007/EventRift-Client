@@ -46,12 +46,15 @@ jobs:
     # The condition prevents deployment for feature branches or commits containing 'test:'
     if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'test:')
     steps:
+      - name: ⚙️ Checkout Repository
+        uses: actions/checkout@v4
+
       - name: ⬇️ Download Build Artifact
         # Downloads the compiled files from the previous job
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
-          path: . # Downloads the 'dist' folder into the current working directory
+          path: dist # Downloads the 'dist' folder into the dist directory
 
       - name: 🚀 Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -61,5 +64,5 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
           # Set the working directory to the path where the artifact was downloaded (dist)
-          working-directory: .
+          working-directory: dist
           vercel-args: '--prod'
