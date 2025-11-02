@@ -25,7 +25,9 @@ const GoerDashboard = () => {
 
       try {
         setLoading(true);
+        console.log('🔄 GoerDashboard: Fetching user tickets...');
         const response = await eventsService.getUserTickets();
+        console.log('✅ GoerDashboard: Tickets response:', response);
         const ticketsData = response.tickets || [];
 
         setTickets(ticketsData);
@@ -35,8 +37,9 @@ const GoerDashboard = () => {
           attendedEvents: ticketsData.filter(ticket => new Date(ticket.event.date) < new Date()).length,
           totalSpent: ticketsData.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0)
         });
+        console.log('✅ GoerDashboard: Data loaded successfully');
       } catch (err) {
-        console.error('Failed to fetch goer data:', err);
+        console.error('❌ GoerDashboard: Failed to fetch goer data:', err);
         setTickets([]);
         setStats({
           totalTickets: 0,

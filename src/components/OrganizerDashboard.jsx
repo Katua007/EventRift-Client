@@ -22,7 +22,9 @@ const OrganizerDashboard = () => {
 
       try {
         setLoading(true);
+        console.log('🔄 OrganizerDashboard: Fetching organizer events...');
         const eventsResponse = await eventsService.getOrganizerEvents(user.id);
+        console.log('✅ OrganizerDashboard: Events response:', eventsResponse);
         const organizerEvents = eventsResponse.events || [];
         setEvents(organizerEvents);
 
@@ -38,8 +40,9 @@ const OrganizerDashboard = () => {
           totalRevenue,
           averageRating: averageRating.toFixed(1)
         });
+        console.log('✅ OrganizerDashboard: Data loaded successfully');
       } catch (err) {
-        console.error('Failed to fetch organizer data:', err);
+        console.error('❌ OrganizerDashboard: Failed to fetch organizer data:', err);
         setEvents([]);
         setStats({
           totalEvents: 0,

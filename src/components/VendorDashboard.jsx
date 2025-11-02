@@ -40,7 +40,9 @@ const VendorDashboard = () => {
 
       try {
         setLoading(true);
+        console.log('🔄 VendorDashboard: Fetching vendor services...');
         const servicesResponse = await vendorService.getVendorServices(user.id);
+        console.log('✅ VendorDashboard: Services response:', servicesResponse);
         const vendorServices = servicesResponse.services || [];
 
         setServices(vendorServices);
@@ -72,8 +74,9 @@ const VendorDashboard = () => {
           totalRevenue,
           averageRating: averageRating.toFixed(1)
         });
+        console.log('✅ VendorDashboard: Data loaded successfully');
       } catch (err) {
-        console.error('Failed to fetch vendor data:', err);
+        console.error('❌ VendorDashboard: Failed to fetch vendor data:', err);
         setServices([]);
         setBookings([]);
         setStats({
