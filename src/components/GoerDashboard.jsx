@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, TrendingUp, Search, Filter, Heart, Eye } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { TicketDetails } from './TicketDetails';
+import { eventsService } from '../services/eventsService';
 
 const GoerDashboard = () => {
   const { user } = useAuth();
@@ -34,58 +35,12 @@ const GoerDashboard = () => {
         });
       } catch (err) {
         console.error('Failed to fetch goer data:', err);
-        // Fallback to mock data
-        const mockTickets = [
-          {
-            id: 1,
-            event: {
-              id: 1,
-              title: "AfroBeats Festival 2024",
-              date: "2024-12-15",
-              start_time: "18:00",
-              end_time: "23:00",
-              venue_name: "Uhuru Gardens",
-              address: "Langata Road, Nairobi, Kenya",
-              image: "",
-              category: "Music",
-              dress_code: "Casual/Festival Wear"
-            },
-            quantity: 2,
-            total_amount: 5000,
-            totalPaid: 5000,
-            transactionId: "TXN-1699123456789",
-            status: "confirmed",
-            purchase_date: "2024-11-01"
-          },
-          {
-            id: 2,
-            event: {
-              id: 2,
-              title: "Tech Conference Kenya",
-              date: "2025-01-20",
-              start_time: "08:00",
-              end_time: "18:00",
-              venue_name: "KICC",
-              address: "Harambee Avenue, Nairobi, Kenya",
-              image: "💻",
-              category: "Technology",
-              dress_code: "Business Casual"
-            },
-            quantity: 1,
-            total_amount: 8000,
-            totalPaid: 8000,
-            transactionId: "TXN-1700234567890",
-            status: "confirmed",
-            purchase_date: "2024-11-15"
-          }
-        ];
-
-        setTickets(mockTickets);
+        setTickets([]);
         setStats({
-          totalTickets: 3,
-          upcomingEvents: 2,
-          attendedEvents: 1,
-          totalSpent: 13000
+          totalTickets: 0,
+          upcomingEvents: 0,
+          attendedEvents: 0,
+          totalSpent: 0
         });
       } finally {
         setLoading(false);
