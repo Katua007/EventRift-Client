@@ -22,7 +22,19 @@ const GoerDashboard = () => {
     const fetchGoerData = async () => {
       try {
         setLoading(true);
-        // Mock data for demo
+        const response = await eventsService.getUserTickets();
+        const ticketsData = response.tickets || [];
+
+        setTickets(ticketsData);
+        setStats({
+          totalTickets: ticketsData.length,
+          upcomingEvents: ticketsData.filter(ticket => new Date(ticket.event.date) > new Date()).length,
+          attendedEvents: ticketsData.filter(ticket => new Date(ticket.event.date) < new Date()).length,
+          totalSpent: ticketsData.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0)
+        });
+      } catch (err) {
+        console.error('Failed to fetch goer data:', err);
+        // Fallback to mock data
         const mockTickets = [
           {
             id: 1,
@@ -67,7 +79,7 @@ const GoerDashboard = () => {
             purchase_date: "2024-11-15"
           }
         ];
-        
+
         setTickets(mockTickets);
         setStats({
           totalTickets: 3,
@@ -75,8 +87,6 @@ const GoerDashboard = () => {
           attendedEvents: 1,
           totalSpent: 13000
         });
-      } catch (err) {
-        console.error('Failed to fetch goer data:', err);
       } finally {
         setLoading(false);
       }
