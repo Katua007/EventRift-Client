@@ -18,6 +18,8 @@ const OrganizerDashboard = () => {
 
   useEffect(() => {
     const fetchOrganizerData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
         const eventsResponse = await eventsService.getOrganizerEvents(user.id);
@@ -52,14 +54,10 @@ const OrganizerDashboard = () => {
 
     const handleEventCreated = () => {
       // Refresh dashboard data when an event is created
-      if (user?.id) {
-        fetchOrganizerData();
-      }
+      fetchOrganizerData();
     };
 
-    if (user?.id) {
-      fetchOrganizerData();
-    }
+    fetchOrganizerData();
 
     // Listen for event creation events
     window.addEventListener('eventCreated', handleEventCreated);

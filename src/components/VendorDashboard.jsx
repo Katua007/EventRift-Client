@@ -36,6 +36,8 @@ const VendorDashboard = () => {
 
   useEffect(() => {
     const fetchVendorData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
         const servicesResponse = await vendorService.getVendorServices(user.id);
@@ -87,14 +89,10 @@ const VendorDashboard = () => {
 
     const handleServiceCreated = () => {
       // Refresh dashboard data when a service is created
-      if (user?.id) {
-        fetchVendorData();
-      }
+      fetchVendorData();
     };
 
-    if (user?.id) {
-      fetchVendorData();
-    }
+    fetchVendorData();
 
     // Listen for service creation events
     window.addEventListener('serviceCreated', handleServiceCreated);

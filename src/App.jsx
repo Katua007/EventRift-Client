@@ -16,6 +16,31 @@ import { VendorSetup } from './components/VendorSetup';
 import { Footer } from './components/Footer';
 import Navbar from './components/Navbar';
 
+// Dashboard Router Component
+const DashboardRouter = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user?.role) {
+      switch (user.role.toLowerCase()) {
+        case 'organizer':
+          navigate('/organizer/dashboard', { replace: true });
+          break;
+        case 'vendor':
+          navigate('/vendor/dashboard', { replace: true });
+          break;
+        case 'goer':
+        default:
+          navigate('/goer/dashboard', { replace: true });
+          break;
+      }
+    }
+  }, [user, navigate]);
+
+  return <div className="text-center pt-48 text-xl text-gray-400">Redirecting to your dashboard...</div>;
+};
+
 // Component for Protected Routes (Client-Side RBAC)
 const ProtectedRoute = ({ element, requiredRole }) => {
     const { isAuthenticated, hasRole, loading } = useAuth();
@@ -86,8 +111,12 @@ const App = () => {
 
                             {/* Protected Dashboard Routes */}
                             <Route
+                                path="/dashboard"
+                                element={<ProtectedRoute element={<DashboardRouter />} />}
+                            />
+                            <Route
                                 path="/organizer/dashboard"
-                                element={<ProtectedRoute element={<OrganizerDashboard />} />}
+                                element={<ProtectedRoute element={<OrganizerDashboard />} requiredRole="organizer" />}
                             />
                             <Route
                                 path="/organizer/create-event"
@@ -99,11 +128,11 @@ const App = () => {
                             />
                             <Route
                                 path="/goer/dashboard"
-                                element={<ProtectedRoute element={<GoerDashboard />} />}
+                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="goer" />}
                             />
                             <Route
                                 path="/vendor/dashboard"
-                                element={<ProtectedRoute element={<VendorDashboard />} />}
+                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="vendor" />}
                             />
                             <Route
                                 path="/vendor/setup"

@@ -38,7 +38,8 @@ export const TicketPurchase = ({ event, onClose, onSuccess }) => {
         phoneNumber,
         total,
         `EVENT-${event.id}`,
-        `${ticketCount} tickets for ${event.title}`
+        `${ticketCount} tickets for ${event.title}`,
+        ticketCount
       );
 
       if (response.ResponseCode === '0') {

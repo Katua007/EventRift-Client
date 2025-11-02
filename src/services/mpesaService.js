@@ -39,14 +39,31 @@ export const mpesaService = {
   },
 
   // Initiate STK Push
-  stkPush: async (phoneNumber, amount, accountReference, transactionDesc) => {
+  stkPush: async (phoneNumber, amount, accountReference, transactionDesc, ticketCount = 1) => {
     console.log('Demo Mode: M-Pesa STK Push simulation', { phoneNumber, amount, accountReference, transactionDesc });
-    
+
     // Always use demo mode to avoid CORS issues
     if (isDemoMode()) {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
+      // Simulate creating a ticket in the backend
+      try {
+        const ticketData = {
+          event_id: parseInt(accountReference.replace('EVENT-', '')),
+          quantity: ticketCount,
+          phone_number: phoneNumber,
+          amount: amount,
+          transaction_id: `TXN-${Date.now()}`
+        };
+
+        // Import eventsService dynamically to avoid circular imports
+        const { eventsService } = await import('./eventsService.js');
+        await eventsService.createTicket(ticketData);
+      } catch (error) {
+        console.error('Error creating ticket:', error);
+      }
+
       return {
         ResponseCode: '0',
         ResponseDescription: 'Success. Request accepted for processing',

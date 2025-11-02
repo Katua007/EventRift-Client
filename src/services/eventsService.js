@@ -14,6 +14,16 @@ export const eventsService = {
     }
   },
 
+  createTicket: async (ticketData) => {
+    try {
+      const response = await api.post('/api/tickets', ticketData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      throw error;
+    }
+  },
+
   submitReview: async (eventId, reviewData) => {
     try {
       const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);

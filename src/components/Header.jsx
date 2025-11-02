@@ -92,12 +92,8 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             {isAuthenticated ? (
               <>
-                <Link 
-                  to={
-                    user?.role === 'Organizer' ? '/organizer/dashboard' :
-                    user?.role === 'Vendor' ? '/vendor/dashboard' :
-                    '/goer/dashboard'
-                  }
+                <Link
+                  to="/dashboard"
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   Dashboard

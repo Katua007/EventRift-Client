@@ -21,6 +21,8 @@ const GoerDashboard = () => {
 
   useEffect(() => {
     const fetchGoerData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
         const response = await eventsService.getUserTickets();
@@ -49,14 +51,10 @@ const GoerDashboard = () => {
 
     const handleTicketPurchased = () => {
       // Refresh dashboard data when a ticket is purchased
-      if (user?.id) {
-        fetchGoerData();
-      }
+      fetchGoerData();
     };
 
-    if (user?.id) {
-      fetchGoerData();
-    }
+    fetchGoerData();
 
     // Listen for ticket purchase events
     window.addEventListener('ticketPurchased', handleTicketPurchased);
