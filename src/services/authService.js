@@ -6,7 +6,7 @@ export const authService = {
     console.log('🔐 Frontend AuthService: Login attempt with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
 
     try {
-      const response = await api.post('/api/auth/login', credentials);
+      const response = await api.post('/auth/login', credentials);
       console.log('🔐 Frontend AuthService: Login API response:', response.data);
 
       if (response.data.success) {
@@ -35,7 +35,7 @@ export const authService = {
     console.log('🔐 Frontend AuthService: Register attempt with data:', { username: userData.username, email: userData.email, role: userData.role, password: '***' });
 
     try {
-      const response = await api.post('/api/auth/register', userData);
+      const response = await api.post('/auth/register', userData);
       console.log('🔐 Frontend AuthService: Register API response:', response.data);
 
       if (response.data.success) {
@@ -60,7 +60,7 @@ export const authService = {
   logout: async () => {
     try {
       console.log('🔐 Frontend AuthService: Logout attempt');
-      await api.post('/api/auth/logout');
+      await api.post('/auth/logout');
     } catch (error) {
       console.error('🔐 Frontend AuthService: Logout API error:', error);
       // Continue with local cleanup even if API call fails
@@ -76,7 +76,7 @@ export const authService = {
   getProfile: async () => {
     try {
       console.log('🔐 Frontend AuthService: Get profile attempt');
-      const response = await api.get('/api/auth/profile');
+      const response = await api.get('/auth/profile');
       console.log('🔐 Frontend AuthService: Profile API response:', response.data);
 
       if (response.data.success) {
