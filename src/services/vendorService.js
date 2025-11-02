@@ -4,7 +4,7 @@ export const vendorService = {
   // Get all services for a vendor
   getVendorServices: async (vendorId) => {
     try {
-      const response = await api.get('/vendors/services');
+      const response = await api.get('/api/vendors/services');
       return response.data;
     } catch (error) {
       console.error('Error fetching vendor services:', error);
@@ -15,7 +15,7 @@ export const vendorService = {
   // Create new service
   createService: async (serviceData) => {
     try {
-      const response = await api.post('/services', serviceData);
+      const response = await api.post('/api/services', serviceData);
       return response.data;
     } catch (error) {
       console.error('Error creating service:', error);
@@ -26,7 +26,7 @@ export const vendorService = {
   // Update service
   updateService: async (serviceId, serviceData) => {
     try {
-      const response = await api.put(`/services/${serviceId}`, serviceData);
+      const response = await api.put(`/api/services/${serviceId}`, serviceData);
       return response.data;
     } catch (error) {
       console.error('Error updating service:', error);
@@ -37,7 +37,7 @@ export const vendorService = {
   // Get single service
   getService: async (serviceId) => {
     try {
-      const response = await api.get(`/services/${serviceId}`);
+      const response = await api.get(`/api/services/${serviceId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching service:', error);
@@ -48,7 +48,7 @@ export const vendorService = {
   // Delete service
   deleteService: async (serviceId) => {
     try {
-      const response = await api.delete(`/services/${serviceId}`);
+      const response = await api.delete(`/api/services/${serviceId}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting service:', error);

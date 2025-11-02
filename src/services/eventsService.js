@@ -5,7 +5,7 @@ export const eventsService = {
   // Goer services
   getUserTickets: async () => {
     try {
-      const response = await api.get('/tickets/user');
+      const response = await api.get('/api/tickets/user');
       return response.data;
     } catch (error) {
       console.error('Error fetching user tickets:', error);
@@ -16,7 +16,7 @@ export const eventsService = {
 
   submitReview: async (eventId, reviewData) => {
     try {
-      const response = await api.post(`/events/${eventId}/reviews`, reviewData);
+      const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);
       return response.data;
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -30,7 +30,7 @@ export const eventsService = {
   // Organizer services
   getOrganizerEvents: async (organizerId) => {
     try {
-      const response = await api.get('/organizers/events');
+      const response = await api.get('/api/organizers/events');
       return response.data;
     } catch (error) {
       console.error('Error fetching organizer events:', error);
@@ -42,7 +42,7 @@ export const eventsService = {
   createEvent: async (eventData) => {
     try {
       console.log('Creating event with data:', eventData);
-      const response = await api.post('/events', eventData);
+      const response = await api.post('/api/events', eventData);
       console.log('Event creation response:', response.data);
       return response.data;
     } catch (error) {
@@ -56,7 +56,7 @@ export const eventsService = {
 
   updateEvent: async (eventId, eventData) => {
     try {
-      const response = await api.put(`/events/${eventId}`, eventData);
+      const response = await api.put(`/api/events/${eventId}`, eventData);
       return response.data;
     } catch (error) {
       console.error('Error updating event:', error);
@@ -66,7 +66,7 @@ export const eventsService = {
 
   deleteEvent: async (eventId) => {
     try {
-      const response = await api.delete(`/events/${eventId}`);
+      const response = await api.delete(`/api/events/${eventId}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting event:', error);
@@ -77,7 +77,7 @@ export const eventsService = {
   // General event services
   getEvents: async () => {
     try {
-      const response = await api.get('/events');
+      const response = await api.get('/api/events');
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -102,7 +102,7 @@ export const eventsService = {
   getEvent: async (eventId) => {
     try {
       console.log(`Fetching event details for ID: ${eventId}`);
-      const response = await api.get(`/events/${eventId}`);
+      const response = await api.get(`/api/events/${eventId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching event:', error);
@@ -114,6 +114,22 @@ export const eventsService = {
           error.message?.includes('timeout') ||
           error.message?.includes('Network Error')) {
         console.log('Network error detected, falling back to local data');
+      }
+
+      // Handle 404 errors specifically
+      if (error.response?.status === 404) {
+        console.log(`Event ${eventId} not found, using fallback data`);
+        // Use local fallback data
+        const event = events.find(e => e.id.toString() === eventId);
+        if (event) {
+          return {
+            event: {
+              ...event,
+              availableTickets: (event.max_attendees || 1000) - (event.tickets_sold || 0),
+              status: event.status || 'active'
+            }
+          };
+        }
       }
 
       // Fallback to local data if API fails
