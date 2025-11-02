@@ -4,6 +4,7 @@ import api from './api.js';
 export const authService = {
   login: async (credentials) => {
     console.log('🔐 Frontend AuthService: Login attempt with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
+    console.log('🔐 Frontend AuthService: Login request URL:', api.defaults.baseURL + '/api/auth/login');
 
     try {
       const response = await api.post('/api/auth/login', credentials);
@@ -33,6 +34,7 @@ export const authService = {
 
   register: async (userData) => {
     console.log('🔐 Frontend AuthService: Register attempt with data:', { username: userData.username, email: userData.email, role: userData.role, password: '***' });
+    console.log('🔐 Frontend AuthService: Register request URL:', api.defaults.baseURL + '/api/auth/register');
 
     try {
       const response = await api.post('/api/auth/register', userData);
@@ -60,6 +62,7 @@ export const authService = {
   logout: async () => {
     try {
       console.log('🔐 Frontend AuthService: Logout attempt');
+      console.log('🔐 Frontend AuthService: Logout request URL:', api.defaults.baseURL + '/api/auth/logout');
       await api.post('/api/auth/logout');
     } catch (error) {
       console.error('🔐 Frontend AuthService: Logout API error:', error);
@@ -76,6 +79,7 @@ export const authService = {
   getProfile: async () => {
     try {
       console.log('🔐 Frontend AuthService: Get profile attempt');
+      console.log('🔐 Frontend AuthService: Profile request URL:', api.defaults.baseURL + '/api/auth/profile');
       const response = await api.get('/api/auth/profile');
       console.log('🔐 Frontend AuthService: Profile API response:', response.data);
 
