@@ -1,154 +1,104 @@
-// Mock auth service with localStorage persistence
-const USERS_KEY = 'eventrift_users';
-const CURRENT_USER_KEY = 'eventrift_current_user';
-
-// Initialize with demo users if not exists
-const initializeDemoUsers = () => {
-  const existingUsers = localStorage.getItem(USERS_KEY);
-  if (!existingUsers) {
-    const demoUsers = {
-      'goer@test.com': {
-        id: 1,
-        username: 'John Doe',
-        email: 'goer@test.com',
-        password: 'password',
-        role: 'Goer',
-        createdAt: new Date().toISOString()
-      },
-      'organizer@test.com': {
-        id: 2,
-        username: 'Jane Smith',
-        email: 'organizer@test.com',
-        password: 'password',
-        role: 'Organizer',
-        createdAt: new Date().toISOString()
-      },
-      'vendor@test.com': {
-        id: 3,
-        username: 'Mike Johnson',
-        email: 'vendor@test.com',
-        password: 'password',
-        role: 'Vendor',
-        createdAt: new Date().toISOString()
-      }
-    };
-    localStorage.setItem(USERS_KEY, JSON.stringify(demoUsers));
-  }
-};
-
-// Initialize demo users on load
-initializeDemoUsers();
+import api from './api.js';
+// Real auth service that communicates with backend API
 
 export const authService = {
   login: async (credentials) => {
-    const { email, password } = credentials;
-    
-    // Get users from localStorage
-    const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    console.log('🔐 Frontend AuthService: Login attempt with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
 
-    // Check if user exists and password matches
-    const user = users[email] || users[credentials.email_or_username];
-    
-    // Also check by username
-    if (!user) {
-      const userByUsername = Object.values(users).find(u => u.username === credentials.email_or_username);
-      if (userByUsername && userByUsername.password === password) {
-        const { password: _, ...userWithoutPassword } = userByUsername;
-        const token = 'mock-jwt-token-' + Date.now();
-        
-        // Store current user session
-        localStorage.setItem('jwt_token', token);
-        localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
-        
-        return { token, user: userWithoutPassword };
+    try {
+      const response = await api.post('/api/auth/login', credentials);
+      console.log('🔐 Frontend AuthService: Login API response:', response.data);
+
+      if (response.data.success) {
+        const { access_token, user } = response.data;
+
+        // Store token and user data
+        localStorage.setItem('jwt_token', access_token);
+        localStorage.setItem('user_data', JSON.stringify(user));
+
+        console.log('🔐 Frontend AuthService: Login successful for user:', user.email);
+        return { token: access_token, user };
+      } else {
+        console.log('🔐 Frontend AuthService: Login failed -', response.data.message);
+        throw new Error(response.data.message || 'Login failed');
       }
+    } catch (error) {
+      console.error('🔐 Frontend AuthService: Login error:', error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
     }
-    
-    if (user && user.password === password) {
-      const { password: _, ...userWithoutPassword } = user;
-      const token = 'mock-jwt-token-' + Date.now();
-      
-      // Store current user session
-      localStorage.setItem('jwt_token', token);
-      localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
-      
-      return { token, user: userWithoutPassword };
-    }
-    
-    throw new Error('Invalid email/username or password');
   },
 
   register: async (userData) => {
-    const { username, email, password, role } = userData;
-    
-    // Get existing users
-    const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check if user already exists
-    if (users[email]) {
-      throw new Error('User with this email already exists');
+    console.log('🔐 Frontend AuthService: Register attempt with data:', { username: userData.username, email: userData.email, role: userData.role, password: '***' });
+
+    try {
+      const response = await api.post('/api/auth/register', userData);
+      console.log('🔐 Frontend AuthService: Register API response:', response.data);
+
+      if (response.data.success) {
+        console.log('🔐 Frontend AuthService: Register successful for user:', userData.username);
+        return {
+          message: response.data.message || 'Registration successful!',
+          success: true
+        };
+      } else {
+        console.log('🔐 Frontend AuthService: Register failed -', response.data.message);
+        throw new Error(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('🔐 Frontend AuthService: Register error:', error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
     }
-    
-    // Check if username is taken
-    const existingUsername = Object.values(users).find(u => u.username === username);
-    if (existingUsername) {
-      throw new Error('Username is already taken');
-    }
-    
-    // Create new user
-    const newUser = {
-      id: Date.now(),
-      username,
-      email,
-      password,
-      role,
-      createdAt: new Date().toISOString()
-    };
-    
-    // Save user
-    users[email] = newUser;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    
-    return {
-      message: 'Registration successful! You can now login with your credentials.',
-      success: true
-    };
   },
 
   logout: async () => {
-    // Clear session
+    try {
+      console.log('🔐 Frontend AuthService: Logout attempt');
+      await api.post('/api/auth/logout');
+    } catch (error) {
+      console.error('🔐 Frontend AuthService: Logout API error:', error);
+      // Continue with local cleanup even if API call fails
+    }
+
+    // Clear session regardless of API response
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_data');
+    console.log('🔐 Frontend AuthService: Local session cleared');
     return { success: true };
   },
 
   getProfile: async () => {
-    const token = localStorage.getItem('jwt_token');
-    const userData = localStorage.getItem('user_data');
-    
-    if (token && userData) {
-      return { user: JSON.parse(userData) };
+    try {
+      console.log('🔐 Frontend AuthService: Get profile attempt');
+      const response = await api.get('/api/auth/profile');
+      console.log('🔐 Frontend AuthService: Profile API response:', response.data);
+
+      if (response.data.success) {
+        return { user: response.data.user };
+      } else {
+        throw new Error(response.data.message || 'Failed to get profile');
+      }
+    } catch (error) {
+      console.error('🔐 Frontend AuthService: Get profile error:', error);
+      // Fallback to cached data if API fails
+      const userData = localStorage.getItem('user_data');
+      if (userData) {
+        console.log('🔐 Frontend AuthService: Using cached user data');
+        return { user: JSON.parse(userData) };
+      }
+      throw error;
     }
-    
-    throw new Error('No valid session found');
   },
 
-  // Helper method to get all users (for debugging)
-  getAllUsers: () => {
-    return JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-  },
-
-  // Helper method to clear all data (for testing)
-  clearAllData: () => {
-    localStorage.removeItem(USERS_KEY);
+  // Helper method to clear local session data (for testing)
+  clearLocalSession: () => {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_data');
-    initializeDemoUsers();
   }
 };

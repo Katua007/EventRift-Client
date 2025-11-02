@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
         const initAuth = async () => {
             const token = localStorage.getItem('jwt_token');
             const userData = localStorage.getItem('user_data');
-            
+
             if (token && userData) {
                 try {
                     // Verify token with backend
@@ -20,20 +20,14 @@ export const AuthProvider = ({ children }) => {
                     setUser(profile.user || JSON.parse(userData));
                     setIsAuthenticated(true);
                 } catch (error) {
-                    // If CORS error, use cached data
-                    if (error.isCorsError) {
-                        setUser(JSON.parse(userData));
-                        setIsAuthenticated(true);
-                    } else {
-                        // Token invalid, clear storage
-                        localStorage.removeItem('jwt_token');
-                        localStorage.removeItem('user_data');
-                    }
+                    // Token invalid, clear storage
+                    localStorage.removeItem('jwt_token');
+                    localStorage.removeItem('user_data');
                 }
             }
             setLoading(false);
         };
-        
+
         initAuth();
     }, []);
 
