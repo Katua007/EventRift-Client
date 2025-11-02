@@ -34,16 +34,16 @@ jobs:
         run: npm run build # Creates the 'dist' folder
 
       - name: ⬆️ Upload Build Artifact
-        # Uploads the 'dist' folder (or whatever folder your build command creates)
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: dist # IMPORTANT: Change 'dist' to your actual build folder name if different (e.g., 'build')
+          path: dist/**
 
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
-    # The condition prevents deployment for feature branches or commits containing 'test:'
+    # NOTE: this currently only deploys from main. If you want develop to deploy too,
+    # change the condition or remove it.
     if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'test:')
     steps:
       - name: ⚙️ Checkout Repository
@@ -52,19 +52,21 @@ jobs:
           fetch-depth: 0
 
       - name: ⬇️ Download Build Artifact
-        # Downloads the compiled files from the previous job
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
-          path: dist # Downloads the 'dist' folder into the dist directory
+          path: dist
+
+      - name: 🔎 Inspect downloaded build
+        run: |
+          echo "Contents of dist:"
+          ls -la dist || true
 
       - name: 🚀 Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
-          # Vercel deployment credentials
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          # Set the working directory to the path where the artifact was downloaded (dist)
           working-directory: dist
-          vercel-args: '--prod'
+          vercel-args: '--prod --confirm'
