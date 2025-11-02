@@ -47,9 +47,23 @@ const GoerDashboard = () => {
       }
     };
 
+    const handleTicketPurchased = () => {
+      // Refresh dashboard data when a ticket is purchased
+      if (user?.id) {
+        fetchGoerData();
+      }
+    };
+
     if (user?.id) {
       fetchGoerData();
     }
+
+    // Listen for ticket purchase events
+    window.addEventListener('ticketPurchased', handleTicketPurchased);
+
+    return () => {
+      window.removeEventListener('ticketPurchased', handleTicketPurchased);
+    };
   }, [user?.id]);
 
   const StatCard = ({ icon: Icon, title, value, color = "text-er-primary", bgColor = "bg-er-primary/10" }) => (

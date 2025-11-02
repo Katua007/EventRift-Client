@@ -119,6 +119,11 @@ export const TicketPurchase = ({ event, onClose, onSuccess }) => {
         total,
         transactionId: transactionId
       });
+
+      // Trigger dashboard refresh by dispatching custom event
+      window.dispatchEvent(new CustomEvent('ticketPurchased', {
+        detail: { event, tickets: ticketCount, total, transactionId }
+      }));
     } catch (error) {
       console.error('Post-payment processing error:', error);
       

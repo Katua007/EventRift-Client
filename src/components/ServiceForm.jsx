@@ -73,6 +73,12 @@ const ServiceForm = () => {
           `Service "${data.name}" ${isEditing ? 'updated' : 'created'} successfully!`,
           'success'
         );
+
+        // Trigger dashboard refresh by dispatching custom event
+        window.dispatchEvent(new CustomEvent('serviceCreated', {
+          detail: { service: result.service || serviceData, isEditing }
+        }));
+
         setTimeout(() => navigate('/vendor/dashboard'), 1500);
       } else {
         setError(result.message || `Failed to ${isEditing ? 'update' : 'create'} service`);

@@ -85,9 +85,23 @@ const VendorDashboard = () => {
       }
     };
 
+    const handleServiceCreated = () => {
+      // Refresh dashboard data when a service is created
+      if (user?.id) {
+        fetchVendorData();
+      }
+    };
+
     if (user?.id) {
       fetchVendorData();
     }
+
+    // Listen for service creation events
+    window.addEventListener('serviceCreated', handleServiceCreated);
+
+    return () => {
+      window.removeEventListener('serviceCreated', handleServiceCreated);
+    };
   }, [user?.id]);
 
   const StatCard = ({ icon, title, value, color = "text-er-primary" }) => {
