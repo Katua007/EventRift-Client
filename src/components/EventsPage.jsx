@@ -331,7 +331,6 @@ const EventsPage = () => {
           
           {filteredAndSortedEvents.length === 0 && !loading && (
             <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-er-light mb-2">No events found</h3>
               <p className="text-er-text">Try adjusting your search or filters</p>
             </div>

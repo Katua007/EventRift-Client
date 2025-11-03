@@ -152,7 +152,6 @@ const CheckoutPage = () => {
     
     if (!event) return (
         <div className="text-center pt-32">
-            <div className="text-6xl mb-4">🙁</div>
             <div className="text-er-light text-xl">Event not found</div>
         </div>
     );

@@ -73,7 +73,7 @@ const GoerDashboard = () => {
                                 <div>
                                     <h3 className="text-xl font-semibold text-white">{event.name}</h3>
                                     <p className="text-sm text-gray-400">
-                                        📅 {new Date(event.date).toLocaleDateString()} @ {event.location}
+                                        {new Date(event.date).toLocaleDateString()} @ {event.location}
                                     </p>
                                 </div>
                                 <span className="bg-er-primary/20 text-er-primary text-xs font-bold px-3 py-1 rounded-full">

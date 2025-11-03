@@ -26,7 +26,7 @@ export function PhotoGallery() {
     {
       src: G3,
       alt: 'EventRift Gallery 3',
-      fallback: '🎊'
+      fallback: ''
     },
     {
       src: G4,
@@ -46,7 +46,7 @@ export function PhotoGallery() {
     {
       src: G7,
       alt: 'EventRift Gallery 7',
-      fallback: '🎸'
+      fallback: ''
     }
   ];
 

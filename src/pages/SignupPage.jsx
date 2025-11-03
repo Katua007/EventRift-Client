@@ -59,23 +59,23 @@ const SignupPage = () => {
   };
 
   const roleOptions = [
-    { 
-      value: 'Goer', 
-      label: 'Event Goer', 
+    {
+      value: 'Goer',
+      label: 'Event Goer',
       desc: 'Discover and attend amazing events',
       icon: ''
     },
-    { 
-      value: 'Organizer', 
-      label: 'Event Organizer', 
+    {
+      value: 'Organizer',
+      label: 'Event Organizer',
       desc: 'Create and manage events',
-      icon: '🎯'
+      icon: ''
     },
-    { 
-      value: 'Vendor', 
-      label: 'Service Vendor', 
+    {
+      value: 'Vendor',
+      label: 'Service Vendor',
       desc: 'Provide services for events',
-      icon: '🛠'
+      icon: ''
     }
   ];
 

@@ -52,7 +52,6 @@ Please present this ticket at the venue
       <div className="bg-er-gray rounded-xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="text-4xl mb-3">🎫</div>
           <h3 className="text-xl font-bold text-er-light mb-2">Digital Ticket</h3>
           <p className="text-er-secondary font-mono text-sm">#{ticket.transactionId}</p>
         </div>
