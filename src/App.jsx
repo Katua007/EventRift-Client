@@ -22,6 +22,31 @@ import { VendorSetup } from './components/VendorSetup'; // Setup page for new ve
 import { Footer } from './components/Footer'; // Footer shown on all pages
 import Navbar from './components/Navbar'; // Navigation bar at the top
 
+// Dashboard Router Component - handles automatic redirection based on user role
+const DashboardRouter = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (user?.role) {
+            switch (user.role.toLowerCase()) {
+                case 'organizer':
+                    navigate('/organizer/dashboard', { replace: true });
+                    break;
+                case 'vendor':
+                    navigate('/vendor/dashboard', { replace: true });
+                    break;
+                case 'goer':
+                default:
+                    navigate('/goer/dashboard', { replace: true });
+                    break;
+            }
+        }
+    }, [user, navigate]);
+
+    return <div className="text-center pt-48 text-xl text-gray-400">Redirecting to your dashboard...</div>;
+};
+
 // This component protects certain pages so only logged-in users can access them
 // It also checks if users have the right permissions (like organizer or vendor roles)
 const ProtectedRoute = ({ element, requiredRole }) => {
