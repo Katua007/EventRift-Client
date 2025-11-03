@@ -40,19 +40,22 @@ const GoerDashboard = () => {
       try {
         // Show loading spinner while we fetch data
         setLoading(true);
-        // Call the backend to get user's tickets
-        const response = await eventsService.getUserTickets();
-        // Get the tickets array, or empty array if none
-        const ticketsData = response.tickets || [];
+        // Call the backend to get user's dashboard data
+        const response = await api.get('/api/dashboard/goer');
+        console.log('Goer dashboard data:', response.data);
+
+        // Transform the backend data to match our component structure
+        const dashboardData = response.data;
+        const ticketsData = dashboardData.upcoming_events || [];
 
         // Store the tickets in our component state
         setTickets(ticketsData);
         // Calculate and store statistics about the user's tickets
         setStats({
-          totalTickets: ticketsData.length, // Count all tickets
-          upcomingEvents: ticketsData.filter(ticket => new Date(ticket.event.date) > new Date()).length, // Count future events
-          attendedEvents: ticketsData.filter(ticket => new Date(ticket.event.date) < new Date()).length, // Count past events
-          totalSpent: ticketsData.reduce((sum, ticket) => sum + (ticket.total_amount || 0), 0) // Add up all ticket costs
+          totalTickets: dashboardData.total_tickets || 0,
+          upcomingEvents: dashboardData.total_upcoming_events || 0,
+          attendedEvents: dashboardData.total_bookings - dashboardData.total_upcoming_events || 0,
+          totalSpent: dashboardData.total_spent || 0
         });
       } catch (err) {
         // If something goes wrong, log the error
