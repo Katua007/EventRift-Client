@@ -1,0 +1,1 @@
+import{t as e}from"./index-D7OawsGT.js";export{e as eventsService};

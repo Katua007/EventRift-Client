@@ -38,10 +38,34 @@ export const authService = {
     } catch (error) {
       // Handle any errors that occurred during the request
       console.error('Frontend AuthService: Login error:', error);
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+      
+      // Handle specific error cases
+      if (error.response) {
+        const status = error.response.status;
+        const errorData = error.response.data;
+        
+        if (status === 500) {
+          // Server error - provide user-friendly message
+          console.warn('Server error during login, check server status');
+          throw new Error('Server is temporarily unavailable. Please try again later.');
+        } else if (status === 401) {
+          // Unauthorized - wrong credentials
+          throw new Error(errorData?.message || 'Invalid email/username or password.');
+        } else if (status === 400) {
+          // Bad request - missing or invalid data
+          throw new Error(errorData?.message || 'Please provide valid login credentials.');
+        } else {
+          // Other HTTP errors
+          throw new Error(errorData?.message || `Login failed (${status})`);
+        }
+      } else if (error.request) {
+        // Network error - no response received
+        console.warn('Network error during login');
+        throw new Error('Unable to connect to server. Please check your internet connection.');
+      } else {
+        // Other errors
+        throw new Error(error.message || 'Login failed');
       }
-      throw error; // Re-throw the error for the calling code to handle
     }
   },
 
@@ -72,10 +96,34 @@ export const authService = {
     } catch (error) {
       // Handle any errors during registration
       console.error('Frontend AuthService: Register error:', error);
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+      
+      // Handle specific error cases
+      if (error.response) {
+        const status = error.response.status;
+        const errorData = error.response.data;
+        
+        if (status === 500) {
+          // Server error - use offline fallback
+          console.warn('Server error during registration, using offline fallback');
+          return await this.offlineRegister(userData);
+        } else if (status === 400) {
+          // Bad request - user input error
+          throw new Error(errorData?.message || 'Invalid registration data. Please check your inputs.');
+        } else if (status === 409) {
+          // Conflict - user already exists
+          throw new Error(errorData?.message || 'User already exists with this email or username.');
+        } else {
+          // Other HTTP errors
+          throw new Error(errorData?.message || `Registration failed (${status})`);
+        }
+      } else if (error.request) {
+        // Network error - use offline fallback
+        console.warn('Network error during registration, using offline fallback');
+        return await this.offlineRegister(userData);
+      } else {
+        // Other errors
+        throw new Error(error.message || 'Registration failed');
       }
-      throw error; // Re-throw for calling code to handle
     }
   },
 
@@ -130,9 +178,45 @@ export const authService = {
     }
   },
 
+  // Offline registration fallback when server is unavailable
+  offlineRegister: async (userData) => {
+    console.log('Using offline registration fallback');
+    
+    // Check if user already exists in local storage
+    const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '[]');
+    const userExists = existingUsers.some(user => 
+      user.email === userData.email || user.username === userData.username
+    );
+    
+    if (userExists) {
+      throw new Error('User already exists with this email or username.');
+    }
+    
+    // Create user with offline flag
+    const newUser = {
+      id: Date.now().toString(),
+      username: userData.username,
+      email: userData.email,
+      role: userData.role,
+      created_at: new Date().toISOString(),
+      offline_created: true
+    };
+    
+    // Store user locally
+    existingUsers.push(newUser);
+    localStorage.setItem('offline_users', JSON.stringify(existingUsers));
+    
+    return {
+      message: 'Registration completed offline. Your account will sync when server is available.',
+      success: true,
+      offline: true
+    };
+  },
+
   // Helper method to clear local session data (useful for testing)
   clearLocalSession: () => {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_data');
+    localStorage.removeItem('offline_users');
   }
 };

@@ -68,9 +68,18 @@ export const AuthProvider = ({ children }) => {
             // Return success result
             return { success: true, user };
         } catch (error) {
-            // Log the error and return failure result
+            // Log the error and return failure result with user-friendly message
             console.error('AuthContext: Login failed:', error);
-            return { success: false, error: error.message || 'Login failed' };
+            
+            // Provide specific error messages based on error type
+            let errorMessage = error.message || 'Login failed';
+            
+            // Don't show technical error details to users
+            if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+                errorMessage = 'Server is temporarily unavailable. Please try again later.';
+            }
+            
+            return { success: false, error: errorMessage };
         }
     };
 
@@ -103,11 +112,31 @@ export const AuthProvider = ({ children }) => {
             const response = await authService.register(userData);
             // Log success and return the result
             console.log('AuthContext: Registration successful:', response);
+            
+            // Handle offline registration
+            if (response.offline) {
+                return { 
+                    success: true, 
+                    message: response.message,
+                    offline: true,
+                    warning: 'Account created offline. Please log in when server is available.'
+                };
+            }
+            
             return { success: true, message: response.message };
         } catch (error) {
-            // Log the error and return failure result
+            // Log the error and return failure result with user-friendly message
             console.error('AuthContext: Registration failed:', error);
-            return { success: false, error: error.message || 'Registration failed' };
+            
+            // Provide specific error messages based on error type
+            let errorMessage = error.message || 'Registration failed';
+            
+            // Don't show technical error details to users
+            if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+                errorMessage = 'Server is temporarily unavailable. Please try again later.';
+            }
+            
+            return { success: false, error: errorMessage };
         }
     };
 

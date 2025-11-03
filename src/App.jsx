@@ -21,6 +21,7 @@ import ServiceForm from './components/ServiceForm'; // Form to add vendor servic
 import { VendorSetup } from './components/VendorSetup'; // Setup page for new vendors
 import { Footer } from './components/Footer'; // Footer shown on all pages
 import Navbar from './components/Navbar'; // Navigation bar at the top
+import ErrorBoundary from './components/ErrorBoundary'; // Error boundary for error handling
 
 // Dashboard Router Component - handles automatic redirection based on user role
 const DashboardRouter = () => {
@@ -97,10 +98,12 @@ const NavigateToHome = () => {
 // This is the main App component that defines the entire application structure
 const App = () => {
     return (
-        // BrowserRouter enables navigation between different pages in the app
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            {/* AuthProvider gives all components access to login/logout functionality */}
-            <AuthProvider>
+        // ErrorBoundary catches any React errors and shows user-friendly message
+        <ErrorBoundary>
+            {/* BrowserRouter enables navigation between different pages in the app */}
+            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                {/* AuthProvider gives all components access to login/logout functionality */}
+                <AuthProvider>
                 {/* Main app container with dark background and full height */}
                 <div className="min-h-screen bg-er-dark text-er-text flex flex-col">
                     {/* Navigation bar at the top */}
@@ -174,6 +177,7 @@ const App = () => {
                 </div>
             </AuthProvider>
         </BrowserRouter>
+        </ErrorBoundary>
     );
 };
 
