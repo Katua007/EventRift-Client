@@ -104,8 +104,12 @@ const App = () => {
 
                             {/* Protected Dashboard Routes - only for logged-in users with specific roles */}
                             <Route
+                                path="/dashboard" // Generic dashboard route that redirects based on role
+                                element={<ProtectedRoute element={<DashboardRouter />} />}
+                            />
+                            <Route
                                 path="/organizer/dashboard" // Organizer's main dashboard
-                                element={<ProtectedRoute element={<OrganizerDashboard />} />}
+                                element={<ProtectedRoute element={<OrganizerDashboard />} requiredRole="organizer" />}
                             />
                             <Route
                                 path="/organizer/create-event" // Form to create new events
@@ -117,11 +121,11 @@ const App = () => {
                             />
                             <Route
                                 path="/goer/dashboard" // Attendee's dashboard
-                                element={<ProtectedRoute element={<GoerDashboard />} />}
+                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="goer" />}
                             />
                             <Route
                                 path="/vendor/dashboard" // Vendor's dashboard
-                                element={<ProtectedRoute element={<VendorDashboard />} />}
+                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="vendor" />}
                             />
                             <Route
                                 path="/vendor/setup" // Initial vendor setup
