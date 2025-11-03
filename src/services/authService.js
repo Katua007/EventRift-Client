@@ -83,7 +83,7 @@ export const authService = {
     try {
       // Try to tell the server we're logging out
       console.log('Frontend AuthService: Logout attempt');
-      console.log('Frontend AuthService: Logout request URL:', api.defaults.baseURL + '/auth/logout');
+      console.log('Frontend AuthService: Logout request URL:', api.defaults.baseURL + '/api/auth/logout');
       await api.post('/api/auth/logout');
     } catch (error) {
       // If server logout fails, just log it but continue
@@ -103,7 +103,7 @@ export const authService = {
     try {
       // Log the profile request
       console.log('Frontend AuthService: Get profile attempt');
-      console.log('Frontend AuthService: Profile request URL:', api.defaults.baseURL + '/auth/profile');
+      console.log('Frontend AuthService: Profile request URL:', api.defaults.baseURL + '/api/auth/profile');
       // Request user profile from server
       const response = await api.get('/api/auth/profile');
       console.log('Frontend AuthService: Profile API response:', response.data);

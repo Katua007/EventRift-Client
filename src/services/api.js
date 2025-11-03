@@ -35,7 +35,7 @@ api.interceptors.request.use(
 // This runs after every API response to handle errors
 api.interceptors.response.use(
   (response) => response, // If response is successful, just return it
-  (error) => {
+  async (error) => {
     // If the server returns 401 (unauthorized), the token is invalid
     if (error.response?.status === 401) {
       // Clear stored authentication data
@@ -45,7 +45,7 @@ api.interceptors.response.use(
       window.location.href = '/login';
     }
 
-    // Handle network and connection errors
+    // Handle network and connection errors with retry logic
     if (error.code === 'ERR_NETWORK' || // Network completely down
         error.message.includes('CORS') || // Cross-origin request blocked
         error.code === 'ECONNABORTED' || // Request timed out
@@ -56,6 +56,14 @@ api.interceptors.response.use(
       // Mark the error so other parts of the app know it's a network issue
       error.isCorsError = true;
       error.isNetworkError = true;
+
+      // Retry logic for network errors
+      if (error.config && !error.config._retry) {
+        error.config._retry = true;
+        console.log('Retrying request after network error...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return api(error.config);
+      }
     }
 
     // Return the error so the calling code can handle it
