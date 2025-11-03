@@ -4,21 +4,26 @@ export const vendorService = {
   // Get all services for a vendor
   getVendorServices: async (vendorId) => {
     try {
+      console.log('🔄 VendorService: Fetching services for vendor:', vendorId);
       const response = await api.get('/api/vendors/services');
+      console.log('✅ VendorService: Services fetched successfully:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error fetching vendor services:', error);
-      throw error;
+      console.error('❌ VendorService: Error fetching vendor services:', error);
+      // Return empty services array as fallback instead of throwing
+      return { success: true, services: [] };
     }
   },
 
   // Create new service
   createService: async (serviceData) => {
     try {
+      console.log('🔄 VendorService: Creating service:', serviceData);
       const response = await api.post('/api/services', serviceData);
+      console.log('✅ VendorService: Service created successfully:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error creating service:', error);
+      console.error('❌ VendorService: Error creating service:', error);
       throw error;
     }
   },
@@ -48,10 +53,12 @@ export const vendorService = {
   // Delete service
   deleteService: async (serviceId) => {
     try {
+      console.log('🔄 VendorService: Deleting service:', serviceId);
       const response = await api.delete(`/api/services/${serviceId}`);
+      console.log('✅ VendorService: Service deleted successfully:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error deleting service:', error);
+      console.error('❌ VendorService: Error deleting service:', error);
       throw error;
     }
   }

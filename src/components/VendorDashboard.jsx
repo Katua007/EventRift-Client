@@ -47,7 +47,7 @@ const VendorDashboard = () => {
 
         setServices(vendorServices);
 
-        // Mock bookings for demo
+        // Mock bookings for demo - replace with real API call when backend is ready
         const mockBookings = [
           {
             id: 1,
@@ -77,6 +77,7 @@ const VendorDashboard = () => {
         console.log('✅ VendorDashboard: Data loaded successfully');
       } catch (err) {
         console.error('❌ VendorDashboard: Failed to fetch vendor data:', err);
+        // Fallback to empty data instead of throwing error
         setServices([]);
         setBookings([]);
         setStats({
@@ -90,14 +91,15 @@ const VendorDashboard = () => {
       }
     };
 
-    const handleServiceCreated = () => {
-      // Refresh dashboard data when a service is created
+    const handleServiceCreated = (event) => {
+      console.log('🔄 VendorDashboard: Service created/updated, refreshing data...');
+      // Refresh dashboard data when a service is created or updated
       fetchVendorData();
     };
 
     fetchVendorData();
 
-    // Listen for service creation events
+    // Listen for service creation/update events
     window.addEventListener('serviceCreated', handleServiceCreated);
 
     return () => {
