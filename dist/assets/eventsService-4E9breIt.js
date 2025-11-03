@@ -1,0 +1,1 @@
+import{t as e}from"./index-Dc6RMPp_.js";export{e as eventsService};

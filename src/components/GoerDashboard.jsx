@@ -10,6 +10,7 @@ import { Calendar, Clock, MapPin, Star, Ticket, History, MessageSquare, Trending
 import { useAuth } from '../hooks/useAuth'; // Hook to get current user information
 import { TicketDetails } from './TicketDetails'; // Component to show detailed ticket information
 import { eventsService } from '../services/eventsService'; // Service to communicate with backend about events
+import api from '../services/api'; // API service for direct calls
 
 // Main component for the goer (attendee) dashboard
 const GoerDashboard = () => {
@@ -236,7 +237,7 @@ const GoerDashboard = () => {
           {/* Left side - welcome message */}
           <div>
             <h1 className="font-heading text-4xl lg:text-5xl font-bold text-er-light mb-3">
-              Welcome back, <span className="gradient-text">{user?.username}</span>!
+              Welcome back, <span className="gradient-text">{user?.name || user?.username}</span>!
             </h1>
             <p className="text-xl text-er-text">Track your events and create amazing memories</p>
           </div>
