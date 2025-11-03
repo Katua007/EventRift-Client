@@ -146,11 +146,11 @@ const App = () => {
                             />
                             <Route
                                 path="/goer/dashboard" // Attendee's dashboard
-                                element={<ProtectedRoute element={<GoerDashboard />} requiredRole="goer" />}
+                                element={<ProtectedRoute element={<GoerDashboard />} />}
                             />
                             <Route
                                 path="/vendor/dashboard" // Vendor's dashboard
-                                element={<ProtectedRoute element={<VendorDashboard />} requiredRole="vendor" />}
+                                element={<ProtectedRoute element={<VendorDashboard />} />}
                             />
                             <Route
                                 path="/vendor/setup" // Initial vendor setup
@@ -164,13 +164,12 @@ const App = () => {
                                 path="/vendor/edit-service/:serviceId" // Form to edit existing services
                                 element={<ProtectedRoute element={<ServiceForm />} requiredRole="vendor" />}
                             />
-
-                            {/* Catch-all route for pages that don't exist */}
+                            
+                            {/* Catch-all/404 Page */}
                             <Route path="*" element={<div className="text-center pt-48 text-xl text-red-500">404 - Page Not Found</div>} />
                         </Routes>
                     </main>
 
-                    {/* Footer at the bottom of every page */}
                     <Footer />
                 </div>
             </AuthProvider>
@@ -178,5 +177,4 @@ const App = () => {
     );
 };
 
-// Export the App component so it can be used in main.jsx to start the application
 export default App;

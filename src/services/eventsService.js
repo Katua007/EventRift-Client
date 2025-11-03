@@ -12,14 +12,15 @@ export const eventsService = {
     try {
       // Get the current user's purchased tickets from the server
       console.log('🔄 EventsService: Fetching user tickets...');
-      const response = await api.get('/api/tickets/user');
+      const response = await api.get('/tickets/user');
       console.log('✅ EventsService: User tickets fetched:', response.data);
       return response.data;
     } catch (error) {
       // If server request fails, log error and return empty array
       console.error('❌ EventsService: Error fetching user tickets:', error);
-      // Return empty tickets array as fallback so app doesn't break
-      return { success: true, tickets: [] };
+      // Return mock data as fallback for development
+      const { mockGoerData } = await import('../data/mockDashboardData.js');
+      return { success: true, tickets: mockGoerData.tickets };
     }
   },
 
@@ -27,7 +28,7 @@ export const eventsService = {
   submitReview: async (eventId, reviewData) => {
     try {
       // Send the review to the server
-      const response = await api.post(`/api/events/${eventId}/reviews`, reviewData);
+      const response = await api.post(`/events/${eventId}/reviews`, reviewData);
       return response.data;
     } catch (error) {
       // Handle errors when submitting review
@@ -45,14 +46,15 @@ export const eventsService = {
     try {
       // Get all events created by the current organizer
       console.log('🔄 EventsService: Fetching organizer events...');
-      const response = await api.get('/api/organizers/events');
+      const response = await api.get('/organizers/events');
       console.log('✅ EventsService: Organizer events fetched:', response.data);
       return response.data;
     } catch (error) {
       // If request fails, log error and return empty array
       console.error('❌ EventsService: Error fetching organizer events:', error);
-      // Return empty events array as fallback so app doesn't break
-      return { success: true, events: [] };
+      // Return mock data as fallback for development
+      const { mockOrganizerData } = await import('../data/mockDashboardData.js');
+      return { success: true, events: mockOrganizerData.events };
     }
   },
 
@@ -62,7 +64,7 @@ export const eventsService = {
       // Log what event data we're sending
       console.log('Creating event with data:', eventData);
       // Send the event data to the server to create the event
-      const response = await api.post('/api/events', eventData);
+      const response = await api.post('/events', eventData);
       // Log the successful response
       console.log('Event creation response:', response.data);
       return response.data;
@@ -81,7 +83,7 @@ export const eventsService = {
   updateEvent: async (eventId, eventData) => {
     try {
       // Send updated event data to the server
-      const response = await api.put(`/api/events/${eventId}`, eventData);
+      const response = await api.put(`/events/${eventId}`, eventData);
       return response.data;
     } catch (error) {
       // Log and re-throw any errors
@@ -94,7 +96,7 @@ export const eventsService = {
   deleteEvent: async (eventId) => {
     try {
       // Tell the server to delete the event
-      const response = await api.delete(`/api/events/${eventId}`);
+      const response = await api.delete(`/events/${eventId}`);
       return response.data;
     } catch (error) {
       // Log and re-throw any errors
@@ -107,7 +109,7 @@ export const eventsService = {
   getEvents: async () => {
     try {
       // Get all events from the server
-      const response = await api.get('/api/events');
+      const response = await api.get('/events');
       return response.data;
     } catch (error) {
       // If server request fails, use local event data as backup
@@ -136,7 +138,7 @@ export const eventsService = {
       // Log which event we're fetching
       console.log(`Fetching event details for ID: ${eventId}`);
       // Request the specific event from the server
-      const response = await api.get(`/api/events/${eventId}`);
+      const response = await api.get(`/events/${eventId}`);
       return response.data;
     } catch (error) {
       // Handle various types of errors

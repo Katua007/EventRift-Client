@@ -1,0 +1,1 @@
+import{t as e}from"./index-CKpJdWni.js";export{e as eventsService};
