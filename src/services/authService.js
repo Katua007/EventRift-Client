@@ -10,7 +10,7 @@ export const authService = {
   // Function to log a user in by sending credentials to the server
   login: async (credentials) => {
     // Log what we're trying to do (hiding password for security)
-    console.log('Frontend AuthService: Login attempt with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
+    console.log('Frontend AuthService: Login attempt with credentials:', { email: credentials.email, password: '***' });
     console.log('Frontend AuthService: Login request URL:', api.defaults.baseURL + '/api/auth/login');
 
     try {
@@ -105,7 +105,7 @@ export const authService = {
         if (status === 500) {
           // Server error - use offline fallback
           console.warn('Server error during registration, using offline fallback');
-          return await this.offlineRegister(userData);
+          return await authService.offlineRegister(userData);
         } else if (status === 400) {
           // Bad request - user input error
           throw new Error(errorData?.message || 'Invalid registration data. Please check your inputs.');
@@ -119,7 +119,7 @@ export const authService = {
       } else if (error.request) {
         // Network error - use offline fallback
         console.warn('Network error during registration, using offline fallback');
-        return await this.offlineRegister(userData);
+        return await authService.offlineRegister(userData);
       } else {
         // Other errors
         throw new Error(error.message || 'Registration failed');

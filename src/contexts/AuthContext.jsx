@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             // Log what we're trying to do (hiding password for security)
-            console.log('AuthContext: Attempting login with credentials:', { email_or_username: credentials.email_or_username, password: '***' });
+            console.log('AuthContext: Attempting login with credentials:', { email: credentials.email, password: '***' });
             // Call our authentication service to log in
             const response = await authService.login(credentials);
             // Get the token and user data from the response

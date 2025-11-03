@@ -32,7 +32,7 @@ const LoginPage = () => {
     try {
       // Prepare the login information in the format the server expects
       const credentials = {
-        email_or_username: data.email_or_username, // The email or username from the form
+        email: data.email_or_username, // The email or username from the form
         password: data.password // The password from the form
       };
 
