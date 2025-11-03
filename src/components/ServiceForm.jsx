@@ -75,6 +75,12 @@ const ServiceForm = () => {
         );
 
         // Trigger dashboard refresh by dispatching custom event
+        const eventType = isEditing ? 'serviceUpdated' : 'serviceCreated';
+        window.dispatchEvent(new CustomEvent(eventType, {
+          detail: { service: result.service || serviceData, isEditing }
+        }));
+        
+        // Also dispatch generic event for compatibility
         window.dispatchEvent(new CustomEvent('serviceCreated', {
           detail: { service: result.service || serviceData, isEditing }
         }));

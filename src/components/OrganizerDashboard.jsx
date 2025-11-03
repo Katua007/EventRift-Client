@@ -55,18 +55,21 @@ const OrganizerDashboard = () => {
       }
     };
 
-    const handleEventCreated = () => {
+    const handleEventCreated = (event) => {
+      console.log('🔄 OrganizerDashboard: Event created/updated, refreshing data...');
       // Refresh dashboard data when an event is created
       fetchOrganizerData();
     };
 
     fetchOrganizerData();
 
-    // Listen for event creation events
+    // Listen for event creation/update events
     window.addEventListener('eventCreated', handleEventCreated);
+    window.addEventListener('eventUpdated', handleEventCreated);
 
     return () => {
       window.removeEventListener('eventCreated', handleEventCreated);
+      window.removeEventListener('eventUpdated', handleEventCreated);
     };
   }, [user?.id]);
 

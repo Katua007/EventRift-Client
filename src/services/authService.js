@@ -3,6 +3,7 @@
 
 // Import our configured API instance
 import api from './api.js';
+import { API_ENDPOINTS } from '../utils/apiEndpoints.js';
 
 // Object containing all authentication functions
 export const authService = {
@@ -14,7 +15,7 @@ export const authService = {
 
     try {
       // Send login request to the server
-      const response = await api.post('/api/auth/login', credentials);
+      const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
       console.log('Frontend AuthService: Login API response:', response.data);
 
       // Check if the server says login was successful
@@ -52,7 +53,7 @@ export const authService = {
 
     try {
       // Send registration request to the server
-      const response = await api.post('/api/auth/register', userData);
+      const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, userData);
       console.log('Frontend AuthService: Register API response:', response.data);
 
       // Check if registration was successful
@@ -84,7 +85,7 @@ export const authService = {
       // Try to tell the server we're logging out
       console.log('Frontend AuthService: Logout attempt');
       console.log('Frontend AuthService: Logout request URL:', api.defaults.baseURL + '/api/auth/logout');
-      await api.post('/api/auth/logout');
+      await api.post(API_ENDPOINTS.AUTH.LOGOUT);
     } catch (error) {
       // If server logout fails, just log it but continue
       console.error('Frontend AuthService: Logout API error:', error);
@@ -105,7 +106,7 @@ export const authService = {
       console.log('Frontend AuthService: Get profile attempt');
       console.log('Frontend AuthService: Profile request URL:', api.defaults.baseURL + '/api/auth/profile');
       // Request user profile from server
-      const response = await api.get('/api/auth/profile');
+      const response = await api.get(API_ENDPOINTS.AUTH.PROFILE);
       console.log('Frontend AuthService: Profile API response:', response.data);
 
       // Check if request was successful

@@ -103,6 +103,12 @@ const CreateEventForm = () => {
         );
 
         // Trigger dashboard refresh by dispatching custom event
+        const eventType = isEditing ? 'eventUpdated' : 'eventCreated';
+        window.dispatchEvent(new CustomEvent(eventType, {
+          detail: { event: result.event || eventData, isEditing }
+        }));
+        
+        // Also dispatch generic event for compatibility
         window.dispatchEvent(new CustomEvent('eventCreated', {
           detail: { event: result.event || eventData, isEditing }
         }));

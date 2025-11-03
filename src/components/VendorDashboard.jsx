@@ -109,9 +109,11 @@ const VendorDashboard = () => {
 
     // Listen for service creation/update events
     window.addEventListener('serviceCreated', handleServiceCreated);
+    window.addEventListener('serviceUpdated', handleServiceCreated);
 
     return () => {
       window.removeEventListener('serviceCreated', handleServiceCreated);
+      window.removeEventListener('serviceUpdated', handleServiceCreated);
     };
   }, [user?.id]);
 

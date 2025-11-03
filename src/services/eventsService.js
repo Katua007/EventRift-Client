@@ -4,6 +4,7 @@
 // Import our API configuration and local event data
 import api from './api.js';
 import { events } from '../data/events.js';
+import { API_ENDPOINTS } from '../utils/apiEndpoints.js';
 
 // Object containing all event-related functions
 export const eventsService = {
@@ -12,15 +13,21 @@ export const eventsService = {
     try {
       // Get the current user's purchased tickets from the server
       console.log('🔄 EventsService: Fetching user tickets...');
-      const response = await api.get('/tickets/user');
+      const response = await api.get(API_ENDPOINTS.USER.TICKETS);
       console.log('✅ EventsService: User tickets fetched:', response.data);
       return response.data;
     } catch (error) {
-      // If server request fails, log error and return empty array
       console.error('❌ EventsService: Error fetching user tickets:', error);
-      // Return mock data as fallback for development
-      const { mockGoerData } = await import('../data/mockDashboardData.js');
-      return { success: true, tickets: mockGoerData.tickets };
+      // Try alternative endpoint
+      try {
+        const altResponse = await api.get(API_ENDPOINTS.TICKETS.USER);
+        return altResponse.data;
+      } catch (altError) {
+        console.error('❌ EventsService: Alternative endpoint also failed:', altError);
+        // Return mock data only as last resort
+        const { mockGoerData } = await import('../data/mockDashboardData.js');
+        return { success: true, tickets: mockGoerData.tickets };
+      }
     }
   },
 
@@ -28,7 +35,7 @@ export const eventsService = {
   submitReview: async (eventId, reviewData) => {
     try {
       // Send the review to the server
-      const response = await api.post(`/events/${eventId}/reviews`, reviewData);
+      const response = await api.post(API_ENDPOINTS.EVENTS.REVIEWS(eventId), reviewData);
       return response.data;
     } catch (error) {
       // Handle errors when submitting review
@@ -46,15 +53,26 @@ export const eventsService = {
     try {
       // Get all events created by the current organizer
       console.log('🔄 EventsService: Fetching organizer events...');
-      const response = await api.get('/organizers/events');
+      const response = await api.get(API_ENDPOINTS.ORGANIZER.EVENTS);
       console.log('✅ EventsService: Organizer events fetched:', response.data);
       return response.data;
     } catch (error) {
-      // If request fails, log error and return empty array
       console.error('❌ EventsService: Error fetching organizer events:', error);
-      // Return mock data as fallback for development
-      const { mockOrganizerData } = await import('../data/mockDashboardData.js');
-      return { success: true, events: mockOrganizerData.events };
+      // Try alternative endpoints
+      try {
+        const altResponse = await api.get('/events/organizer');
+        return altResponse.data;
+      } catch (altError) {
+        try {
+          const userResponse = await api.get(API_ENDPOINTS.USER.EVENTS);
+          return userResponse.data;
+        } catch (userError) {
+          console.error('❌ EventsService: All organizer endpoints failed');
+          // Return mock data only as last resort
+          const { mockOrganizerData } = await import('../data/mockDashboardData.js');
+          return { success: true, events: mockOrganizerData.events };
+        }
+      }
     }
   },
 
@@ -64,7 +82,7 @@ export const eventsService = {
       // Log what event data we're sending
       console.log('Creating event with data:', eventData);
       // Send the event data to the server to create the event
-      const response = await api.post('/events', eventData);
+      const response = await api.post(API_ENDPOINTS.EVENTS.CREATE, eventData);
       // Log the successful response
       console.log('Event creation response:', response.data);
       return response.data;
@@ -83,7 +101,7 @@ export const eventsService = {
   updateEvent: async (eventId, eventData) => {
     try {
       // Send updated event data to the server
-      const response = await api.put(`/events/${eventId}`, eventData);
+      const response = await api.put(API_ENDPOINTS.EVENTS.UPDATE(eventId), eventData);
       return response.data;
     } catch (error) {
       // Log and re-throw any errors
@@ -96,7 +114,7 @@ export const eventsService = {
   deleteEvent: async (eventId) => {
     try {
       // Tell the server to delete the event
-      const response = await api.delete(`/events/${eventId}`);
+      const response = await api.delete(API_ENDPOINTS.EVENTS.DELETE(eventId));
       return response.data;
     } catch (error) {
       // Log and re-throw any errors
@@ -109,7 +127,7 @@ export const eventsService = {
   getEvents: async () => {
     try {
       // Get all events from the server
-      const response = await api.get('/events');
+      const response = await api.get(API_ENDPOINTS.EVENTS.LIST);
       return response.data;
     } catch (error) {
       // If server request fails, use local event data as backup
@@ -138,7 +156,7 @@ export const eventsService = {
       // Log which event we're fetching
       console.log(`Fetching event details for ID: ${eventId}`);
       // Request the specific event from the server
-      const response = await api.get(`/events/${eventId}`);
+      const response = await api.get(API_ENDPOINTS.EVENTS.GET(eventId));
       return response.data;
     } catch (error) {
       // Handle various types of errors
