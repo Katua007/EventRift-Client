@@ -101,6 +101,12 @@ const CreateEventForm = () => {
           `Event "${data.title}" ${isEditing ? 'updated' : 'created'} successfully!`,
           'success'
         );
+
+        // Trigger dashboard refresh by dispatching custom event
+        window.dispatchEvent(new CustomEvent('eventCreated', {
+          detail: { event: result.event || eventData, isEditing }
+        }));
+
         setTimeout(() => navigate('/organizer/dashboard'), 1500);
       } else {
         setError(result.message || `Failed to ${isEditing ? 'update' : 'create'} event`);

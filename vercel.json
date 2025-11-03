@@ -15,7 +15,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*"
+          "value": "https://event-rift-client.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",

@@ -18,9 +18,13 @@ const OrganizerDashboard = () => {
 
   useEffect(() => {
     const fetchOrganizerData = async () => {
+      if (!user?.id) return;
+
       try {
         setLoading(true);
+        console.log('🔄 OrganizerDashboard: Fetching organizer events...');
         const eventsResponse = await eventsService.getOrganizerEvents(user.id);
+        console.log('✅ OrganizerDashboard: Events response:', eventsResponse);
         const organizerEvents = eventsResponse.events || [];
         setEvents(organizerEvents);
 
@@ -36,8 +40,9 @@ const OrganizerDashboard = () => {
           totalRevenue,
           averageRating: averageRating.toFixed(1)
         });
+        console.log('✅ OrganizerDashboard: Data loaded successfully');
       } catch (err) {
-        console.error('Failed to fetch organizer data:', err);
+        console.error('❌ OrganizerDashboard: Failed to fetch organizer data:', err);
         setEvents([]);
         setStats({
           totalEvents: 0,
@@ -50,9 +55,19 @@ const OrganizerDashboard = () => {
       }
     };
 
-    if (user?.id) {
+    const handleEventCreated = () => {
+      // Refresh dashboard data when an event is created
       fetchOrganizerData();
-    }
+    };
+
+    fetchOrganizerData();
+
+    // Listen for event creation events
+    window.addEventListener('eventCreated', handleEventCreated);
+
+    return () => {
+      window.removeEventListener('eventCreated', handleEventCreated);
+    };
   }, [user?.id]);
 
 
