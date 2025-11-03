@@ -11,11 +11,13 @@ export const eventsService = {
   getUserTickets: async () => {
     try {
       // Get the current user's purchased tickets from the server
+      console.log('🔄 EventsService: Fetching user tickets...');
       const response = await api.get('/api/tickets/user');
+      console.log('✅ EventsService: User tickets fetched:', response.data);
       return response.data;
     } catch (error) {
       // If server request fails, log error and return empty array
-      console.error('Error fetching user tickets:', error);
+      console.error('❌ EventsService: Error fetching user tickets:', error);
       // Return empty tickets array as fallback so app doesn't break
       return { success: true, tickets: [] };
     }
@@ -42,11 +44,13 @@ export const eventsService = {
   getOrganizerEvents: async (organizerId) => {
     try {
       // Get all events created by the current organizer
+      console.log('🔄 EventsService: Fetching organizer events...');
       const response = await api.get('/api/organizers/events');
+      console.log('✅ EventsService: Organizer events fetched:', response.data);
       return response.data;
     } catch (error) {
       // If request fails, log error and return empty array
-      console.error('Error fetching organizer events:', error);
+      console.error('❌ EventsService: Error fetching organizer events:', error);
       // Return empty events array as fallback so app doesn't break
       return { success: true, events: [] };
     }
