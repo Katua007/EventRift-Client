@@ -4,11 +4,11 @@
 export const API_ENDPOINTS = {
   // Authentication endpoints
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    LOGOUT: '/auth/logout',
-    PROFILE: '/auth/profile',
-    REFRESH: '/auth/refresh'
+    LOGIN: '/api/auth/login',
+    REGISTER: '/api/auth/register',
+    LOGOUT: '/api/auth/logout',
+    PROFILE: '/api/auth/profile',
+    REFRESH: '/api/auth/refresh'
   },
 
   // User endpoints
@@ -22,26 +22,26 @@ export const API_ENDPOINTS = {
 
   // Events endpoints
   EVENTS: {
-    LIST: '/events',
-    CREATE: '/events',
-    GET: (id) => `/events/${id}`,
-    UPDATE: (id) => `/events/${id}`,
-    DELETE: (id) => `/events/${id}`,
-    REVIEWS: (id) => `/events/${id}/reviews`
+    LIST: '/api/events',
+    CREATE: '/api/events',
+    GET: (id) => `/api/events/${id}`,
+    UPDATE: (id) => `/api/events/${id}`,
+    DELETE: (id) => `/api/events/${id}`,
+    REVIEWS: (id) => `/api/events/${id}/reviews`
   },
 
   // Organizer endpoints
   ORGANIZER: {
-    EVENTS: '/organizer/events',
-    DASHBOARD: '/organizer/dashboard',
-    ANALYTICS: '/organizer/analytics'
+    EVENTS: '/api/organizer/events',
+    DASHBOARD: '/api/dashboard/organizer',
+    ANALYTICS: '/api/organizer/analytics'
   },
 
   // Vendor endpoints
   VENDOR: {
-    SERVICES: '/vendor/services',
-    DASHBOARD: '/vendor/dashboard',
-    BOOKINGS: '/vendor/bookings'
+    SERVICES: '/api/vendor/services',
+    DASHBOARD: '/api/dashboard/vendor',
+    BOOKINGS: '/api/vendor/bookings'
   },
 
   // Services endpoints
@@ -55,10 +55,10 @@ export const API_ENDPOINTS = {
 
   // Tickets endpoints
   TICKETS: {
-    USER: '/tickets/user',
-    CREATE: '/tickets',
-    GET: (id) => `/tickets/${id}`,
-    EVENT: (eventId) => `/tickets/event/${eventId}`
+    USER: '/api/tickets/user',
+    CREATE: '/api/tickets/book',
+    GET: (id) => `/api/tickets/${id}`,
+    EVENT: (eventId) => `/api/tickets/event/${eventId}`
   },
 
   // Payments endpoints
